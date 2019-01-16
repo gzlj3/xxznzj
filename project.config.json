@@ -1,0 +1,12 @@
+{
+	"miniprogramRoot": "miniprogram/",
+	"pluginRoot": "plugin/",
+	"compileType": "plugin",
+	"setting": {
+		"newFeature": true
+	},
+	"appid": "wx70358fb44d63c53c",
+	"projectname": "xxznzj",
+	"libVersion": "2.5.0",
+	"condition": {}
+}
