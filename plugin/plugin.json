@@ -2,5 +2,9 @@
   "publicComponents": {
     "list": "components/list/list"
   },
-  "main": "index.js"
+  "main": "index.js",
+  "pages": {
+    "index1": "pages/home/index1",
+    "index2": "pages/home/index2"
+  }
 }
