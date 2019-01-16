@@ -1,4 +1,5 @@
 {
+	"cloudfunctionRoot": "cloudfunctions/",
 	"miniprogramRoot": "miniprogram/",
 	"pluginRoot": "plugin/",
 	"compileType": "plugin",
