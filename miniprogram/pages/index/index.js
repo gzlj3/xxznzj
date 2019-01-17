@@ -1,9 +1,9 @@
-var plugin = requirePlugin("myPlugin")
+var XXRJ = requirePlugin("XXZNZJ")
 Page({
   onLoad: function() {
-    // plugin.getData()
-    wx.navigateTo({
-      url: 'plugin://myPlugin/index1',
+    console.log(XXRJ.services.test());
+    wx.redirectTo({
+      url: 'plugin://XXZNZJ/index1',
     })
   }
 })

@@ -1,0 +1,54 @@
+.displayInline {
+  display:inline-block;
+}
+
+.redColor {
+  display:inline-block;
+  color:red;
+}
+
+.blueColor {
+  color:blue;
+}
+
+.greenColor {
+  color:green;
+}
+
+.blackColor {
+  display:inline-block;
+  color:black;
+}
+
+.displaynone {
+  display:none;
+}
+
+.addfontsize{
+  font-size: 16px;
+}
+
+.addfontsize18{
+  font-size: 18px;
+}
+.addfontsize20{
+  font-size: 20px;
+}
+
+.addfontsize24{
+  font-size: 24px;
+}
+
+.addwidth {
+  width: 115px;
+}
+
+.weui-cells__title {
+    margin-top: .77em;
+    margin-bottom: .3em; 
+    padding-left: 15px;
+    padding-right: 15px;
+    color: black;
+    font-size:16;
+    background-color: rgb(205, 236, 247);
+}

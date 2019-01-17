@@ -3,9 +3,23 @@
     "pages/index/index"
   ],
   "plugins": {
-    "myPlugin": {
+    "XXZNZJ": { 
       "version": "dev",
       "provider": "wx70358fb44d63c53c"
     }
-  }
+  },
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "智慧考勤",
+    "navigationBarBackgroundColor": "#f8f8f8",
+    "backgroundColor": "#f8f8f8",
+    "enablePullDownRefresh": false
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 10000,
+    "downloadFile": 10000
+  },
+  "debug": false
 }
