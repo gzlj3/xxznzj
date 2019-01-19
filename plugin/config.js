@@ -8,10 +8,10 @@ exports.refreshUserInterval=5*60*1000;    //刷新用户缓存时间间隔(在ap
 
 exports.init = function(paras){
   if(paras){
-    moduler.exports = {...exports,...paras}
+    module.exports = {...exports,...paras}
   }
-  wx.cloud.init({
-    env: exports.env,
-    traceUser: true,
-  })
+  // wx.cloud.init({
+  //   env: exports.env,
+  //   traceUser: true,
+  // })
 }

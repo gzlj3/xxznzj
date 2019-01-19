@@ -18,12 +18,19 @@
           <button size='mini' type='primary' ontap='refreshUser'>重新刷新</button>
         </view>
       </view>
-      <view class="grant-container grant-container-wxgrant" wx:if="{{user && !user.wxgranted}}">
-      <!-- <view class="grant-container grant-container-wxgrant"> -->
+      <!-- <view class="grant-container grant-container-wxgrant" wx:if="{{user && !user.wxgranted}}"> -->
+      <view class="grant-container grant-container-wxgrant">
         <view class='grant-item'>需要获得您微信公开信息的授权</view>
         <view class='grant-item'>
-          <button type='primary' open-type="getUserInfo" 
-      bindgetuserinfo="onGetUserInfo">微信授权</button>
+        <slot></slot>
+          <!-- <button type='primary' open-type="getUserInfo" 
+      bindgetuserinfo="onGetUserInfo">微信授权</button> -->
+<functional-page-navigator type='primary'
+  name="loginAndGetUserInfo"  version="develop"
+  bind:success="onGetUserInfo"
+>
+  <button>登录到插件</button>
+</functional-page-navigator>      
           <button open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">获取手机号</button>
         </view>
       </view>

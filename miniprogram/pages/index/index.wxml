@@ -1,1 +1,7 @@
-<index/>
+          <!-- <button type='primary' open-type="getUserInfo" 
+      bindgetuserinfo="onGetUserInfo">微信授权</button> -->
+
+<index>
+          <button type='primary' open-type="getUserInfo" 
+      bindgetuserinfo="onGetUserInfo">微信授权</button>
+</index>

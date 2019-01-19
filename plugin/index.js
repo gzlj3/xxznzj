@@ -1,6 +1,8 @@
 const config = require('config.js');
-const initPlugin = (paras) =>{
-  config.init(paras);
+const app = require('app1.js');
+const initPlugin = (paras1,paras2) =>{
+  config.init(paras2);
+  app.init(paras1);
 }
 
 module.exports = {
