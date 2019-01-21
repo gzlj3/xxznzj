@@ -9,5 +9,32 @@
 	"appid": "wx70358fb44d63c53c",
 	"projectname": "xxznzj",
 	"libVersion": "2.5.0",
-	"condition": {}
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": 0,
+			"list": [
+				{
+					"id": -1,
+					"name": "indexWithPara",
+					"pathName": "pages/index/index",
+					"query": "requestUserType=1"
+				}
+			]
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": []
+		}
+	}
 }

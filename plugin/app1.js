@@ -1,18 +1,22 @@
-//const services = require('./services/servicess.js');
 const config = require('config.js')
 const CONSTS = require('./utils/constants.js');
 const utils = require('./utils/utils.js');
-const services = require('./services/commServices.js');
+const commServices = require('./services/commServices.js');
 
 let globalData = {
   cloudNormal: false,
   user: { wxgranted: true, userType: '', nickName: '', avatarUrl: '', collid: '', granted: [], grantedSjhm: [], },  //用户登录基本信息
   lastRefreshTime: 0,  //上次刷新时间
 }
+let hostApp;  //宿主app对象
+let hostWx;   //宿主wx对象
 
-const init = function (hostApp) {
+
+const init = function (hostAppPara,hostWxPara) {
   console.log('init app');
-  if (!wx.cloud) { 
+  hostApp = hostAppPara;
+  hostWx = hostWxPara;
+  if (!wx.cloud) {
     console.error('请使用 2.2.3 或以上的基础库以使用云能力')
   } else {
     wx.cloud.init({
@@ -40,29 +44,26 @@ const onShow=  function (e) {
 }
 
 const setGlobalData = function (newData) {
-  globalData = {
-    ...globalData,
-    ...newData
-  }
+  Object.assign(globalData,newData);
+}
+const getGlobalData = function () {
+  return globalData;
 }
 
-// setFyListDirty: function (fyListDirty) {
-//   setGlobalData({ fyListDirty });
-// },
-
 const queryUser = function () {
-  const response = services.queryData(CONSTS.BUTTON_QUERYUSER);
-  services.handleAfterRemote(response, null,
+  const response = commServices.queryData(CONSTS.BUTTON_QUERYUSER);
+  commServices.handleAfterRemote(response, null,
     (resultData) => {
-      console.log('queryuser success!');
+      // console.log('queryuser success!',resultData);
       setUserData(resultData);
       getWxGrantedData();
-      if (globalData.user.wxgranted) {
+      if (globalData.user.wxgranted) { 
         setGlobalData({ cloudNormal: true });
       }
       setGlobalData({ lastRefreshTime: utils.currentTimeMillis() });
     },
     err => {
+      // console.log('queryuser fail:',err);
       setGlobalData({ cloudNormal: false });
     }
   );
@@ -82,11 +83,11 @@ const setUserData = function (userData) {
 const getWxGrantedData = function () {
   if (!globalData.user.wxgranted) {
     //获取用户信息
-    wx.getSetting({
+    hostWx.getSetting({
       success: res => {
         if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
+          hostWx.getUserInfo({
             success: res => {
               // console.log('getSetting success:',res);
               setUserData(res.userInfo);
@@ -108,24 +109,24 @@ const getWxGrantedData = function () {
   }
 }
 
-const checkForUpdate = function () {
-  const updateManager = wx.getUpdateManager();
-  updateManager.onCheckForUpdate(function (res) {
-    // 请求完新版本信息的回调 
-    console.log('version update:', res.hasUpdate)
-  });
-  updateManager.onUpdateReady(function () {
-    wx.showModal({
-      title: '更新提示',
-      content: '新版本已经准备好，是否重启应用？',
-      success(res) {
-        if (res.confirm) {
-          // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
-          updateManager.applyUpdate()
-        }
-      }
-    })
-  });
-}
+// const checkForUpdate = function () {
+//   const updateManager = wx.getUpdateManager();
+//   updateManager.onCheckForUpdate(function (res) {
+//     // 请求完新版本信息的回调 
+//     console.log('version update:', res.hasUpdate)
+//   });
+//   updateManager.onUpdateReady(function () {
+//     wx.showModal({
+//       title: '更新提示',
+//       content: '新版本已经准备好，是否重启应用？',
+//       success(res) {
+//         if (res.confirm) {
+//           // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+//           updateManager.applyUpdate()
+//         }
+//       }
+//     })
+//   });
+// }
 
-module.exports = {init}
+module.exports = { init, getGlobalData,setGlobalData}

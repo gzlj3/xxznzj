@@ -1,8 +1,8 @@
 const { initPlugin} = requirePlugin("XXZNZJ");
 App({
-  onLaunch: function () {
+    onLaunch: function () {
     console.log('host onLaunch');
-    //初始化插件，第1个参数为宿主应用,第2个参数为传入插件的配置(可为空)
-    initPlugin(this);
+    //初始化插件，第1个参数为宿主应用app,第2个参数为宿主全局对象wx,第3个参数为修改插件的配置(可为空)
+    initPlugin(this,wx);
   }
 })

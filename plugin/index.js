@@ -1,8 +1,10 @@
 const config = require('config.js');
 const app = require('app1.js');
-const initPlugin = (paras1,paras2) =>{
-  config.init(paras2);
-  app.init(paras1);
+const {PluginApp} = require('PluginApp.js');
+const initPlugin = (paras1,paras2,paras3) =>{
+  config.init(paras3);
+  // PluginApp({paras1,paras2});
+  app.init(paras1,paras2);
 }
 
 module.exports = {
