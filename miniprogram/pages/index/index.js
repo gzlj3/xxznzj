@@ -19,7 +19,7 @@ Component({
       // })
     },
     onGetUserInfo: function(e){
-      console.log('get user:',e);
+      console.log('get user....:',e);
     }
   }
 })

@@ -3,4 +3,7 @@
 
 <index>
   <view slot='pageDesc'>测试系统</view>
+  <view slot='getUserInfo'>
+    <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
+  </view>
 </index>

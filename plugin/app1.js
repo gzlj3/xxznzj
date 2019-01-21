@@ -129,4 +129,4 @@ const getWxGrantedData = function () {
 //   });
 // }
 
-module.exports = { init, getGlobalData,setGlobalData}
+module.exports = { init, getGlobalData, setGlobalData, queryUser}

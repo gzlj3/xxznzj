@@ -5,7 +5,7 @@ Component({
     /**
    * 组件的属性列表
    */
-  properties: {
+  properties: { 
     requestUserType: String,
     sjhm: String,
   },
@@ -61,7 +61,7 @@ Component({
       // console.log(e.detail.userInfo) // wx.getUserInfo 的 userInfo
     },
 
-    waitingCloudNormal: function () {
+    waitingCloudNormal() {
       let waitingCloudNum = 0;
       this.setData({ waitingCloud: true });
       let promise = new Promise((resolve, reject) => {
@@ -86,6 +86,10 @@ Component({
         clearInterval(setTimer)
         this.setData({ waitingCloud: false });
       });
+    },
+    refreshUser() {
+      app.queryUser();
+      this.waitingCloudNormal();
     },
 
   }  
