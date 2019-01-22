@@ -1,6 +1,7 @@
 module.exports = Behavior({
   data: {
-    pageLoadOptions: {a:'aaaa'}
+    pageLoadOptions: {a:'aaaa'},
+    hostUserInfo:null,
   },
   attached() { },
   methods: {

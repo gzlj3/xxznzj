@@ -264,37 +264,45 @@ const getNewGrant = (curUser,rights)=>{
 }
 
 exports.registerUser = async (data,userInfo) => {
-  const { frontUserInfo,sjData} = data;
+  const { frontUserInfo,formObject} = data;
   const { openId } = userInfo;
 
-  //取上次发送的验证码数据
-  const lastYzm = await getCachedSjyzm(openId);
-  console.log(lastYzm);
-  if (!lastYzm.isValid)
-    throw utils.newException('验证码已经失效！');
-  if(lastYzm.yzm!==sjData.sjyzm)
-    throw utils.newException('验证码不正确！');
+  if (!formObject.canIUseWxPhoneNumber){
+    //取上次发送的验证码数据
+    const lastYzm = await getCachedSjyzm(openId);
+    console.log(lastYzm);
+    if (!lastYzm.isValid)
+      throw utils.newException('验证码已经失效！');
+    if (lastYzm.yzm !== formObject.sjyzm)
+      throw utils.newException('验证码不正确！');
+  }
+  if (formObject.userType===CONSTS)
 
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
   const yzhid = utils.yzhid();
-  const collid = utils.collid();
+  const collid = utils.collid(); 
+  if (commService.isFd(formObject.userType)) {
+    //注册机构
+  }
+
   const userb = {
     openId,
     yzhid,
     collid,
     nickName:frontUserInfo.nickName,
     avatarUrl: frontUserInfo.avatarUrl,
-    sjhm:sjData.sjhm,
-    userType:sjData.userType,
+    sjhm:formObject.sjhm,
+    userType:formObject.userType,
     userData:frontUserInfo,
+    
     lrsj,
     zhxgsj
   }
   console.log('新用户注册：',userb);
   let result = await commService.addDoc('userb',userb);
-  if (commService.isFd(sjData.userType)){
+  if (commService.isFd(formObject.userType)){
     //房东注册，则创建新用户的集合表(新注册的时候不建表，新插入数据的时候建)
     // await db.createCollection('house_' + collid);
     // await db.createCollection('housefy_' + collid);
@@ -302,7 +310,7 @@ exports.registerUser = async (data,userInfo) => {
 
   //租客注册完成，关联房屋头像数据
   const avatarUrl = userb.avatarUrl;
-  if (commService.isZk(sjData.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
+  if (commService.isZk(formObject.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
     // result = await db.collection('house').where({ dhhm: userb.sjhm }).update({ data:{avatarUrl}});
     result = await commService.updateAllDoc('house',{ dhhm: userb.sjhm },{ avatarUrl });
     console.log('关联房屋数：', result);

@@ -1,9 +1,11 @@
-          <!-- <button type='primary' open-type="getUserInfo" 
-      bindgetuserinfo="onGetUserInfo">微信授权</button> -->
-
-<index>
+<index hostuserinfo="{{hostUserInfo}}" sjhm="{{sjhm}}" requestusertype="{{requestUserType}}" orgcode="{{orgcode}}">
   <view slot='pageDesc'>测试系统</view>
   <view slot='getUserInfo'>
     <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
   </view>
+  <view slot='getPhoneNumber'>
+    <button size='mini' type='primary' open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">点击获取</button>
+  </view>
+  <!-- <view slot='registerFields'>
+  </view> -->  
 </index>

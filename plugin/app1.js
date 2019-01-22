@@ -11,11 +11,13 @@ let globalData = {
 let hostApp;  //宿主app对象
 let hostWx;   //宿主wx对象
 
-
-const init = function (hostAppPara,hostWxPara) {
+const init = function (hostAppPara,hostWxPara) { 
   console.log('init app');
   hostApp = hostAppPara;
   hostWx = hostWxPara;
+  // Object.assign(hostApp, hostAppPara);
+  // Object.assign(hostWx, hostWxPara);
+  // console.log(hostWx);
   if (!wx.cloud) {
     console.error('请使用 2.2.3 或以上的基础库以使用云能力')
   } else {
@@ -30,7 +32,7 @@ const init = function (hostAppPara,hostWxPara) {
 }
 
 const onShow=  function (e) {
-  console.log('app onshow.');
+  console.log('app onshow.'); 
   const user = globalData.user;
   if (!user || utils.isEmpty(user.userType) || user.userType === CONSTS.USERTYPE_NONE) {
     queryUser();
@@ -48,6 +50,12 @@ const setGlobalData = function (newData) {
 }
 const getGlobalData = function () {
   return globalData;
+}
+const getHostWx = function () {
+  return hostWx;
+}
+const getHostApp = function () {
+  return hostApp;
 }
 
 const queryUser = function () {
@@ -129,4 +137,4 @@ const getWxGrantedData = function () {
 //   });
 // }
 
-module.exports = { init, getGlobalData, setGlobalData, queryUser}
+module.exports = { init, getGlobalData, setGlobalData, setUserData, queryUser, getHostApp, getHostWx}

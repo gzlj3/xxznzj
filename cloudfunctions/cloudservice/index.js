@@ -17,7 +17,9 @@ exports.main = async (event, context) => {
   const { action, method, data,restData,userInfo} = event;
   if(!action) return results.getErrorResults('未指定操作！');
   console.log("action:"+action+"   method:"+method);
-
+  console.log('event:',event);
+  console.log('context:',context);
+  
   try {
     //检查权限，成功则返回用户的基本数据
     const curUser = await userServices.checkAuthority(action, method,userInfo,data);

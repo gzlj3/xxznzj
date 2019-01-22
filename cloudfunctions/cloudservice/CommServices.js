@@ -101,11 +101,11 @@ exports.isFd = (userType) => {
   return userType === CONSTS.USERTYPE_FD;
 }
 //是否为房东租客
-exports.isFdZk = (userType) => {
-  if (utils.isEmpty(userType))
-    throw utils.newException('用户身份判断异常！');
-  return userType === CONSTS.USERTYPE_FDZK;
-}
+// exports.isFdZk = (userType) => {
+//   if (utils.isEmpty(userType))
+//     throw utils.newException('用户身份判断异常！');
+//   return userType === CONSTS.USERTYPE_FDZK;
+// }
 
 //查询所有房东collid
 async function queryAllCollids() {

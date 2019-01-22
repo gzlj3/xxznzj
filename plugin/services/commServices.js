@@ -52,11 +52,6 @@ export function handleAfterRemote(response, tsinfo, successCallback,failCallback
         wx.reLaunch({
           url: '/pages/index/index',
         })
-      } else if (errCode === -502005 && isFd()) {
-        //系统初始化需录入1条房源数据
-        wx.navigateTo({
-          url: '/pages/fygl/addfy/addfy?buttonAction=' + CONSTS.BUTTON_ADDFY,
-        }) 
       }else{
         wx.showToast({
           title: `${tsinfo}失败！${msg}`,
@@ -139,14 +134,14 @@ const uploadCloudFile = (filePath, cloudPath, successCallback, failCallback) =>{
 }
 export { uploadCloudFile};
 
-const isZk = ()=>{
-  return getApp().globalData.user.userType === CONSTS.USERTYPE_ZK;
-}
+// const isZk = ()=>{
+//   return getApp().globalData.user.userType === CONSTS.USERTYPE_ZK;
+// }
 
-const isFd = ()=> {
-  return getApp().globalData.user.userType === CONSTS.USERTYPE_FD;
-}
-export { isZk, isFd };
+// const isFd = ()=> {
+//   return getApp().globalData.user.userType === CONSTS.USERTYPE_FD;
+// }
+// export { isZk, isFd };
 
 export function checkAuthority(action){
   if (!checkRights(action)){
@@ -157,37 +152,37 @@ export function checkAuthority(action){
 }
 
 const checkRights = (action,right,yzhid,showts)=>{
-  if (!isZk() && !isFd()) {
-    //用户未注册或用户数据异常，回到主页面
-    return false;
-  }
-  if (isZk()) {
-    if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.EDITFY, CONSTS.DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG].indexOf(action) >= 0) {
-      return false;
-    }
-  }
-  if (isFd() && !utils.isEmpty(right) && !utils.isEmpty(yzhid)) {
-    const user = getApp().globalData.user;
-    const {granted} = user;
-    if(user.yzhid === yzhid){
-       //自己的房源
-       return true;
-    }
-    let haveRight = false;
-    // console.log('checkright:',granted,right,yzhid);
-    if(granted && granted.length>0){
-      for(let i=0;i<granted.length;i++){
-        const value = granted[i];
-        const {yzhid:grantYzhid,rights} = value;
-        if (grantYzhid===yzhid && rights.includes(right)){
-          haveRight = true;
-          break;
-        }
-      };
-    }
-    if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
-    return haveRight;
-  } 
+  // if (!isZk() && !isFd()) {
+  //   //用户未注册或用户数据异常，回到主页面
+  //   return false;
+  // }
+  // if (isZk()) {
+  //   if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.EDITFY, CONSTS.DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG].indexOf(action) >= 0) {
+  //     return false;
+  //   }
+  // }
+  // if (isFd() && !utils.isEmpty(right) && !utils.isEmpty(yzhid)) {
+  //   const user = getApp().globalData.user;
+  //   const {granted} = user;
+  //   if(user.yzhid === yzhid){
+  //      //自己的房源
+  //      return true;
+  //   }
+  //   let haveRight = false;
+  //   // console.log('checkright:',granted,right,yzhid);
+  //   if(granted && granted.length>0){
+  //     for(let i=0;i<granted.length;i++){
+  //       const value = granted[i];
+  //       const {yzhid:grantYzhid,rights} = value;
+  //       if (grantYzhid===yzhid && rights.includes(right)){
+  //         haveRight = true;
+  //         break;
+  //       }
+  //     };
+  //   }
+  //   if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
+  //   return haveRight;
+  // } 
   return true;
 }
 export {checkRights}

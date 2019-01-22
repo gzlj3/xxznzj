@@ -21,90 +21,56 @@
         </view>
       </block>
 
-      <view class="weui-cell">
-        <view class='weui-cell__bd'>微信公开信息授权</view>
-        <view class='weui-cell__ft'>
-          <block wx:if="{{user && !user.wxgranted}}">
-            <slot name="getUserInfo">微信公开信息授权，由宿主传入</slot>
-          </block>
-          <block wx:else>
-            已授权
-          </block>
-        </view>
-      </view>
-
-      <view class="weui-cell">
-        <view class='weui-cell__bd'>使用微信手机号注册</view>
-        <view class='weui-cell__ft'>
-          <button size='mini' type='primary' open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">点击获取</button>
-        </view>
-      </view>
-
-    </view>
-      <!-- <view class="grant-container grant-container-wxgrant">
-        <view class='grant-item'>服务器处理异常</view>
-        <view class='grant-item'>
-          <button size='mini' type='primary' ontap='refreshUser'>重新刷新</button>
-        </view>
-      </view> -->
-      <!-- <view class="grant-container grant-container-wxgrant" wx:if="{{user && !user.wxgranted}}"> -->
-      <!-- <view class="grant-container grant-container-wxgrant">
-        <view class='grant-item'>需要获得您微信公开信息的授权</view>
-        <view class='grant-item'>
-        <slot></slot> -->
-          <!-- <button type='primary' open-type="getUserInfo" 
-      bindgetuserinfo="onGetUserInfo">微信授权</button> -->
-          <!-- <button open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">获取手机号</button> -->
-        <!-- </view>
-      </view> -->
-      <!-- <view class="grant-container {{requestUserType?'grant-container-zkzc':''}}" wx:if="{{user && user.wxgranted && user.userType===CONSTS.USERTYPE_NONE}}">  -->
-      <view class="grant-container {{requestUserType?'grant-container-zkzc':''}}" > 
-          <view class='grant-item' style="{{requestUserType?'display:none':''}}">请确定您的身份</view>
-          <view class='grant-item'>
-            <form bindsubmit="onRegister">
-              <view style="{{requestUserType?'display:none':''}}">
-                <radio-group bindchange="radioChange" name='userType'>
-                    <label class="weui-cell weui-check__label" wx:for="{{radioItems}}" wx:key="value">
-                        <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
-
-                        <view class="weui-cell__bd">{{item.name}}</view>
-                        <view class="weui-cell__ft weui-cell__ft_in-radio" wx:if="{{item.checked}}">
-                            <icon class="weui-icon-radio" type="success_no_circle" size="16"></icon>
-                        </view>
-                    </label>
-                </radio-group>
-              </view>
-              <view class="weui-cell weui-cell_input weui-cell_vcode">
-                  <!-- <view class="weui-cell__hd">
-                      <view class="weui-label">手机号</view>
-                  </view> -->
-                  <view class="weui-cell__bd">
-                      <input class="weui-input" name="sjhm" type="number" bindinput="onInputSjhm" maxlength='11' value="{{sjhm}}" placeholder="请输入手机号" disabled='{{disabledSjhm}}'/>
-                  </view>
-                  <view class="weui-cell__ft">
-                      <view class="weui-vcode-btn" bindtap='onSendSjyzm' wx:if="{{!sendingYzm}}">获取验证码</view>
-                      <view class="weui-vcode-btn" wx:else="{{sendingYzm}}">{{second}}s</view>
-                  </view>
-              </view>
-              <view class="weui-cells__tips" wx:if="{{disabledSjhm}}">如手机号非你本人号码，请与房东确认修改</view>
-              <view class="weui-cell weui-cell_input">
-                  <!-- <view class="weui-cell__hd">
-                      <view class="weui-label"></view>
-                  </view> -->
-                  <view class="weui-cell__bd">
-                      <input class="weui-input" name="sjyzm" type="number" placeholder="请输入验证码" />
-                  </view>
-                  <!-- <view class="weui-cell__ft">
-                      <view class="weui-vcode-btn">获取验证码</view>
-                  </view> -->
-              </view>
-              <view class='weui-cell'>
-                <button size='default' type='primary' form-type="submit" style="margin-top:15px">确认</button>
-              </view>
-            </form>          
+      <block wx:if="{{!waitingCloud && user}}">
+        <view class="weui-cell">
+          <view class='weui-cell__bd'>微信公开信息授权</view>
+          <view class='weui-cell__ft'>
+            <block wx:if="{{user && !user.wxgranted}}">
+              <slot name="getUserInfo">微信公开信息授权，由宿主传入</slot>
+            </block>
+            <block wx:else>
+              已授权
+            </block>
           </view>
-      </view>
-      
+        </view>
+        <view class="weui-cell" wx:if="{{canIUseWxPhoneNumber}}">
+          <view class='weui-cell__bd'>使用微信手机号注册</view>
+          <view class='weui-cell__ft'>
+            <slot name="getPhoneNumber">微信手机号注册，由宿主传入</slot>
+          </view>
+        </view>
+
+        <form bindsubmit="onRegister">
+          <!-- <slot name="registerFields">注册更多信息，由宿主传入</slot> -->
+          <view class="weui-cell">
+            <view class="weui-label" style='width:80px' wx:if="{{user.userType===CONSTS.USERTYPE1}}">机构名称</view>
+            <view class="weui-label" style='width:80px' wx:else>机构代码</view>
+            <view class="weui-cell__bd">
+                <input id="orgname" name="orgname" class="weui-input" value="{{orgcode}}" placeholder="请输入"/>
+            </view>
+          </view>
+          <block wx:if="{{!canIUseWxPhoneNumber}}">
+            <view class="weui-cell weui-cell_input weui-cell_vcode">
+                <view class="weui-cell__bd">
+                    <input class="weui-input" name="sjhm" type="number" bindinput="onInputSjhm" maxlength='11' value="{{sjhm}}" placeholder="请输入手机号" disabled='{{disabledSjhm}}'/>
+                </view>
+                <view class="weui-cell__ft">
+                    <view class="weui-vcode-btn" bindtap='onSendSjyzm' wx:if="{{!sendingYzm}}">获取验证码</view>
+                    <view class="weui-vcode-btn" wx:else="{{sendingYzm}}">{{second}}s</view>
+                </view>
+            </view>
+            <view class="weui-cells__tips" wx:if="{{disabledSjhm}}">如非你本人手机号码，请与管理员确认修改</view>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__bd">
+                    <input class="weui-input" name="sjyzm" type="number" placeholder="请输入验证码" />
+                </view>
+            </view>
+          </block>
+          <button size='default' type='default' form-type="submit">确认注册</button>
+        </form>          
+      </block> 
+    </view>
+         
       <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD || user.userType===CONSTS.USERTYPE_FDZK}}">
           <block wx:for="{{list}}" wx:key="id">
               <view class="kind-list__item">
