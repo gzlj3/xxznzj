@@ -7,7 +7,7 @@ Component({
   methods: {
     onLoad: function (options) {
       console.log('onload:', options);
-      this.setData({...options});
+      this.setData({ onLoadOptions:options});
       // this.method1();
       // wx.login({
       //   success:function(e){

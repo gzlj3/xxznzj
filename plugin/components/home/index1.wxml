@@ -21,7 +21,7 @@
         </view>
       </block>
 
-      <block wx:if="{{!waitingCloud && user}}">
+      <block wx:if="{{!waitingCloud && user && user.userType===CONSTS.USERTYPE_NONE}}">
         <view class="weui-cell">
           <view class='weui-cell__bd'>微信公开信息授权</view>
           <view class='weui-cell__ft'>
@@ -43,7 +43,7 @@
         <form bindsubmit="onRegister">
           <!-- <slot name="registerFields">注册更多信息，由宿主传入</slot> -->
           <view class="weui-cell">
-            <view class="weui-label" style='width:80px' wx:if="{{user.userType===CONSTS.USERTYPE1}}">机构名称</view>
+            <view class="weui-label" style='width:80px' wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">机构名称</view>
             <view class="weui-label" style='width:80px' wx:else>机构代码</view>
             <view class="weui-cell__bd">
                 <input id="orgname" name="orgname" class="weui-input" value="{{orgcode}}" placeholder="请输入"/>
@@ -52,7 +52,7 @@
           <block wx:if="{{!canIUseWxPhoneNumber}}">
             <view class="weui-cell weui-cell_input weui-cell_vcode">
                 <view class="weui-cell__bd">
-                    <input class="weui-input" name="sjhm" type="number" bindinput="onInputSjhm" maxlength='11' value="{{sjhm}}" placeholder="请输入手机号" disabled='{{disabledSjhm}}'/>
+                    <input class="weui-input" name="sjhm" type="number" bindinput="onInputSjhm" maxlength='11' value="{{sjhm}}" placeholder="请输入手机号" disabled='{{disabledSjhm}}'/> 
                 </view>
                 <view class="weui-cell__ft">
                     <view class="weui-vcode-btn" bindtap='onSendSjyzm' wx:if="{{!sendingYzm}}">获取验证码</view>

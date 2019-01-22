@@ -22,12 +22,12 @@ Component({
     sjhm: '',
     sendingYzm: false,
     second: config.yzmYxq,
-    // CONSTS, 
+    CONSTS,  
     // radioItems: [  
     //   { name: '我是房东，想管理我的房源', value: '1', checked: true  },
     //   { name: '我是租客，想查询我的帐单', value: '2'}
-    // ], 
-    requestUserType: '',  //用户请求入口身份（机构或其它）
+    // ],  
+    requestUserType: CONSTS.USERTYPE_FD,  //用户请求入口身份（机构或其它）
     disabledSjhm: false,  //如果手机号码是带入的，则不允许修改，
   },
 
@@ -35,34 +35,43 @@ Component({
    * 组件的属性列表
    */
   properties: { 
-    requestusertype: {
-      type:String,
-      value: CONSTS.USERTYPE_FD,
+    onloadoptions: {
+      type: Object,
+      value: {},
       observer(newVal, oldVal, changedPath) {
-        console.log('observer requestType:', newVal, oldVal, changedPath);
-        this.setData({ requestUserType:newVal});
+        console.log('observer onloadoptions:', newVal);
+        this.setData({ ...newVal });
       }
     },
-    orgcode: {
-      type: String,
-      observer(newVal, oldVal, changedPath) {
-        console.log('observer orgcode:', newVal, oldVal, changedPath);
-        this.setData({ orgcode: newVal });
-      }
-    },
-    sjhm: {
-      type: String,
-      observer(newVal, oldVal, changedPath) {
-        console.log('observer sjhm:', newVal, oldVal, changedPath);
-        const sjhm = newVal;
-        let { disabledSjhm,requestUserType } = this.data;
-        if (!utils.isEmpty(sjhm) && utils.checkSjhm(sjhm)) {
-          disabledSjhm = true;
-          if (utils.isEmpty(requestUserType)) requestUserType = CONSTS.USERTYPE_ZK;
-        }
-        this.setData({ sjhm, requestUserType,disabledSjhm });
-      }
-    },
+    // requestusertype: {
+    //   type:String,
+    //   value: CONSTS.USERTYPE_FD,
+    //   observer(newVal, oldVal, changedPath) {
+    //     console.log('observer requestType:', newVal);
+    //     if(utils.isEmpty(newVal)) newVal = CONSTS.USERTYPE_FD;
+    //     this.setData({ requestUserType:newVal});
+    //   }
+    // },
+    // orgcode: {
+    //   type: String,
+    //   observer(newVal, oldVal, changedPath) {
+    //     console.log('observer orgcode:', newVal, oldVal, changedPath);
+    //     this.setData({ orgcode: newVal });
+    //   }
+    // },
+    // sjhm: {
+    //   type: String,
+    //   observer(newVal, oldVal, changedPath) {
+    //     console.log('observer sjhm:', newVal, oldVal, changedPath);
+    //     const sjhm = newVal;
+    //     let { disabledSjhm,requestUserType } = this.data;
+    //     if (!utils.isEmpty(sjhm) && utils.checkSjhm(sjhm)) {
+    //       disabledSjhm = true;
+    //       if (utils.isEmpty(requestUserType)) requestUserType = CONSTS.USERTYPE_ZK;
+    //     }
+    //     this.setData({ sjhm, requestUserType,disabledSjhm });
+    //   }
+    // },
     hostuserinfo:{
       type:Object,
       observer(newVal, oldVal, changedPath) {
@@ -81,8 +90,9 @@ Component({
     },
   },
 
-  lifetimes: {
+  lifetimes: { 
     attached() {
+      console.log('attached');
       // 在组件实例进入页面节点树时执行
       // console.log('attached:',this.data.requestUserType,this.data.sjhm);
       // console.log('attached:', this.is);
@@ -90,7 +100,7 @@ Component({
       // 是否有权限获取微信手机号
       let canIUseWxPhoneNumber = app.getHostWx().canIUse('button.open-type.getPhoneNumber');
       canIUseWxPhoneNumber = false;  //调试用暂时设置为false
-      this.setData({ canIUseWxPhoneNumber, disabledSjhm:true});
+      this.setData({ canIUseWxPhoneNumber});
       this.waitingCloudNormal();
     },
     detached() {

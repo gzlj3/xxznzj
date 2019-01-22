@@ -157,21 +157,23 @@ const getCachedSjyzm = async (openId)=>{
 //根据用户的openid查询用户表数据
 const queryUser = async (userInfo) => {
   const {openId} = userInfo;
-  const db = cloud.database();
-  console.log('queruser:', openId);
-  let result = await db.collection('userb').field({ userType: true, nickName:true,avatarUrl:true,collid:true,yzhid:true,granted:true,grantedSjhm:true,config:true}).where({
-    openId
-  }).get();
-  if(result && result.data.length>0){
-    result = result.data[0];
-    // if(result.granted){
-    //   result.rights = [...result.granted.rights];
-    //   delete result.granted;
-    // }
-    // console.log('queryuser:', result);
-    return result;
-  }
-  return null;
+  let result = await commService.querySingleDoc('userb',{openId});
+  return result;
+  // const db = cloud.database();
+  // console.log('queruser:', openId);
+  // let result = await db.collection('userb').field({ userType: true, nickName:true,avatarUrl:true,collid:true,yzhid:true,granted:true,grantedSjhm:true,config:true}).where({
+  //   openId
+  // }).get();
+  // if(result && result.data.length>0){
+  //   result = result.data[0];
+  //   // if(result.granted){
+  //   //   result.rights = [...result.granted.rights];
+  //   //   delete result.granted;
+  //   // }
+  //   // console.log('queryuser:', result);
+  //   return result;
+  // }
+  // return null;
 }
 exports.queryUser = queryUser;
 
@@ -270,21 +272,25 @@ exports.registerUser = async (data,userInfo) => {
   if (!formObject.canIUseWxPhoneNumber){
     //取上次发送的验证码数据
     const lastYzm = await getCachedSjyzm(openId);
-    console.log(lastYzm);
+    // console.log(lastYzm);
     if (!lastYzm.isValid)
       throw utils.newException('验证码已经失效！');
     if (lastYzm.yzm !== formObject.sjyzm)
       throw utils.newException('验证码不正确！');
   }
-  if (formObject.userType===CONSTS)
 
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
   const yzhid = utils.yzhid();
-  const collid = utils.collid(); 
+  const collid = utils.collid();
+  let orgcode = yzhid;
   if (commService.isFd(formObject.userType)) {
     //注册机构
+
+  }else{
+    //注册其它
+
   }
 
   const userb = {
@@ -295,26 +301,26 @@ exports.registerUser = async (data,userInfo) => {
     avatarUrl: frontUserInfo.avatarUrl,
     sjhm:formObject.sjhm,
     userType:formObject.userType,
-    userData:frontUserInfo,
-    
+    // userData:frontUserInfo,
+    orgname: formObject.orgname,
+    orgcode,
     lrsj,
     zhxgsj
   }
   console.log('新用户注册：',userb);
   let result = await commService.addDoc('userb',userb);
-  if (commService.isFd(formObject.userType)){
+  // if (commService.isFd(formObject.userType)){
     //房东注册，则创建新用户的集合表(新注册的时候不建表，新插入数据的时候建)
     // await db.createCollection('house_' + collid);
     // await db.createCollection('housefy_' + collid);
-  }
+  // }
 
   //租客注册完成，关联房屋头像数据
-  const avatarUrl = userb.avatarUrl;
-  if (commService.isZk(formObject.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
-    // result = await db.collection('house').where({ dhhm: userb.sjhm }).update({ data:{avatarUrl}});
-    result = await commService.updateAllDoc('house',{ dhhm: userb.sjhm },{ avatarUrl });
-    console.log('关联房屋数：', result);
-  }
+  // const avatarUrl = userb.avatarUrl;
+  // if (commService.isZk(formObject.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
+  //   result = await commService.updateAllDoc('house',{ dhhm: userb.sjhm },{ avatarUrl });
+  //   console.log('关联房屋数：', result);
+  // }
   
   return await queryUser({ openId});
 }

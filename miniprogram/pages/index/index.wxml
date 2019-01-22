@@ -1,4 +1,4 @@
-<index hostuserinfo="{{hostUserInfo}}" sjhm="{{sjhm}}" requestusertype="{{requestUserType}}" orgcode="{{orgcode}}">
+<index onloadoptions="{{onLoadOptions}}"  hostuserinfo="{{hostUserInfo}}" sjhm="{{sjhm}}" requestusertype="{{requestUserType}}" orgcode="{{orgcode}}">
   <view slot='pageDesc'>测试系统</view>
   <view slot='getUserInfo'>
     <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
