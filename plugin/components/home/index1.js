@@ -43,6 +43,14 @@ Component({
         this.setData({ ...newVal });
       }
     },
+    menulist: {
+      type: Array,
+      value: [],
+      observer(newVal, oldVal, changedPath) {
+        console.log('observer menuList:', newVal);
+        this.setData({ menuList:newVal });
+      }
+    },
     // requestusertype: {
     //   type:String,
     //   value: CONSTS.USERTYPE_FD,
@@ -213,7 +221,6 @@ Component({
         utils.showToast('验证码不能为空！');
         return;
       }
-
       if (utils.isEmpty(e.detail.value.orgname)) {
         utils.showToast('机构不能为空！');
         return;
@@ -222,16 +229,7 @@ Component({
       e.detail.value.userType = requestUserType;
       e.detail.value.sjhm = sjhm;
       e.detail.value.canIUseWxPhoneNumber = canIUseWxPhoneNumber;
-      console.log(e.detail.value);
-
-      // const { sjhm, sjyzm } = e.detail.value;
-      // if (!utils.checkSjhm(sjhm) || utils.isEmpty(sjyzm) || sjyzm.length !== 6) {
-      //   wx.showToast({
-      //     title: '请先输入手机号和验证码',
-      //     icon: 'none',
-      //   });
-      //   return;
-      // };
+      // console.log(e.detail.value);
       const response = commServices.postData(CONSTS.BUTTON_REGISTERUSER,
         { frontUserInfo: user,
           formObject: e.detail.value});
@@ -241,6 +239,13 @@ Component({
         }
       );
     }, 
+    kindToggle: function (e) {
+      const page = e.currentTarget.id;
+      // console.log(wx);
+      console.log(wx.navigateTo({
+        url: 'plugin-private://wx70358fb44d63c53c/pages/home/index2',
+      }));
+    },
 
   }  
 })

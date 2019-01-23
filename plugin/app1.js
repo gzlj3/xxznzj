@@ -66,7 +66,7 @@ const queryUser = function () {
       setUserData(resultData);
       getWxGrantedData();
       if (globalData.user.wxgranted) { 
-        setGlobalData({ cloudNormal: true });
+        setGlobalData({ cloudNormal: true }); 
       }
       setGlobalData({ lastRefreshTime: utils.currentTimeMillis() });
     },

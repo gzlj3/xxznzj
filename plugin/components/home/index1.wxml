@@ -8,8 +8,8 @@
   <official-account></official-account>
   <view class="page__bd page__bd_spacing">
       <!-- <view class="grant-container grant-container-wxgrant" wx:if="{{!waitingCloud && !user}}"> -->
-        <!-- <view class="weui-cells__title">单选列表项</view> -->
-    <view class="weui-cells">
+    <view class="weui-cells__title">{{user.orgname}}</view>
+    <view class="weui-cells weui-cells_after-title">
       <block wx:if="{{!waitingCloud && !user}}">
         <view class="weui-cell">
           <view class="weui-cell__bd" style="text-align:center">
@@ -70,9 +70,12 @@
         </form>          
       </block> 
     </view>
+<navigator url="plugin-private://wx70358fb44d63c53c/pages/home/index2">
+  Go to pages/index2 
+</navigator>   
          
-      <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD || user.userType===CONSTS.USERTYPE_FDZK}}">
-          <block wx:for="{{list}}" wx:key="id">
+      <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD}}">
+          <block wx:for="{{menuList}}" wx:key="id">
               <view class="kind-list__item">
                   <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                       <view class="weui-flex__item  weui-cell_access weui-cell_link addfontsize20">{{item.name}}</view>
