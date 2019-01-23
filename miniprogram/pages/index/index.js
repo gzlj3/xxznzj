@@ -5,6 +5,12 @@ const menuList = [
     id: 'form',
     name: '学员管理',
     open: false,
+    page: 'plugin://XXZNZJ/xyglmain'
+  },
+  {
+    id: 'form',
+    name: '教职工管理',
+    open: false,
     page: 'plugin://XXZNZJ/index2'
   },
   {

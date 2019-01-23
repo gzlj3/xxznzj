@@ -5,6 +5,7 @@
   },
   "main": "index.js",
   "pages": {
+    "xyglmain": "pages/xygl/xyglmain",
     "index2": "pages/home/index2"
   }
 }

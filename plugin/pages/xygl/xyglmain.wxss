@@ -1,0 +1,31 @@
+/* miniprogram/pages/fyglmain.wxss */
+
+/* .weui-form-preview__btn:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  bottom: 0;
+  border-left: 1rpx solid #d5d5d6;
+  color: #d5d5d6;
+} */
+.weui-cells__title {
+    margin-top: .77em;
+    margin-bottom: .3em; 
+    padding-left: 15px;
+    padding-right: 15px;
+    color: black;
+    font-size:16;
+    background-color: rgb(205, 236, 247);
+}
+
+.weui-cells__title1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  color:black;
+  font-size: 14px;
+  display:inline-block;
+}

@@ -1,0 +1,92 @@
+<import src="../../components/Forms/FmTf.wxml"/>
+<wxs module="m">
+  module.exports.getSzzt = function(item){
+    if(!item.zhxm) return '';
+    var sfsz = item.sfsz;
+    if(!sfsz) sfsz = '0';
+    if(sfsz=='0') return '(未结清)';
+    else if(sfsz=='1') return '(已结清)';
+    else if(sfsz=='2') return '(已结转)';
+    return '异常'+sfsz;
+  }
+  module.exports.getZdfy = function(item){
+    var rq1 = item.rq1; 
+    if(!rq1 || rq1.length<10) return '';
+    var ym = item.zdmonth?item.zdmonth:rq1.substring(0,4)+'年'+rq1.substring(5,7)+'月';
+    if(item.zdlx=='0') tsinfo = '签约帐单';
+    else if(item.zdlx=='2') tsinfo = '退房帐单';
+    else tsinfo = ym+'帐单';
+    var zdfy = tsinfo+':'+item.fyhj+'元';  
+    return zdfy;
+  }
+</wxs>
+
+<view class="page">
+    <!-- <view class="page__hd"> -->
+        <!-- <button  size="default" bindtap="onAddfy">添加房源</button> -->
+        <!-- <button  size="mini" bindtap="onCb">集中抄表</button>
+        <button  size="mini" bindtap="onMakezd">创建帐单</button> -->
+    <!-- </view> --> 
+    <view class="page__bd">
+      <button  size="default" bindtap="onAddfy" wx:if="{{isFd}}">新建房源</button>
+      <view class="weui-cells__title" wx:if="{{isZk && allFyList.length===0}}">未查到您的房源数据，请与房东联系，确认签约时手机号是否输入正确！</view>
+      <view wx:for="{{allFyList}}" wx:key="yzhid" wx:for-item="fyItem" wx:for-index="fyItem_index"> 
+        <view class="weui-cells__title">{{fyItem.nickName?fyItem.nickName:'我'}}的{{fyItem.filterList.length}}间房源(帐单:{{fyItem.fyhj}}元,月租:{{fyItem.czjehj}}元,水费:{{fyItem.sfhj}}元,电费:{{fyItem.dfhj}}元)</view>
+        <view class="weui-cells__title1">
+          <checkbox-group id="{{fyItem_index}}" bindchange="onQueryData">
+              <label><checkbox value="0" checked="{{queryCond[fyItem_index].wjqChecked}}"/>未结清[{{fyItem.wjqhj}}]</label>
+              <label style="margin-left:10px;"><checkbox value="1" checked="{{queryCond[fyItem_index].yjqChecked}}"/>已结清[{{fyItem.yjqhj}}]</label>
+              <!-- <view style="position:relative;margin-left:10px;display:inline-block;">查询</view> -->
+              <input id="{{fyItem_index}}" style="position:relative;top:5px;margin-left:10px;display:inline-block;width:100px;background-color:white;border:1rpx solid #d5d5d6;font-size:16px" placeholder="查询条件" value="{{queryCond[fyItem_index].search}}" bindinput="onQueryData"/>
+           </checkbox-group>
+        </view>
+        <view class="weui-panel weui-panel_access" wx:key="_id" wx:for="{{fyItem.filterList}}">
+            <view class="weui-panel__bd">
+                <view data-item="{{item}}" class="weui-media-box weui-media-box_appmsg" >
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" data-item="{{item}}" data-fyitem="{{fyItem.collid}}"  data-yzhid="{{fyItem.yzhid}}" bindtap="{{isFd?'onEditfy':''}}"> 
+                        <image class="weui-media-box__thumb" src="{{item.avatarUrl?item.avatarUrl:emptyAvatarUrl}}" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg" hover-class="weui-cell_active" data-item="{{item._id}}" data-fyitem="{{fyItem.collid}}" data-yzhid="{{fyItem.yzhid}}" bindtap="onLastzd">
+                        <view class="weui-media-box__title addfontsize20">
+                          <view class="weui-cell__bd">{{item.fwmc}} {{item.zhxm?item.zhxm:'(未出租)'}} {{m.getSzzt(item)}}</view>
+                        </view>
+                        <view class="weui-media-box__desc addfontsize18">{{m.getZdfy(item)}}</view>
+                        <view wx:if="{{item.zhxm}}">
+                          <view class="weui-media-box__desc addfontsize18">收租日期:{{item.szrq}}</view>
+                          <view class="weui-media-box__desc">
+                            <progress percent="{{item.progressState.percent}}" activeColor="{{item.progressState.activeColor}}" backgroundColor="{{item.progressState.backgroundColor}}" active='{{false}}' active-mode="forwards"></progress> 
+                          </view>
+                        </view>
+                    </view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </view>
+            </view>
+            <view class="weui-panel__ft" wx:if="{{isFd && !fyItem.nickName}}">
+                <view class="weui-cell">
+                <!-- <view class="weui-cell weui-cell_link"> -->
+                    <!-- <view class="weui-cell__bd">编辑</view> -->
+                    <view data-item="{{item}}" data-fyitem="{{fyItem.collid}}" data-yzhid="{{fyItem.yzhid}}" bindtap="onEditfy" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">编辑房源</view>
+                    <view data-item="{{item._id}}" data-fyitem="{{fyItem.collid}}" data-yzhid="{{fyItem.yzhid}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{item.zhxm}}">帐单详情</view>
+                    <view data-item="{{item}}" data-fyitem="{{fyItem.collid}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>
+                    <!-- <view class="weui-cell__ft weui-cell__ft_in-access"></view> -->
+                </view> 
+            </view>
+            <view class="weui-panel__ft" wx:if="{{isZk}}">
+                <view class="weui-cell">
+                    <view data-item="{{item}}" data-fyitem="{{fyItem.collid}}" bindtap="onSeeht" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{item.zhxm}}">查看合同</view>
+                    <view data-item="{{item._id}}" data-fyitem="{{fyItem.collid}}" data-yzhid="{{fyItem.yzhid}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{item.zhxm}}">帐单详情</view>
+                </view>
+            </view>
+        </view>
+      </view>
+    </view>
+
+    <modal id="modal" hidden="{{!modalVisible}}" title="{{modalTitle}}" confirm-text="{{modalOkText}}" cancel-text="{{modalCancelText}}" bindcancel="modalCancel" bindconfirm="modalConfirm">
+      <template is="FmTf" data="{{tfrq}}"/>
+    </modal>
+  
+    
+    <!-- <view class="weui-footer weui-footer_fixed-bottom">
+        <view class="weui-footer__text">极简出租，Copyright©2018-2019 by liujun</view>
+    </view> -->
+</view>

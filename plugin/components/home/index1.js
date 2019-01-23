@@ -242,9 +242,9 @@ Component({
     kindToggle: function (e) {
       const page = e.currentTarget.id;
       // console.log(wx);
-      console.log(wx.navigateTo({
-        url: 'plugin-private://wx70358fb44d63c53c/pages/home/index2',
-      }));
+      app.getHostWx().navigateTo({
+        url: page,
+      });
     },
 
   }  
