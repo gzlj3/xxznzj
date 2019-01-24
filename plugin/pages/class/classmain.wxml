@@ -1,5 +1,5 @@
 <view class="page">
   <view class="page__bd">
-    <list/>
+    <list listItems="{{[{classname:'班级1(35人)',teacher:'张老师'},{classname:'班级2(40人)',teacher:'李老师'}]}}" fields="{{fields}}"/>
   </view>
 </view>
