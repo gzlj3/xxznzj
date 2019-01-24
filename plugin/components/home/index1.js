@@ -245,6 +245,9 @@ Component({
       app.getHostWx().navigateTo({
         url: page,
       });
+      // wx.navigateTo({
+      //   url: 'plugin-private://xyglmain',
+      // });
     },
 
   }  

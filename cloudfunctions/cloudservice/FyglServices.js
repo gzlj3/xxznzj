@@ -21,11 +21,12 @@ exports.setUser = (curUser)=>{
 //   // env: 'jjczwgl-test-2e296e'
 // })
 
-exports.queryFyList = async (curUser) => {
+exports.queryFyList = async (data,curUser) => {
   //查询房源列表
   const {sjhm,yzhid,userType,collid} = curUser;
   let { granted} = curUser;
   let result;
+  console.log('queryfylist:',data,curUser);
   if(commService.isZk(userType)){
     const sjhmCond = ','+sjhm+',';
     result = await commService.queryAllDoc('house', { querySjhm: db.RegExp({ regexp: sjhmCond})});

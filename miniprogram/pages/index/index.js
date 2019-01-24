@@ -17,7 +17,7 @@ const menuList = [
     id: 'nav',
     name: '班级管理',
     open: false,
-    page: '../fygl/htqy/htqy'
+    page: 'plugin://XXZNZJ/classmain'
   },
   {
     id: 'z-index',
@@ -50,6 +50,9 @@ Component({
     onLoad: function (options) {
       console.log('onload:', options);
       this.setData({ onLoadOptions:options});
+      wx.navigateTo({
+        url: 'plugin://XXZNZJ/classmain',
+      })
       // this.method1();
       // wx.login({
       //   success:function(e){

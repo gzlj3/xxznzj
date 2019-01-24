@@ -1,8 +1,13 @@
-import * as CONSTS from '../../utils/constants.js';
-// import moment from '../../utils/moment-with-locales.min.js';
-import moment from '../../utils/moment.min.js';
-import * as fyglService from '../../services/fyglServices.js'; 
+// import * as CONSTS from '../../utils/constants.js';
+// // import moment from '../../utils/moment-with-locales.min.js';
+// import moment from '../../utils/moment.min.js';
+// import * as fyglService from '../../services/fyglServices.js'; 
+// const utils = require('../../utils/utils.js');
+const app = require('../../app1.js');
+const config = require('../../config.js');
+const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
+const commServices = require('../../services/commServices.js');
 
 const initialState = {
   status: CONSTS.REMOTE_SUCCESS, // 远程处理返回状态
@@ -20,6 +25,8 @@ const initialState = {
   modalOkText: '确定', // 弹框属性确定按钮文本
   modalCancelText: '取消', // 弹框属性确定按钮文本
   modalOkDisabled: false, // 弹框属性确定按钮可点击状态
+  tabItems:['aaa', 'bbb'],
+  activeIndex:0,
 }; 
 
 Page({
@@ -28,7 +35,33 @@ Page({
    * 页面的初始数据
    */
   data: initialState,
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    // this.setData({ user: getApp().globalData.user });
+    // fyglService.checkAuthority(1);
+    // let arr = new Array(3);
+    // arr[0] = {};
+    // arr[1] = {};
+    // console.log('compare:',arr[0]===arr[1]);
+    this.queryList(this.data.activeIndex);
+  },
+  queryList:function(activeIndex){
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { activeIndex });
+    commServices.handleAfterRemote(response, null,
+      (resultData) => { 
+        console.log(resultData);
+        // getApp().setFyListDirty(false);
+        // this.refreshFyList(resultData);
+      }
+    );   
+  },
 
+  onTabPageChanged: function(e){
+    console.log("tabPageChanged:",e);
+    this.setData({activeIndex:e.detail.activeIndex});
+  },
   onAddfy(){
     wx.navigateTo({
       url: 'addfy/addfy?buttonAction='+CONSTS.BUTTON_ADDFY,
@@ -186,26 +219,6 @@ Page({
     }) 
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    // this.setData({ user: getApp().globalData.user });
-    // fyglService.checkAuthority(1);
-    // let arr = new Array(3);
-    // arr[0] = {};
-    // arr[1] = {};
-    // console.log('compare:',arr[0]===arr[1]);
-
-    const response = fyglService.queryFyglList(); 
-    fyglService.handleAfterRemote(response, null,
-      (resultData) => { 
-        getApp().setFyListDirty(false);
-        this.refreshFyList(resultData);
-      }
-    );   
-  },
-
   refreshFyList: function(resultData) {
     //计算房源进度条显示数据
     // console.log(resultData);
@@ -309,11 +322,11 @@ Page({
    */
   onShow: function () {
     // 检查返回值，刷新数据
-    const {fyListDirty} = getApp().globalData;
-    console.log('fyListDirty:', fyListDirty);
-    if (fyListDirty) {
-      this.onLoad();
-    }
+    // const {fyListDirty} = getApp().globalData;
+    // console.log('fyListDirty:', fyListDirty);
+    // if (fyListDirty) {
+    //   this.onLoad();
+    // }
   },
 
   /**

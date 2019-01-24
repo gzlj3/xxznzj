@@ -68,7 +68,7 @@ exports.main = async (event, context) => {
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_QUERYFY:
         // console.log('queryfy');
-          result = await services.queryFyList(curUser);
+          result = await services.queryFyList(data,curUser);
           return results.getSuccessResults(result);
       case CONSTS.BUTTON_ADDFY:
         // console.log('addfy');

@@ -1,0 +1,8 @@
+<block wx:for="{{tabItems}}" wx:key="*this" wx:for-item="tabItem" wx:for-index="tabIndex">
+  <view class="weui-cells__title weui-cell__ft_in-access{{tabIndex===activeIndex?'_downarrow':''}}" id="{{tabIndex}}" bindtap='onTabPageTap'>
+    {{tabItem}}
+  </view>
+  <view hidden="{{activePageHidden}}">
+    <slot name="tabPage_{{tabIndex}}" wx:if="{{tabIndex===activeIndex}}"></slot>
+  </view>
+</block>

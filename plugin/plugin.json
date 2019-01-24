@@ -1,11 +1,16 @@
 {
   "publicComponents": {
-    "list": "components/list/list",
+    "vtabbar": "components/tabbar/vtabbar",
     "index1": "components/home/index1"
   },
   "main": "index.js",
   "pages": {
     "xyglmain": "pages/xygl/xyglmain",
-    "index2": "pages/home/index2"
+    "index2": "pages/home/index2",
+    "classmain": "pages/class/classmain"
+  },
+  "usingComponents": {
+    "vtabbar": "components/tabbar/vtabbar",
+    "list": "components/list/list"
   }
 }

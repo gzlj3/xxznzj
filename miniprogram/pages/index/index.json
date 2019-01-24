@@ -1,6 +1,2 @@
 {
-  "usingComponents": {
-    "list": "plugin://XXZNZJ/list",
-    "index": "plugin://XXZNZJ/index1"
-  }
 }

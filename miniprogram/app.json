@@ -8,6 +8,10 @@
       "provider": "wx70358fb44d63c53c"
     }
   },
+  "usingComponents": {
+    "index": "plugin://XXZNZJ/index1",
+    "vtabbar": "plugin://XXZNZJ/vtabbar"
+  },
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "智慧考勤",
