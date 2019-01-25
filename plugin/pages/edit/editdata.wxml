@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="page__bd">
+    <form bindsubmit="formSubmit">
+      <wrapperform id="_wrapperformid" fmMetas="{{fmMetas}}" currentObject="{{currentObject}}"/>
+      <button form-type="submit">保存</button>
+    </form>
+  </view>
+</view> 

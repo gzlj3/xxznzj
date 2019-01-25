@@ -1,33 +1,34 @@
-// plugin/pages/class/classmain.js
-const bjMetas = [
-  { label: '班级名称', name: 'bjmc', require: true },
-  { label: '老师姓名', name: 'lsxm' },
-  { label: '身份证号', name: 'sfzh', type: 'idcard' },
-  { label: '手机号码', name: 'sjhm', type: "number" }
-]
-
+// plugin/pages/edit/editdata.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    fields:{avatarUrl: 'avatarUrl', title: 'classname', desc: 'teacher'}
+    currentObject: {},
+    fmMetas:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
-  },
-  onAdd: function () {
-    const fmMetasJson = JSON.stringify(bjMetas);
-    wx.navigateTo({
-      url: '../edit/editdata?fmMetas='+fmMetasJson,
-    })
+    // console.log('editdata onload:',options);
+    const fmMetas = options.fmMetas ? JSON.parse(options.fmMetas) : null;
+    this.setData({fmMetas});
   },
 
+  formSubmit:function(e){
+    const form = this.selectComponent("#_wrapperformid");
+    // console.log('selectcomponent:',form.data.currentObject);
+
+    const response = fyglService.postData(buttonAction, formObject, this.data.collid);
+    // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
+    fyglService.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),
+      (resultData) => {
+      }
+    )
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
