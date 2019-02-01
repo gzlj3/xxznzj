@@ -74,6 +74,18 @@ exports.showModal = (title, content, callback) => {
     }
   });
 }
+exports.showModalInfo = (title, content, callback) => {
+  wx.showModal({
+    title,
+    content,
+    showCancel:false,
+    success: function (res) {
+      if (res.confirm) {
+        if (callback) callback();
+      }
+    }
+  });
+}
 
 exports.checkSjhm = (sjhm) => {
   const myreg = /^(14[0-9]|13[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$$/;

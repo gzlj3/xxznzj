@@ -8,7 +8,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    currentObject:Object,
+    value:String,
     options:{
       type:Object,
       observer(newVal, oldVal, changedPath) {

@@ -21,68 +21,23 @@ exports.setUser = (curUser)=>{
 //   // env: 'jjczwgl-test-2e296e'
 // })
 
-exports.queryFyList = async (data,curUser) => {
-  //查询房源列表
-  const {sjhm,yzhid,userType,collid} = curUser;
-  let { granted} = curUser;
+exports.queryDataList = async (data,curUser) => {
+  //查询数据列表
+  const {yzhid,collid} = curUser;
+  const {tablename} = data;
+  const colltable = commService.getTableName(tablename, collid)
   let result;
-  console.log('queryfylist:',data,curUser);
-  if(commService.isZk(userType)){
-    const sjhmCond = ','+sjhm+',';
-    result = await commService.queryAllDoc('house', { querySjhm: db.RegExp({ regexp: sjhmCond})});
-  }else{
-    if(!granted) granted = [];
-    granted.unshift({collid:curUser.collid,nickName:null,yzhid:curUser.yzhid});
-    let resultList = [];
-    for (let i = 0; i < granted.length; i++) {
-      if (!granted[i]) continue;
-      const { collid, nickName, yzhid, rights } = granted[i];
-      try{
-        result = await db.collection(commService.getTableName('house', collid)).field({htdata:false}).orderBy('sfsz','asc').orderBy('fwmc', 'asc').where({
-          yzhid
-        }).get(); 
-      }catch(e){
-        if (e.errCode === -502005) {
-          result = null;
-        }else{
-          throw e;
-        }
-      }
-      //计算费用合计数
-      // let czjehj=0,sfhj=0,dfhj=0,fyhj=0;
-      // result.data.map(value=>{
-      //   czjehj += utils.getInteger(value.czje);
-      //   sfhj += utils.getFloat(value.sfhj);
-      //   dfhj += utils.getFloat(value.dfhj);
-      //   fyhj += utils.getFloat(value.fyhj);
-      // });
-      // fyhj = utils.roundNumber(fyhj,1);
-      // dfhj = utils.roundNumber(dfhj,1);
-      // sfhj = utils.roundNumber(sfhj,1);
-      if (result && result.data.length > 0) {
-        resultList.push({ collid, nickName,yzhid,rights,sourceList: result.data });
-      }
+  console.log('querydatalist:',data,curUser);
+  try {
+    result = await db.collection(colltable).where({yzhid}).get();
+  } catch (e) {
+    if (e.errCode === -502005) {
+      result = null;
+    } else {
+      throw e;
     }
-    result = resultList;
   }
-  //计算费用合计数
-  // result.map(onefd=>{
-  //   let czjehj = 0, sfhj = 0, dfhj = 0, fyhj = 0;
-  //   onefd.sourceList.map(value => {
-  //     czjehj += utils.getInteger(value.czje);
-  //     sfhj += utils.getFloat(value.sfhj);
-  //     dfhj += utils.getFloat(value.dfhj);
-  //     fyhj += utils.getFloat(value.fyhj);
-  //   });
-  //   fyhj = utils.roundNumber(fyhj, 1);
-  //   dfhj = utils.roundNumber(dfhj, 1);
-  //   sfhj = utils.roundNumber(sfhj, 1);
-  //   onefd.czjehj = czjehj;
-  //   onefd.sfhj = sfhj;
-  //   onefd.dfhj = dfhj;
-  //   onefd.fyhj = fyhj;
-  // });
-
+  if(result && result.data.length>0) result = result.data;
   return result;
 }
 
@@ -419,87 +374,93 @@ exports.processHt = async (data, curUser) => {
   }
 }
 
-const saveFy = async (house,collid,curUser) => {
+const saveData = async (data,curUser,restData) => {
   let isAddDoc;
-  if (utils.isEmpty(house._id)) {
+  let {tablename,formObject,unifield} = data;
+  const {collid,yzhid} = curUser;
+  const collTable = commService.getTableName(tablename, collid);
+// console.log('savedata',curUser,restData);
+  if (utils.isEmpty(formObject._id)) {
     isAddDoc = true;
-    house.yzhid = curUser.yzhid;
-    house.lrr = curUser.openId;
-    house.lrsj = utils.getCurrentTimestamp();
-    house.zhxgr = curUser.openId;
-    house.zhxgsj = house.lrsj;
-    house._id = utils.id();
+    formObject.yzhid = curUser.yzhid;
+    formObject.lrr = curUser.openId;
+    formObject.lrsj = utils.getCurrentTimestamp();
+    formObject.zhxgr = curUser.openId;
+    formObject.zhxgsj = formObject.lrsj;
+    formObject._id = utils.id();
   } else {
-    house.zhxgr = curUser.openId;
-    house.zhxgsj = utils.getCurrentTimestamp();       
+    formObject.zhxgr = curUser.openId;
+    formObject.zhxgsj = utils.getCurrentTimestamp();       
     isAddDoc = false;
   }
   //如果是添加房源，则检查集合是否存在，不存在，则创建
   if(isAddDoc){
     try{
-      const coll = await db.collection(commService.getTableName('house', collid)).limit(1).get();
+      const coll = await db.collection(collTable).limit(1).get();
     }catch(e){
       if (e.errCode === -502005){
         console.log('create savefy:', e);
-        await db.createCollection(commService.getTableName('house',collid));
-        await db.createCollection(commService.getTableName('housefy', collid));
+        await db.createCollection(collTable);
       }
     }
   }
 
-  let result;
-  const yzhid = house.yzhid;
-  // 检查房屋名称是否重复
-  // console.log('querysingleDoc:', commService.getTableName('house', collid), { yzhid, _id: _.neq(house._id), fwmc: house.fwmc })
-  result = await commService.querySingleDoc(commService.getTableName('house',collid),{yzhid,_id:_.neq(house._id),fwmc:house.fwmc});
-  // console.log(result); 
-  if(result)
-    throw utils.newException("房屋编号已经存在！");
-  let { _id: saveHouseid, dhhm, avatarUrl } = house;
-  //处理所有租户查询手机号码
-  let querySjhm = ',';
-  if(!utils.isEmpty(house.dhhm)){
-    querySjhm+=house.dhhm+',';
-  }
-  if(house.moreZh){
-    house.moreZh.map(value=>{
-      if(!utils.isEmpty(value.dhhm) && querySjhm.indexOf(','+value.dhhm+',')<0) 
-        querySjhm+=value.dhhm+',';      
-    })
-  }
-  house.querySjhm = querySjhm;
 
-  //如果网络费为空，则清空wlfys,wlfnum
-  if(utils.isEmpty(house.wlf)){
-    house.wlfys = "";
-    house.wlfnum = "";
+  // 检查主键是否重复
+  if(!utils.isEmpty(unifield)){
+    let result;
+    // const yzhid = data.yzhid;
+    // const queryObj = { yzhid, _id: _.neq(formObject._id), fwmc: data.fwmc };
+    result = await commService.querySingleDoc(collTable,{yzhid,_id:_.neq(formObject._id),[unifield]:formObject[unifield]});
+    // console.log(result); 
+    if(result)
+      throw utils.newException(`[${formObject[unifield]}]已经存在！`);
   }
-  //清除house的avatarUrl,重新关联
-  avatarUrl = '';
-  house.avatarUrl = "";
-  if (utils.isEmpty(house.housefyid) && !utils.isEmpty(house.zhxm)) {
-    // 如果为新签约，则自动生成合同帐单
-    const newHousefy = makeHousefy(house, null,CONSTS.ZDLX_HTZD);
-    await commService.addDoc(commService.getTableName('housefy',collid),newHousefy);
-  }
+  // let { _id: savedataid, dhhm, avatarUrl } = data;
+  // //处理所有租户查询手机号码
+  // let querySjhm = ',';
+  // if(!utils.isEmpty(data.dhhm)){
+  //   querySjhm+=data.dhhm+',';
+  // }
+  // if(data.moreZh){
+  //   data.moreZh.map(value=>{
+  //     if(!utils.isEmpty(value.dhhm) && querySjhm.indexOf(','+value.dhhm+',')<0) 
+  //       querySjhm+=value.dhhm+',';      
+  //   })
+  // }
+  // data.querySjhm = querySjhm;
+
+  // //如果网络费为空，则清空wlfys,wlfnum
+  // if(utils.isEmpty(data.wlf)){
+  //   data.wlfys = "";
+  //   data.wlfnum = "";
+  // }
+  // //清除data的avatarUrl,重新关联
+  // avatarUrl = '';
+  // data.avatarUrl = "";
+  // if (utils.isEmpty(data.datafyid) && !utils.isEmpty(data.zhxm)) {
+  //   // 如果为新签约，则自动生成合同帐单
+  //   const newdatafy = makedatafy(data, null,CONSTS.ZDLX_HTZD);
+  //   await commService.addDoc(commService.getTableName('housefy',collid),newHousefy);
+  // }
   // console.log('save house:',house);
   if(isAddDoc){
-    await commService.addDoc(commService.getTableName('house',collid), house);
+    await commService.addDoc(commService.getTableName(tablename,collid), formObject);
   }else{
-    await commService.updateDoc(commService.getTableName('house',collid), house);
+    await commService.updateDoc(commService.getTableName(tablename,collid), formObject);
   }  
 
   //关联用户注册的手机号
-  if(utils.isEmpty(avatarUrl) && !utils.isEmpty(dhhm)){
-    result = await commService.querySingleDoc('userb', { sjhm:dhhm });
-    if(result){
-      await commService.updateDoc(commService.getTableName('house',collid), { _id: saveHouseid, avatarUrl:result.avatarUrl});
-      // console.log('关联租户头像：',updatedNum);
-    }
-  }
-  return {_id:saveHouseid};
+  // if(utils.isEmpty(avatarUrl) && !utils.isEmpty(dhhm)){
+  //   result = await commService.querySingleDoc('userb', { sjhm:dhhm });
+  //   if(result){
+  //     await commService.updateDoc(commService.getTableName('house',collid), { _id: saveHouseid, avatarUrl:result.avatarUrl});
+  //     // console.log('关联租户头像：',updatedNum);
+  //   }
+  // }
+  return null;
 }
-exports.saveFy = saveFy;
+exports.saveData = saveData;
 
 exports.exitFy = async (data,curUser) => {
   const { houseid,tfrq } = data;

@@ -68,7 +68,7 @@ exports.main = async (event, context) => {
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_QUERYFY:
         // console.log('queryfy');
-          result = await services.queryFyList(data,curUser);
+          result = await services.queryDataList(data,curUser);
           return results.getSuccessResults(result);
       case CONSTS.BUTTON_ADDFY:
         // console.log('addfy');
@@ -77,16 +77,16 @@ exports.main = async (event, context) => {
           // data.lrsj=utils.getCurrentTimestamp();
           // data.zhxgr=curUser.openId;
           // data.zhxgsj=data.lrsj;
-          result = await services.saveFy(data,curUser.collid,curUser);
+          result = await services.saveData(data,curUser,restData);
           return results.getSuccessResults(result);
         break;
       case CONSTS.BUTTON_EDITFY:
         console.log("editfy");
         // data.zhxgr=curUser.openId;
         // data.zhxgsj=utils.getCurrentTimestamp();       
-        const collid = restData && restData.length > 0 ? restData[0] : curUser.collid;
-        console.log('editfy',collid);
-        result = await services.saveFy(data,collid,curUser);
+        // const collid = restData && restData.length > 0 ? restData[0] : curUser.collid;
+        // console.log('editfy',collid);
+        result = await services.saveData(data,curUser);
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_DELETEFY:
         console.log("deletefy");

@@ -18,7 +18,12 @@ Component({
       //   console.log('observer fmMetas:', newVal,oldVal);
       // }
     },
-    currentObject:Object,
+    currentObject:{
+      type: Object,
+      observer(newVal, oldVal, changedPath) {
+        console.log('observer curentobject:', newVal,oldVal);
+      }
+    }
   },
 
   /**
@@ -27,7 +32,11 @@ Component({
   data: {
 
   },
-
+  lifetimes: {
+    attached() {
+      console.log('wrapperforms attacthed:',this.data.currentObject);
+    }
+  },
   /**
    * 组件的方法列表
    */
@@ -43,7 +52,7 @@ Component({
       })
       if(!utils.isEmpty(errFields)){
         errFields = errFields.substring(0,errFields.length - 1);
-        utils.showToast('请先输入这些字段：'+errFields);
+        utils.showToast('请先输入如下字段：'+errFields);
         return false;
       }
       return true;

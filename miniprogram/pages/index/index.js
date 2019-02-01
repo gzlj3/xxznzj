@@ -11,7 +11,7 @@ const menuList = [
     id: 'form',
     name: '教职工管理',
     open: false,
-    page: 'plugin://XXZNZJ/index2'
+    page: 'plugin://XXZNZJ/staffmain'
   },
   {
     id: 'nav',
@@ -51,7 +51,7 @@ Component({
       console.log('onload:', options);
       this.setData({ onLoadOptions:options});
       wx.navigateTo({
-        url: 'plugin://XXZNZJ/classmain',
+        url: 'plugin://XXZNZJ/staffmain',
       })
       // this.method1();
       // wx.login({

@@ -53,23 +53,25 @@ export function handleAfterRemote(response, tsinfo, successCallback,failCallback
           url: '/pages/index/index',
         })
       }else{
-        wx.showToast({
-          title: `${tsinfo}失败！${msg}`,
-          icon: 'none',
-          duration: 5000,
-        });
-        if (failCallback) failCallback(data);
+        utils.showModalInfo(`${tsinfo}失败`, msg, failCallback);
+        // wx.showToast({
+        //   title: `${tsinfo}失败！${msg}`,
+        //   icon: 'none',
+        //   duration: 5000,
+        // });
+        // if (failCallback) failCallback(data);
       }
     }
   }).catch(err => {
     wx.hideLoading();
-    console.log(err);
-    wx.showToast({
-      title: `${tsinfo}处理失败！${err.errMsg}`,
-      icon: 'none',
-      duration: 5000,
-    });
-    if (failCallback) failCallback(err);
+    // console.log(err);
+    // wx.showToast({
+    //   title: `${tsinfo}处理失败！${err.errMsg}`,
+    //   icon: 'none',
+    //   duration: 5000,
+    // });
+    // if (failCallback) failCallback(err);
+    utils.showModalInfo(`${tsinfo}失败`, err.errMsg, failCallback);
   })
 }
 

@@ -1,4 +1,7 @@
-// plugin/pages/edit/editdata.js
+const app = require('../../app1.js');
+const CONSTS = require('../../utils/constants.js');
+const utils = require('../../utils/utils.js');
+const commServices = require('../../services/commServices.js');
 Page({
 
   /**
@@ -6,7 +9,8 @@ Page({
    */
   data: {
     currentObject: {},
-    fmMetas:[]
+    // tablename:null,
+    // paras:null
   },
 
   /**
@@ -14,18 +18,24 @@ Page({
    */
   onLoad: function (options) {
     // console.log('editdata onload:',options);
-    const fmMetas = options.fmMetas ? JSON.parse(options.fmMetas) : null;
-    this.setData({fmMetas});
-  },
+    const paras = options.item ? JSON.parse(options.item) : null;
+    console.log('editdata onload:',paras);
+    // const fmMetas = options.fmMetas ? JSON.parse(options.fmMetas) : null;
+    // const tablename = options.tablename;
+    this.setData({...paras});
+  },  
 
   formSubmit:function(e){
     const form = this.selectComponent("#_wrapperformid");
-    // console.log('selectcomponent:',form.data.currentObject);
+    if(!form.validFields()) return;
+    const formObject = form.data.currentObject;
+    const {buttonAction,tablename,unifield} = this.data;
 
-    const response = fyglService.postData(buttonAction, formObject, this.data.collid);
+    const response = commServices.postData(buttonAction, { formObject, tablename,unifield});
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
-    fyglService.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),
+    commServices.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),
       (resultData) => {
+        app.sourceListDirty = true;
       }
     )
   },

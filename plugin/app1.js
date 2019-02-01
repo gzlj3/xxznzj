@@ -3,6 +3,7 @@ const CONSTS = require('./utils/constants.js');
 const utils = require('./utils/utils.js');
 const commServices = require('./services/commServices.js');
 
+let sourceListDirty = false;  //当前列表数据是否有刷新，用于判断是否刷新当前列表数据
 let globalData = {
   cloudNormal: false,
   user: { wxgranted: true, userType: '', nickName: '', avatarUrl: '', collid: '', granted: [], grantedSjhm: [], },  //用户登录基本信息
@@ -137,4 +138,4 @@ const getWxGrantedData = function () {
 //   });
 // }
 
-module.exports = { init, getGlobalData, setGlobalData, setUserData, queryUser, getHostApp, getHostWx}
+module.exports = { init, getGlobalData, setGlobalData, setUserData, queryUser, getHostApp, getHostWx,sourceListDirty}
