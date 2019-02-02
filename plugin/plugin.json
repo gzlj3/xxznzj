@@ -6,17 +6,17 @@
   "main": "index.js",
   "pages": {
     "xyglmain": "pages/xygl/xyglmain",
-    "index2": "pages/home/index2",
+    "index2": "pages/home/index2", 
     "classmain": "pages/class/classmain",
-    "addclass": "pages/class/addclass",
     "editdata": "pages/edit/editdata",
-    "staffmain": "pages/staff/staffmain"
+    "staffmain": "pages/staff/staffmain",
+    "msg_success": "pages/msg/msg_success"
   },
   "usingComponents": {
     "vtabbar": "components/tabbar/vtabbar",
     "list": "components/list/list",
     "wrapperinput": "components/edit/wrapperinput",
-    "editdata": "components/edit/editdata",
+    "searchinput": "components/edit/searchinput",
     "wrapperform": "components/forms/wrapperform"
   }
 }

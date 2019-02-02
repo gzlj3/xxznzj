@@ -1,8 +1,0 @@
-<view class="page">
-  <view class="page__bd">
-    <form bindsubmit="formSubmit">
-      <FmClass currentObject="{{currentObject}}"/>
-      <button form-type="submit">保存</button>
-    </form>
-  </view>
-</view> 

@@ -7,8 +7,8 @@ Page({
 
   onLoad: function (options) {
     // console.log(options);
-    const { pageDesc, button2 } = options;
-    const button2Obj = button2 ? JSON.parse(button2) : {};
+    const { pageDesc='', button2 } = options;
+    const button2Obj = button2 ? JSON.parse(button2) : null;
     this.setData({
       pageDesc,
       button2Obj
@@ -16,6 +16,11 @@ Page({
   },
   onButton1: function(e){
     wx.navigateBack();
+  },
+  onButton3: function (e) {
+    wx.navigateBack({
+      delta:2
+    });
   },
   onButton2: function (e) {
     const { returnUrl, returnAction, returnItem } = this.data.button2Obj;

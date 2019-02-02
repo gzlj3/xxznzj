@@ -6,7 +6,10 @@
     <picker mode="{{type}}" id="{{name}}" name="{{name}}" value="{{value}}" bindchange="onChange" wx:if="{{type==='date'}}">
       <view class="weui-input">{{value}}</view>
     </picker>
+    <!-- <searchinput mode="{{type}}" id="{{name}}" name="{{name}}" value="{{value}}" bindchange="onChange" wx:if="{{type==='search'}}">
+      <view class="weui-input">{{value}}</view>
+    </searchinput> -->
     <input id="{{name}}" name="{{name}}" type="{{type}}" value="{{value}}" bindinput="onInput" bindblur="onBlur" class="weui-input" placeholder="请输入{{label}}" wx:else/>
   </view>
-</view>
-<!-- <view class="weui-cells__tips" wx:if="{{name==='htrqq'}}">现已租房屋可输入上个月的收租日期</view> -->
+</view> 
+<!-- <view class="weui-cells__tips" wx:if="{{name==='htrqq'}}"></view> -->

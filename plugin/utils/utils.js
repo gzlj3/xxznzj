@@ -108,7 +108,14 @@ exports.redirectToSuccessPage = (pageDesc, buttonText,returnUrl,returnAction,ret
     returnItem
   }
   wx.redirectTo({
-    url: '/pages/fygl/msg/msg_success?pageDesc=' + pageDesc + '&button2=' + JSON.stringify(button2Obj)
+    url: '/pages/msg/msg_success?pageDesc=' + pageDesc + '&button2=' + JSON.stringify(button2Obj)
+  });
+}
+
+exports.afterSave = (pageDesc) => {
+  wx.navigateTo({
+    // url: '/pages/msg/msg_success?pageDesc=' + pageDesc
+    url: '../msg/msg_success'
   });
 }
 

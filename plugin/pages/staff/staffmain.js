@@ -7,6 +7,7 @@ const fmMetas = [
   { label: '身份证号', name: 'sfzh', type: 'idcard' },
   { label: '手机号码', name: 'sjhm', type: "number" }
 ]
+const tablename = 'staff';
 
 Page({
 
@@ -22,10 +23,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY,{tablename:'staff'});
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY,{tablename});
     commServices.handleAfterRemote(response, null,
       (resultData) => {
-        console.log('onload staffmain:',resultData);
+        // console.log('onload staffmain:',resultData);
         this.refreshSourceList(resultData);
         app.sourceListDirty = false;
       }
@@ -39,21 +40,21 @@ Page({
     this.setData({sourceList});
   },
   onBodyTap:function(e){
-    console.log('onbodytap:',e);
+    // console.log('onbodytap:',e);
     this.modifyData(e);
   },
   modifyData:function(e){
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmMetas, tablename: 'staff', unifield: 'name', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
+    const paras = { fmMetas, tablename, unifield: 'name', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmMetas, tablename: 'staff', unifield:'name',buttonAction: CONSTS.BUTTON_ADDFY}
+    const paras = { fmMetas, tablename, unifield:'name',buttonAction: CONSTS.BUTTON_ADDFY}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

@@ -36,6 +36,8 @@ Page({
     commServices.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),
       (resultData) => {
         app.sourceListDirty = true;
+        utils.afterSave();
+        // wx.navigateBack();
       }
     )
   },

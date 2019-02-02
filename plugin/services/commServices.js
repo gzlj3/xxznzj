@@ -64,14 +64,15 @@ export function handleAfterRemote(response, tsinfo, successCallback,failCallback
     }
   }).catch(err => {
     wx.hideLoading();
-    // console.log(err);
+    console.log(err);
     // wx.showToast({
     //   title: `${tsinfo}处理失败！${err.errMsg}`,
     //   icon: 'none',
     //   duration: 5000,
     // });
     // if (failCallback) failCallback(err);
-    utils.showModalInfo(`${tsinfo}失败`, err.errMsg, failCallback);
+    const errMsg = err.errMsg?err.errMsg:'系统异常';
+    utils.showModalInfo(`${tsinfo}失败`, errMsg, failCallback);
   })
 }
 

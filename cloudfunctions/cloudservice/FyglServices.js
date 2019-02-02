@@ -30,14 +30,14 @@ exports.queryDataList = async (data,curUser) => {
   console.log('querydatalist:',data,curUser);
   try {
     result = await db.collection(colltable).where({yzhid}).get();
+    if (result) result = result.data;
   } catch (e) {
     if (e.errCode === -502005) {
-      result = null;
+      result = [];
     } else {
       throw e;
     }
   }
-  if(result && result.data.length>0) result = result.data;
   return result;
 }
 

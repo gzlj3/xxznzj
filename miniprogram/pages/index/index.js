@@ -51,7 +51,7 @@ Component({
       console.log('onload:', options);
       this.setData({ onLoadOptions:options});
       wx.navigateTo({
-        url: 'plugin://XXZNZJ/staffmain',
+        url: 'plugin://XXZNZJ/classmain',
       })
       // this.method1();
       // wx.login({
