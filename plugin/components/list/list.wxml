@@ -2,7 +2,7 @@
   <!-- <view>{{item.name}}:{{item.price}}</view> -->
         <view class="weui-panel weui-panel_access" wx:key="_id" wx:for="{{listItems}}">
             <view class="weui-panel__bd">
-                <view data-item="{{item}}" class="weui-media-box weui-media-box_appmsg" >
+                <view class="weui-media-box weui-media-box_appmsg" >
                     <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" id="{{index}}" bindtap="onAvatarTap">
                         <image class="weui-media-box__thumb" src="{{item.avatarUrl?item.avatarUrl:emptyAvatarUrl}}" />
                     </view>

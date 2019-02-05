@@ -28,17 +28,45 @@ exports.queryDataList = async (data,curUser) => {
   const colltable = commService.getTableName(tablename, collid)
   let result;
   console.log('querydatalist:',data,curUser);
-  try {
-    result = await db.collection(colltable).where({yzhid}).get();
-    if (result) result = result.data;
-  } catch (e) {
-    if (e.errCode === -502005) {
-      result = [];
-    } else {
-      throw e;
-    }
-  }
+  result = await commService.queryDocs(colltable, { yzhid });
+  // try {
+  //   result = await db.collection(colltable).where({yzhid}).get();
+  //   if (result) result = result.data;
+  // } catch (e) {
+  //   if (e.errCode === -502005) {
+  //     result = [];
+  //   } else {
+  //     throw e;
+  //   }
+  // }
   return result;
+}
+exports.querySearchStaff = async (data, curUser) => {
+  //查询搜索数据入口
+  const { yzhid, collid } = curUser;
+  const { coludSearchType } = data;
+  const tablename = 'staff';
+  const colltable = commService.getTableName(tablename, collid)
+  let result;
+  let retResult = [];
+  // console.log('querysearchstaff:', data, curUser);
+  result = await commService.queryDocs(colltable,{yzhid});
+  result.map(value=>{
+    const desc = value.name+' '+value.sfzh;
+    const code = value.name;
+    retResult.push({desc,code});
+  });
+  // try {
+  //   result = await db.collection(colltable).where({ yzhid }).get();
+  //   if (result) result = result.data;
+  // } catch (e) {
+  //   if (e.errCode === -502005) {
+  //     result = [];
+  //   } else {
+  //     throw e;
+  //   }
+  // }
+  return retResult;
 }
 
 async function queryLastzdWithGrantcode(params, userInfo) {

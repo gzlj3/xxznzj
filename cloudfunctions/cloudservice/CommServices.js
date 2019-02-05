@@ -81,9 +81,16 @@ exports.queryDocs = async (tableName, whereObj) => {
   if (utils.isEmptyObj(whereObj))
     throw utils.newException('参数异常！');
   const db = cloud.database();
-  const result = await db.collection(tableName).where(whereObj).get();
-  if (result && result.data.length > 0)
-    return result.data;
+  try {
+    const result = await db.collection(tableName).where(whereObj).get();
+    if (result && result.data.length > 0)
+      return result.data;
+  } catch (e) {
+    if (e.errCode !== -502005) {
+      //如果是表不存在，则不抛出异常
+      throw e;
+    }
+  }
   return null;
 }
 

@@ -15,8 +15,8 @@
   "usingComponents": {
     "vtabbar": "components/tabbar/vtabbar",
     "list": "components/list/list",
+    "listline": "components/list/listline",
     "wrapperinput": "components/edit/wrapperinput",
-    "searchinput": "components/edit/searchinput",
     "wrapperform": "components/forms/wrapperform"
   }
 }

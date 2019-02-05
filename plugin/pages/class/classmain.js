@@ -44,7 +44,7 @@ Page({
   onBodyTap:function(e){
     // console.log('onbodytap:',e);
     wx.navigateTo({
-      url: '../edit/searchdata?',
+      url: '../edit/searchdata?searchType=staff',
     })
 
     // this.modifyData(e);

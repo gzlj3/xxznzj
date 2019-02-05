@@ -20,7 +20,7 @@
     return zdfy;
   }
 </wxs>
-
+ 
 <view class="page">
   <view class="page__bd">
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">

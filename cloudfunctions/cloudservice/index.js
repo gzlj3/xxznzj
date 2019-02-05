@@ -37,6 +37,16 @@ exports.main = async (event, context) => {
       // case CONSTS.BUTTON_ZK_SEELASTZD:
       //   result = await userServices.seeLastzd(curUser);
       //   return results.getSuccessResults(result);
+      case CONSTS.BUTTON_SEARCH:
+        const { searchType } = data;
+        if (method === 'GET') {
+          // console.log('search:',coludSearchType);
+          if (searchType==='staff'){
+            result = await services.querySearchStaff(data, curUser);
+            return results.getSuccessResults(result);
+          }
+        }
+        return results.getErrorResults('未确定的搜索类型！' + coludSearchType);
       case CONSTS.BUTTON_HTQY:
         if (method === 'POST') { 
           result = await services.processHt(data,curUser);
