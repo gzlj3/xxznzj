@@ -57,8 +57,12 @@ Component({
       }
       return true;
     },
+    getWrapperInput:function(){
+      const input = this.selectComponent("#_wrapperinput");
+      return input;
+    },
     onInputChange: function (e) {
-      // console.log('oninputchange1:',e);
+      // console.log('wrapperform oninputchange:',e);
       const {id} = e.detail;
       if(utils.isEmpty(id)) return;
       let { currentObject } = this.data;

@@ -53,7 +53,23 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    //检查是否有搜索字段，并处理
+    const form = this.selectComponent("#_wrapperformid");
+    const {fmMetas} = this.data;
+    fmMetas.map(value=>{
+      if(value.type==='search'){
+        const selectObject = app.getGlobalData()[value.searchType + CONSTS.globalRetuSuffix];
+        if(selectObject){
+          //有选择值，先清除之前的值
+          app.getGlobalData()[value.searchType + CONSTS.globalRetuSuffix] = null;
+          const input = form.getWrapperInput();
+          // console.log('editdata onshow:',input);
+          let edetail = { id: value.name, value: selectObject.code};
+          input.triggerEvent('input', edetail, {})
+          input.triggerEvent('blur', edetail, {})
+        }
+      }
+    });
   },
 
   /**

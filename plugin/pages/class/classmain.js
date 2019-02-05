@@ -4,7 +4,7 @@ const utils = require('../../utils/utils.js');
 const commServices = require('../../services/commServices.js');
 const fmMetas = [
   { label: '班级名称', name: 'bjmc', require: true },
-  { label: '老师姓名', name: 'lsxm' },
+  { label: '老师姓名', name: 'lsxm', type:'search',searchType:'staff'},
   { label: '身份证号', name: 'sfzh', type: 'idcard' },
   { label: '手机号码', name: 'sjhm', type: "number" }
 ]
@@ -43,11 +43,7 @@ Page({
   },
   onBodyTap:function(e){
     // console.log('onbodytap:',e);
-    wx.navigateTo({
-      url: '../edit/searchdata?searchType=staff',
-    })
-
-    // this.modifyData(e);
+    this.modifyData(e);
   },
   modifyData:function(e){
     const {index} = e.detail;

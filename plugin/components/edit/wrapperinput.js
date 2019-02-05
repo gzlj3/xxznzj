@@ -31,6 +31,11 @@ Component({
   data: {
 
   },
+  lifetimes: {
+    attached(e) {
+      console.log('wrapperinput attacthed:',e);
+    }
+  },
 
   /**
    * 组件的方法列表
@@ -48,6 +53,11 @@ Component({
       this._setEventDetailId(e);
       this.triggerEvent('input', e.detail, {})
       this.triggerEvent('blur', e.detail, {})
+    },
+    onSearchTap:function(e){
+      wx.navigateTo({
+        url: '../edit/searchdata?searchType='+this.data.searchType,
+      })
     },
     _setEventDetailId(e){
       let id = e.target.id;

@@ -6,10 +6,12 @@
     <picker mode="{{type}}" id="{{name}}" name="{{name}}" value="{{value}}" bindchange="onChange" wx:if="{{type==='date'}}">
       <view class="weui-input">{{value}}</view>
     </picker>
-    <!-- <searchinput mode="{{type}}" id="{{name}}" name="{{name}}" value="{{value}}" bindchange="onChange" wx:if="{{type==='search'}}">
-      <view class="weui-input">{{value}}</view>
-    </searchinput> -->
+    <block wx:if="{{type==='search'}}">
+      <!-- <view class="weui-input">{{value}}</view> -->
+      <input id="{{name}}" name="{{name}}" value="{{value}}" bindtap="onSearchTap" class="weui-input" disabled placeholder="请选择{{label}}"/>
+    </block>
     <input id="{{name}}" name="{{name}}" type="{{type}}" value="{{value}}" bindinput="onInput" bindblur="onBlur" class="weui-input" placeholder="请输入{{label}}" wx:else/>
   </view>
+  <view wx:if="{{type==='search'}}" class="weui-cell__ft weui-cell__ft_in-access"></view>
 </view> 
 <!-- <view class="weui-cells__tips" wx:if="{{name==='htrqq'}}"></view> -->
