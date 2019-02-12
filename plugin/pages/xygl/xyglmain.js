@@ -50,7 +50,7 @@ Page({
   queryList:function(activeIndex){
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { activeIndex });
     commServices.handleAfterRemote(response, null,
-      (resultData) => { 
+      (resultData) => {  
         console.log(resultData);
         // getApp().setFyListDirty(false);
         // this.refreshFyList(resultData);

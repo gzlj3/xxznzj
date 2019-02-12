@@ -34,7 +34,7 @@
             <form bindsubmit="onRegister">
               <view style="{{requestUserType?'display:none':''}}">
                 <radio-group bindchange="radioChange" name='userType'>
-                    <label class="weui-cell weui-check__label" wx:for="{{radioItems}}" wx:key="value">
+                    <label class="weui-cell weui-check__label" wx:for="{{radioItems}}" wx:key="{{index}}">
                         <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
 
                         <view class="weui-cell__bd">{{item.name}}</view>
@@ -76,7 +76,7 @@
       </view>
       
       <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD || user.userType===CONSTS.USERTYPE_FDZK}}">
-          <block wx:for="{{list}}" wx:key="id">
+          <block wx:for="{{list}}" wx:key="{{index}}">
               <view class="kind-list__item">
                   <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                       <view class="weui-flex__item  weui-cell_access weui-cell_link addfontsize20">{{item.name}}</view>
@@ -86,7 +86,7 @@
                   </view>
                   <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
                       <view class="weui-cells {{item.open ? 'weui-cells_show' : ''}}">
-                          <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="*this">
+                          <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="{{index}}">
                               <navigator url="{{page}}/{{page}}" class="weui-cell weui-cell_access">
                                   <view class="weui-cell__bd">{{page}}</view>
                                   <view class="weui-cell__ft weui-cell__ft_in-access"></view>
@@ -99,7 +99,7 @@
       </view>
   </view>
   <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_ZK || user.userType===CONSTS.USERTYPE_FDZK}}">
-      <block wx:for="{{zkMenuList}}" wx:key="id">
+      <block wx:for="{{zkMenuList}}" wx:key="{{index}}">
           <view class="kind-list__item  weui-cell_access weui-cell_link addfontsize20">
               <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                   <view class="weui-flex__item">{{item.name}}</view>
@@ -107,7 +107,7 @@
               </view>
               <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
                   <view class="weui-cells {{item.open ? 'weui-cells_show' : ''}}">
-                      <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="*this">
+                      <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="{{index}}">
                           <navigator url="{{page}}/{{page}}" class="weui-cell weui-cell_access">
                               <view class="weui-cell__bd">{{page}}</view>
                               <view class="weui-cell__ft weui-cell__ft_in-access"></view>

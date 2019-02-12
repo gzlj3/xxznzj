@@ -26,7 +26,7 @@ Page({
       const response = commServices.queryData(CONSTS.BUTTON_SEARCH, { searchType });
       commServices.handleAfterRemote(response, null,
         (resultData) => { 
-          console.log('onload searchdata:',resultData);
+          // console.log('onload searchdata:',resultData);
           sourceList = resultData;
           app.getGlobalData()[searchType] = sourceList;
           this.setData({ sourceList });
@@ -51,7 +51,7 @@ Page({
       inputShowed: true
     });
   },
-  hideInput: function () {
+  onSearch: function () {
     this.setData({
       inputVal: "",
       inputShowed: false

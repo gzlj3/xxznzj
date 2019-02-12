@@ -18,10 +18,10 @@
                     <view class="weui-search-bar__text">搜索</view>
                 </label> -->
             </view>
-            <view class="weui-search-bar__cancel-btn" bindtap="hideInput">搜索</view>
+            <view class="searchbtn"  bindtap="onSearch">搜索</view>
         </view>
         <view class="weui-cells searchbar-result">
-            <listline listItems="{{sourceList}}" bindbodytap="onBodyTap"/>
+            <list listItems="{{sourceList}}" showStyle="line" bindbodytap="onBodyTap"/>
         </view>
     </view>
 </view>

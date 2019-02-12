@@ -10,9 +10,16 @@ Component({
    *  title: 列表项右侧标题,
    *  desc:  列表项右侧描述
    * }
+   * showStyle:显示风格，
+   *  'default':默认显示为带头像的显示
+   *  'line':仅显示一行，显示值为传入数组对象中的desc字段值 
    */
   properties: {
     listItems: Array,
+    showStyle:{
+      type:String,
+      value:'default'
+    }
     // fields:Object,
   },
 
