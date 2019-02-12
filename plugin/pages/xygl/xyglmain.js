@@ -10,21 +10,21 @@ const utils = require('../../utils/utils.js');
 const commServices = require('../../services/commServices.js');
 
 const initialState = {
-  status: CONSTS.REMOTE_SUCCESS, // 远程处理返回状态
-  msg: '', // 远程处理返回信息
-  emptyAvatarUrl: '../../images/avatar-empty.png',
-  fyList: [], // 当前操作的房源列表数据
-  allFyList:[], //总房源列表数据
-  currentObject: {}, // 当前form操作对象
-  sourceList: [], // 保存列表
-  selectedRowKeys: [], // 列表选中行
-  buttonAction: CONSTS.BUTTON_NONE, // 当前处理按钮（动作）
-  modalVisible: false, // 显示弹框
-  modalTitle: '', // 弹框属性标题
-  modalWidth: 1000, // 弹框属性宽度
-  modalOkText: '确定', // 弹框属性确定按钮文本
-  modalCancelText: '取消', // 弹框属性确定按钮文本
-  modalOkDisabled: false, // 弹框属性确定按钮可点击状态
+  // status: CONSTS.REMOTE_SUCCESS, // 远程处理返回状态
+  // msg: '', // 远程处理返回信息
+  // emptyAvatarUrl: '../../images/avatar-empty.png',
+  // fyList: [], // 当前操作的房源列表数据
+  // allFyList:[], //总房源列表数据
+  // currentObject: {}, // 当前form操作对象
+  // sourceList: [], // 保存列表
+  // selectedRowKeys: [], // 列表选中行
+  // buttonAction: CONSTS.BUTTON_NONE, // 当前处理按钮（动作）
+  // modalVisible: false, // 显示弹框
+  // modalTitle: '', // 弹框属性标题
+  // modalWidth: 1000, // 弹框属性宽度
+  // modalOkText: '确定', // 弹框属性确定按钮文本
+  // modalCancelText: '取消', // 弹框属性确定按钮文本
+  // modalOkDisabled: false, // 弹框属性确定按钮可点击状态
   tabItems:['aaa', 'bbb'],
   activeIndex:0,
 }; 
@@ -45,7 +45,17 @@ Page({
     // arr[0] = {};
     // arr[1] = {};
     // console.log('compare:',arr[0]===arr[1]);
-    this.queryList(this.data.activeIndex);
+    // this.queryList(this.data.activeIndex);
+    const tablename = 'class';
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename });
+    commServices.handleAfterRemote(response, null,
+      (resultData) => {
+        console.log('onload xxylmain:', resultData);
+        // this.refreshSourceList(resultData);
+        // app.sourceListDirty = false;
+      }
+    );   
+
   },
   queryList:function(activeIndex){
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { activeIndex });
