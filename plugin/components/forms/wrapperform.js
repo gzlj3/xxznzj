@@ -21,7 +21,7 @@ Component({
     currentObject:{
       type: Object,
       observer(newVal, oldVal, changedPath) {
-        console.log('observer curentobject:', newVal,oldVal);
+        // console.log('observer curentobject:', newVal,oldVal);
       }
     }
   },
@@ -67,6 +67,9 @@ Component({
       if(utils.isEmpty(id)) return;
       let { currentObject } = this.data;
       currentObject[id] = e.detail.value;
+      if(!utils.isEmpty(e.detail.code)){
+        currentObject['_code_'+id] = e.detail.code;
+      }
       this.setData({ currentObject });
     },
   },

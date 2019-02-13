@@ -3,6 +3,7 @@ const results = require('results.js');
 const CONSTS = require('constants.js');
 const services = require('FyglServices.js');
 const commService = require('CommServices.js');
+const selectService = require('SelectServices.js');
 const userServices = require('UserServices.js');
 const utils = require('utils.js');  
 const phone = require('phone.js');  
@@ -40,13 +41,18 @@ exports.main = async (event, context) => {
       case CONSTS.BUTTON_SEARCH:
         const { searchType } = data;
         if (method === 'GET') {
+          result = await selectService.querySearchData(curUser,searchType);
+          return results.getSuccessResults(result);
           // console.log('search:',coludSearchType);
-          if (searchType==='staff'){
-            result = await services.querySearchStaff(data, curUser);
-            return results.getSuccessResults(result);
-          }
+          // if (searchType==='staff'){
+          //   result = await services.querySearchStaff(data, curUser);
+          //   return results.getSuccessResults(result);
+          // } else if (searchType === 'class') {
+          //   result = await services.querySearchClass(data, curUser);
+          //   return results.getSuccessResults(result);
+          // }
         }
-        return results.getErrorResults('未确定的搜索类型！' + coludSearchType);
+        return results.getErrorResults('未确定的搜索类型！' + searchType);
       case CONSTS.BUTTON_HTQY:
         if (method === 'POST') { 
           result = await services.processHt(data,curUser);
@@ -56,7 +62,11 @@ exports.main = async (event, context) => {
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_QUERYUSER:
         result = await userServices.queryUser(userInfo);
-        return results.getSuccessResults(result);
+        let fmMetas=null;
+        if(result){
+          fmMetas = await commService.queryFmMetas(result);
+        }
+        return results.getSuccessResults({user:result,fmMetas});
       case CONSTS.BUTTON_REGISTERUSER:
         result = await userServices.registerUser(data,userInfo);
         return results.getSuccessResults(result);

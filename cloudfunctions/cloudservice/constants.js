@@ -65,3 +65,4 @@ exports.EXCEPTION = {
 }
 
 exports.globalRetuSuffix = '_retu';   //form编辑数据后的返回对象后缀
+exports.codePreffix = '_code_';   //大字典数据代码字段名前缀

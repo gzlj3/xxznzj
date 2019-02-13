@@ -4,6 +4,7 @@ const utils = require('./utils/utils.js');
 const commServices = require('./services/commServices.js');
 
 let sourceListDirty = false;  //当前列表数据是否有刷新，用于判断是否刷新当前列表数据
+let fmMetas={};   //缓存数据库中的fmMetas
 let globalData = {
   cloudNormal: false,
   user: { wxgranted: true, userType: '', nickName: '', avatarUrl: '', collid: '', granted: [], grantedSjhm: [], },  //用户登录基本信息
@@ -52,6 +53,12 @@ const setGlobalData = function (newData) {
 const getGlobalData = function () {
   return globalData;
 }
+const setFmMetas = function (newData) {
+  Object.assign(fmMetas, newData);
+}
+const getFmMetas = function () {
+  return fmMetas;
+}
 const getHostWx = function () {
   return hostWx;
 }
@@ -63,10 +70,11 @@ const queryUser = function () {
   const response = commServices.queryData(CONSTS.BUTTON_QUERYUSER);
   commServices.handleAfterRemote(response, null,
     (resultData) => {
-      // console.log('queryuser success!',resultData);
-      setUserData(resultData);
+      console.log('queryuser success!',resultData);
+      setUserData(resultData.user);
+      setFmMetas(resultData.fmMetas);  // 缓存数据库中的fmMetas
       getWxGrantedData();
-      if (globalData.user.wxgranted) { 
+      if (globalData.user.wxgranted) {
         setGlobalData({ cloudNormal: true }); 
       }
       setGlobalData({ lastRefreshTime: utils.currentTimeMillis() });
@@ -138,4 +146,4 @@ const getWxGrantedData = function () {
 //   });
 // }
 
-module.exports = { init, getGlobalData, setGlobalData, setUserData, queryUser, getHostApp, getHostWx,sourceListDirty}
+module.exports = { init, getGlobalData, setGlobalData, getFmMetas,setUserData, queryUser, getHostApp, getHostWx,sourceListDirty}

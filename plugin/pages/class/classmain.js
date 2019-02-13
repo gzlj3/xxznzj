@@ -2,14 +2,15 @@ const app = require('../../app1.js');
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
 const commServices = require('../../services/commServices.js');
-const fmMetas = [
-  { label: '班级名称', name: 'bjmc', require: true },
-  { label: '老师姓名', name: 'lsxm', type:'search',searchType:'staff'},
-  { label: '身份证号', name: 'sfzh', type: 'idcard' },
-  { label: '手机号码', name: 'sjhm', type: "number" }
-]
+// const fmMetas = [
+//   { label: '班级名称', name: 'bjmc', require: true },
+//   { label: '老师姓名', name: 'lsxm', type:'search',searchType:'staff'},
+//   { label: '身份证号', name: 'sfzh', type: 'idcard' },
+//   { label: '手机号码', name: 'sjhm', type: "number" }
+// ]
 
 const tablename = 'class';
+const fmName = 'class';
 
 Page({
 
@@ -49,14 +50,14 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmMetas, tablename, unifield: 'bjmc', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
+    const paras = { fmName, tablename, unifield: 'bjmc', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmMetas, tablename, unifield:'bjmc',buttonAction: CONSTS.BUTTON_ADDFY}
+    const paras = { fmName, tablename, unifield:'bjmc',buttonAction: CONSTS.BUTTON_ADDFY}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
@@ -76,9 +77,7 @@ Page({
    */
   onShow: function () {
     // 检查返回值，刷新数据
-    // app.setGlobalData({ staffListDirty: false })
-    // const { staffListDirty } = app.getGlobalData();
-    console.log('onshow sourcelistdirty:', app.sourceListDirty);
+    // console.log('onshow sourcelistdirty:', app.sourceListDirty);
     if (app.sourceListDirty) {
       this.onLoad();
     }

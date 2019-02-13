@@ -22,16 +22,17 @@ Page({
     console.log('editdata onload:',paras);
     // const fmMetas = options.fmMetas ? JSON.parse(options.fmMetas) : null;
     // const tablename = options.tablename;
-    this.setData({...paras});
+    const fmMetas = app.getFmMetas()[paras.fmName];
+    this.setData({...paras,fmMetas});
   },  
 
   formSubmit:function(e){
     const form = this.selectComponent("#_wrapperformid");
     if(!form.validFields()) return;
     const formObject = form.data.currentObject;
-    const {buttonAction,tablename,unifield} = this.data;
+    const {buttonAction,tablename,fmName,unifield} = this.data;
 
-    const response = commServices.postData(buttonAction, { formObject, tablename,unifield});
+    const response = commServices.postData(buttonAction, { formObject, tablename,fmName,unifield});
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
     commServices.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),
       (resultData) => {
@@ -64,7 +65,7 @@ Page({
           app.getGlobalData()[value.searchType + CONSTS.globalRetuSuffix] = null;
           const input = form.getWrapperInput();
           // console.log('editdata onshow:',input);
-          let edetail = { id: value.name, value: selectObject.code};
+          let edetail = { id: value.name, value: selectObject.desc,code:selectObject.code};
           input.triggerEvent('input', edetail, {})
           input.triggerEvent('blur', edetail, {})
         }

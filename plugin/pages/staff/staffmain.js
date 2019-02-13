@@ -2,12 +2,13 @@ const app = require('../../app1.js');
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
 const commServices = require('../../services/commServices.js');
-const fmMetas = [
-  { label: '姓名', name: 'name', require: true },
-  { label: '身份证号', name: 'sfzh', type: 'idcard' },
-  { label: '手机号码', name: 'sjhm', type: "number" }
-]
+// const fmMetas = [
+//   { label: '姓名', name: 'name', require: true },
+//   { label: '身份证号', name: 'sfzh', type: 'idcard' },
+//   { label: '手机号码', name: 'sjhm', type: "number" }
+// ]
 const tablename = 'staff';
+const fmName = 'staff';
 
 Page({
 
@@ -47,14 +48,14 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmMetas, tablename, unifield: 'name', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
+    const paras = { fmName, tablename, unifield: 'name', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmMetas, tablename, unifield:'name',buttonAction: CONSTS.BUTTON_ADDFY}
+    const paras = { fmName, tablename, unifield:'name',buttonAction: CONSTS.BUTTON_ADDFY}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

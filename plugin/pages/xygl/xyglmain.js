@@ -25,10 +25,19 @@ const initialState = {
   // modalOkText: '确定', // 弹框属性确定按钮文本
   // modalCancelText: '取消', // 弹框属性确定按钮文本
   // modalOkDisabled: false, // 弹框属性确定按钮可点击状态
-  tabItems:['aaa', 'bbb'],
+  classList:[],  //班级列表
+  xyList:[],  //当前显示班级的学员列表
+  tabItems:[], 
   activeIndex:0,
 }; 
-
+// const fmMetas = [
+//   { label: '学员姓名', name: 'xyxm', require: true },
+//   { label: '家长姓名', name: 'jzxm', require: true },
+//   { label: '家长手机号', name: 'sjhm', require: true },
+//   { label: '所属班级', name: 'class', type: 'search', searchType: 'class' },
+// ]
+const tablename = 'student';
+const fmName = 'student';
 Page({
 
   /**
@@ -50,27 +59,72 @@ Page({
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename });
     commServices.handleAfterRemote(response, null,
       (resultData) => {
-        console.log('onload xxylmain:', resultData);
+        // console.log('onload xxylmain:', resultData);
+        this.refreshTabItems(resultData);
+        this.queryXyList(this.data.activeIndex);
+
         // this.refreshSourceList(resultData);
-        // app.sourceListDirty = false;
+        app.sourceListDirty = false;
       }
     );   
 
   },
-  queryList:function(activeIndex){
-    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { activeIndex });
+  refreshTabItems: function (classList) {
+    if(!classList) classList = [];
+    let tabItems = [];
+    classList.map(value=>{
+      tabItems.push(value.bjmc);
+    });
+    this.setData({classList,tabItems});
+  },
+
+  queryXyList:function(activeIndex){
+    const classObj = this.data.classList[activeIndex];
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename,fmName,querycond:{class:classObj._id}});
     commServices.handleAfterRemote(response, null,
-      (resultData) => {  
-        console.log(resultData);
+      (resultData) => {
+        // console.log(resultData);
+        this.refreshXyList(resultData, activeIndex);
         // getApp().setFyListDirty(false);
         // this.refreshFyList(resultData);
       }
     );   
   },
+  refreshXyList: function (xyList, activeIndex) {
+    if(!xyList) xyList = [];
+    xyList.map(value => {
+      value.desc = value.xyxm;
+    });
+    let { tabItems, classList} = this.data;
+    tabItems[activeIndex] = classList[activeIndex].bjmc+'(学员数:'+xyList.length+')';
+    this.setData({xyList,tabItems,activeIndex});
+  },
+  onAdd: function () {
+    const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_ADDFY }
+    const parasJson = JSON.stringify(paras);
+    wx.navigateTo({
+      url: '../edit/editdata?item=' + parasJson,
+    })
+  },
+  onBodyTap: function (e) {
+    // console.log('onbodytap:',e);
+    this.modifyData(e);
+  },
+  modifyData: function (e) {
+    const { index } = e.detail;
+    const pos = utils.getInteger(index);
+    const currentObject = this.data.xyList[pos];
+    const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_EDITFY, currentObject }
+    const parasJson = JSON.stringify(paras);
+    wx.navigateTo({
+      url: '../edit/editdata?item=' + parasJson,
+    })
+  },
 
   onTabPageChanged: function(e){
-    console.log("tabPageChanged:",e);
-    this.setData({activeIndex:e.detail.activeIndex});
+    // console.log("tabPageChanged:",e);
+    this.queryXyList(e.detail.activeIndex);
+    // this.setData({ activeIndex: e.detail.activeIndex});
   },
   onAddfy(){
     wx.navigateTo({
@@ -332,11 +386,10 @@ Page({
    */
   onShow: function () {
     // 检查返回值，刷新数据
-    // const {fyListDirty} = getApp().globalData;
-    // console.log('fyListDirty:', fyListDirty);
-    // if (fyListDirty) {
-    //   this.onLoad();
-    // }
+    // console.log('onshow sourcelistdirty:', app.sourceListDirty);
+    if (app.sourceListDirty) {
+      this.onLoad();
+    }
   },
 
   /**

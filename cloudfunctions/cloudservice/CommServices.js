@@ -204,6 +204,28 @@ const queryGrantcode = async (grantcode,yxq,openId) => {
 }
 exports.queryGrantcode = queryGrantcode;
 
+/**
+ * 查询fmMetas
+ * fmName:如果不传入，则返回所有的fmMetas（对象）,如果有值，则返回指定fmName的表单描述(数组)
+ */
+exports.queryFmMetas = async (curUser,fmName) => {
+  const { yzhid} = curUser;
+  const colltable = 'fmMetas';
+  let result;
+  result = await querySingleDoc(colltable, { yzhid });
+  if(!result){
+    result = await querySingleDoc(colltable, { yzhid:'default' });
+  }
+  if(result){
+    if(!utils.isEmpty(fmName)){
+      return result.fmmetas[fmName];
+    }
+    return result.fmmetas;
+  }
+  return null;
+}
+
+
 exports.ocrSfz = async (sfzhCloudFileId) => {
   const token = await getAccessToken();
   const url = "http://api.weixin.qq.com/cv/ocr/idcard?type=photo&access_token=" + token;

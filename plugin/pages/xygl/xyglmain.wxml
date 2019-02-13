@@ -23,8 +23,11 @@
  
 <view class="page">
   <view class="page__bd">
+    <button  size="default" bindtap="onAdd">新增学员</button>
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">
       <view slot='tabPage_{{activeIndex}}'>
+            <list listItems="{{xyList}}" showStyle="line" bindbodytap="onBodyTap"/>
+<!-- 
         <view class="weui-cells weui-cells_after-title">
             <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
                 <view class="weui-cell__bd">cell standard</view>
@@ -34,7 +37,7 @@
                 <view class="weui-cell__bd">cell standard</view>
                 <view class="weui-cell__ft weui-cell__ft_in-access"></view>
             </navigator>
-        </view>
+        </view> -->
       </view>
     </vtabbar>
 

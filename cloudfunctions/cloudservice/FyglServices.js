@@ -5,6 +5,7 @@ const cloud = require('wx-server-sdk')
 const CONSTS = require('constants.js');
 const config = require('config.js')
 const commService = require('CommServices.js')
+const selectService = require('SelectServices.js');
 cloud.init({
   // env: config.conf.env, 
 })
@@ -24,10 +25,51 @@ exports.setUser = (curUser)=>{
 exports.queryDataList = async (data,curUser) => {
   //查询数据列表
   const {yzhid,collid} = curUser;
-  const {tablename} = data;
+  const { tablename, fmName,querycond} = data;
   const colltable = commService.getTableName(tablename, collid)
   let result;
-  console.log('querydatalist:',data,curUser);
+  // console.log('querydatalist:',data,curUser);
+  result = await commService.queryDocs(colltable, { yzhid,...querycond });
+  await handleDataList(curUser,fmName,result);
+  return result;
+}
+/**
+ * 处理查询出的数据对象：
+ * 1、处理search字段，将代码替换为汉字
+ */
+const handleDataList = async (curUser, fmName, dataList) => {
+  console.log('handleDataList fmName:', fmName);
+  if(utils.isEmpty(fmName)) return;
+  const fmMetas = await commService.queryFmMetas(curUser, fmName);
+  if (!fmMetas) return;
+  console.log('handleDataList fmMetas:',fmMetas);
+  for(let i=0;i<fmMetas.length;i++){
+    let value = fmMetas[i];
+    if (value.type === 'search') {
+      const searchDataList = await selectService.querySearchData(curUser, value.searchType);
+      console.log('handledatalist searchDataList:', searchDataList);
+      for(let j=0;j<dataList.length;j++){
+        let formObject = dataList[j];
+        const code = formObject[value.name];
+        if (!utils.isEmpty(code)){
+          const desc = selectService.findDesc(searchDataList,code)
+          console.log('handledatalist finddesc:', desc,searchDataList,code);
+          formObject[CONSTS.codePreffix + value.name] = code;
+          formObject[value.name] = desc;
+        }
+      }
+    }
+  }
+  console.log('handledatalist:',dataList);
+}
+
+exports.queryClassXx = async (data, curUser) => {
+  //查询数据列表
+  const { yzhid, collid } = curUser;
+  const tablename = 'class';
+  const colltable = commService.getTableName(tablename, collid)
+  let result;
+  console.log('querydatalist:', data, curUser);
   result = await commService.queryDocs(colltable, { yzhid });
   // try {
   //   result = await db.collection(colltable).where({yzhid}).get();
@@ -40,33 +82,6 @@ exports.queryDataList = async (data,curUser) => {
   //   }
   // }
   return result;
-}
-exports.querySearchStaff = async (data, curUser) => {
-  //查询搜索数据入口
-  const { yzhid, collid } = curUser;
-  const { coludSearchType } = data;
-  const tablename = 'staff';
-  const colltable = commService.getTableName(tablename, collid)
-  let result;
-  let retResult = [];
-  // console.log('querysearchstaff:', data, curUser);
-  result = await commService.queryDocs(colltable,{yzhid});
-  result.map(value=>{
-    const desc = value.name+' '+value.sfzh;
-    const code = value.name;
-    retResult.push({desc,code});
-  });
-  // try {
-  //   result = await db.collection(colltable).where({ yzhid }).get();
-  //   if (result) result = result.data;
-  // } catch (e) {
-  //   if (e.errCode === -502005) {
-  //     result = [];
-  //   } else {
-  //     throw e;
-  //   }
-  // }
-  return retResult;
 }
 
 async function queryLastzdWithGrantcode(params, userInfo) {
@@ -402,12 +417,29 @@ exports.processHt = async (data, curUser) => {
   }
 }
 
+/**
+ * 处理form对象：
+ * 1、处理search字段，替换显示字段为code值
+ */
+const handleFormObject = async (curUser,formObject,fmName) => {
+  const fmMetas = await commService.queryFmMetas(curUser,fmName);
+  if(!fmMetas) return;
+  fmMetas.map(value=>{
+    if(value.type==='search'){
+      formObject[value.name] = formObject[CONSTS.codePreffix+value.name];
+      delete formObject[CONSTS.codePreffix + value.name];
+    }
+  })
+}
+
 const saveData = async (data,curUser,restData) => {
   let isAddDoc;
-  let {tablename,formObject,unifield} = data;
+  let {tablename,fmName,formObject,unifield} = data;
   const {collid,yzhid} = curUser;
   const collTable = commService.getTableName(tablename, collid);
 // console.log('savedata',curUser,restData);
+  await handleFormObject(curUser,formObject,fmName);
+
   if (utils.isEmpty(formObject._id)) {
     isAddDoc = true;
     formObject.yzhid = curUser.yzhid;
@@ -432,60 +464,18 @@ const saveData = async (data,curUser,restData) => {
       }
     }
   }
-
-
   // 检查主键是否重复
   if(!utils.isEmpty(unifield)){
     let result;
-    // const yzhid = data.yzhid;
-    // const queryObj = { yzhid, _id: _.neq(formObject._id), fwmc: data.fwmc };
     result = await commService.querySingleDoc(collTable,{yzhid,_id:_.neq(formObject._id),[unifield]:formObject[unifield]});
-    // console.log(result); 
     if(result)
       throw utils.newException(`[${formObject[unifield]}]已经存在！`);
   }
-  // let { _id: savedataid, dhhm, avatarUrl } = data;
-  // //处理所有租户查询手机号码
-  // let querySjhm = ',';
-  // if(!utils.isEmpty(data.dhhm)){
-  //   querySjhm+=data.dhhm+',';
-  // }
-  // if(data.moreZh){
-  //   data.moreZh.map(value=>{
-  //     if(!utils.isEmpty(value.dhhm) && querySjhm.indexOf(','+value.dhhm+',')<0) 
-  //       querySjhm+=value.dhhm+',';      
-  //   })
-  // }
-  // data.querySjhm = querySjhm;
-
-  // //如果网络费为空，则清空wlfys,wlfnum
-  // if(utils.isEmpty(data.wlf)){
-  //   data.wlfys = "";
-  //   data.wlfnum = "";
-  // }
-  // //清除data的avatarUrl,重新关联
-  // avatarUrl = '';
-  // data.avatarUrl = "";
-  // if (utils.isEmpty(data.datafyid) && !utils.isEmpty(data.zhxm)) {
-  //   // 如果为新签约，则自动生成合同帐单
-  //   const newdatafy = makedatafy(data, null,CONSTS.ZDLX_HTZD);
-  //   await commService.addDoc(commService.getTableName('housefy',collid),newHousefy);
-  // }
-  // console.log('save house:',house);
   if(isAddDoc){
     await commService.addDoc(commService.getTableName(tablename,collid), formObject);
   }else{
     await commService.updateDoc(commService.getTableName(tablename,collid), formObject);
   }  
-
-  //关联用户注册的手机号
-  // if(utils.isEmpty(avatarUrl) && !utils.isEmpty(dhhm)){
-  //   result = await commService.querySingleDoc('userb', { sjhm:dhhm });
-  //   if(result){
-  //     await commService.updateDoc(commService.getTableName('house',collid), { _id: saveHouseid, avatarUrl:result.avatarUrl});
-  //     // console.log('关联租户头像：',updatedNum);
-  //   }
-  // }
   return null;
 }
 exports.saveData = saveData;
