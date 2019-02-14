@@ -32,7 +32,9 @@ Component({
   },
 
     /**
-   * 组件的属性列表
+   * 入口参数：空：表示注册新机构
+   * 注册为机构的使用人员：yzhid:机构ID，collid:机构集合标识，orgname:机构名,
+   * type:请求类型（1：签到）
    */
   properties: { 
     onloadoptions: {
@@ -41,8 +43,8 @@ Component({
       observer(newVal, oldVal, changedPath) {
         console.log('observer onloadoptions:', newVal);
         if(!newVal) return;
-        let requestUserType = newVal.requestUserType;
-        if(!utils.isEmpty(newVal.yzhid) && utils.isEmpty(requestUserType)){
+        let requestUserType = this.data.requestUserType;
+        if(!utils.isEmpty(newVal.yzhid)){
           requestUserType = CONSTS.USERTYPE_ZK;
         }
         this.setData({ ...newVal,requestUserType });
@@ -248,8 +250,11 @@ Component({
           formObject: e.detail.value});
       commServices.handleAfterRemote(response, '用户注册',
         (resultData) => {
-          this.setUserData(resultData);
-        }
+          app.setUserData(resultData);
+          this.setData({ 
+            user: app.getGlobalData().user
+          });
+        } 
       );
     }, 
     kindToggle: function (e) {

@@ -284,20 +284,20 @@ exports.registerUser = async (data,userInfo) => {
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
-  let yzhid;
-  let collid;
+  let {yzhid,collid,orgname} = formObject;
   // let orgcode = yzhid;
+  let result
   if (commService.isFd(formObject.userType)) {
     //注册机构
+    //检查机构名称是否存在
+    result = await commService.querySingleDoc('userb', { orgname });
+    if (result)
+      throw utils.newException(`[${orgname}]已经被注册！`);
     yzhid = utils.yzhid();
     collid = utils.collid();
-  }else{
-    //注册其它
-    yzhid = formObject.yzhid;
-    collid = formObject.collid;
   }
 
-  if(utils.isEmpty(yzhid) || utils.isEmpty(collid))
+  if (utils.isEmpty(yzhid) || utils.isEmpty(collid) || utils.isEmpty(orgname))
     throw utils.newException('注册参数有误！');
 
   const userb = {
@@ -309,12 +309,12 @@ exports.registerUser = async (data,userInfo) => {
     sjhm:formObject.sjhm,
     userType:formObject.userType,
     // userData:frontUserInfo,
-    orgname: formObject.orgname,
+    orgname,
     lrsj,
     zhxgsj
   }
   console.log('新用户注册：',userb);
-  let result = await commService.addDoc('userb',userb);
+  result = await commService.addDoc('userb',userb);
   // if (commService.isFd(formObject.userType)){
     //房东注册，则创建新用户的集合表(新注册的时候不建表，新插入数据的时候建)
     // await db.createCollection('house_' + collid);

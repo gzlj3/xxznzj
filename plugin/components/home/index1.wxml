@@ -41,6 +41,7 @@
         </view>
 
         <view class="weui-cells__title" wx:if="{{requestUserType===CONSTS.USERTYPE_ZK}}">当前机构:{{orgname}}</view>
+        <view class="weui-cells__title" wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">注册新机构</view>
         <form bindsubmit="onRegister">
           <view class="weui-cell" wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">
             <view class="weui-label" style='width:80px'>机构名称</view>

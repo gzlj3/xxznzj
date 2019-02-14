@@ -25,7 +25,7 @@
 					"id": 0,
 					"name": "机构其它人员",
 					"pathName": "pages/index/index",
-					"query": "collid=1&yzhid=7324601587472735&orgname=测试机构",
+					"query": "collid=1&yzhid=7324601587472735&orgname=测试机构&type=1",
 					"scene": null
 				}
 			]
