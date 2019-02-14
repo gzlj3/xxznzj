@@ -19,14 +19,14 @@ const initialState = {
   // sourceList: [], // 保存列表
   // selectedRowKeys: [], // 列表选中行
   // buttonAction: CONSTS.BUTTON_NONE, // 当前处理按钮（动作）
-  // modalVisible: false, // 显示弹框
-  // modalTitle: '', // 弹框属性标题
+  modalVisible: false, // 显示弹框
+  modalTitle: '', // 弹框属性标题
   // modalWidth: 1000, // 弹框属性宽度
-  // modalOkText: '确定', // 弹框属性确定按钮文本
-  // modalCancelText: '取消', // 弹框属性确定按钮文本
+  modalOkText: '确定', // 弹框属性确定按钮文本
+  modalCancelText: '取消', // 弹框属性确定按钮文本
   // modalOkDisabled: false, // 弹框属性确定按钮可点击状态
   classList:[],  //班级列表
-  xyList:[],  //当前显示班级的学员列表
+  sourceList:[],  //当前显示班级的学员列表
   tabItems:[], 
   activeIndex:0,
 }; 
@@ -55,13 +55,14 @@ Page({
     // arr[1] = {};
     // console.log('compare:',arr[0]===arr[1]);
     // this.queryList(this.data.activeIndex);
+    // console.log('====:',utils['parseInt']());
     const tablename = 'class';
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename });
     commServices.handleAfterRemote(response, null,
       (resultData) => {
         // console.log('onload xxylmain:', resultData);
         this.refreshTabItems(resultData);
-        this.queryXyList(this.data.activeIndex);
+        this.querySourceList(this.data.activeIndex);
 
         // this.refreshSourceList(resultData);
         app.sourceListDirty = false;
@@ -78,26 +79,30 @@ Page({
     this.setData({classList,tabItems});
   },
 
-  queryXyList:function(activeIndex){
+  querySourceList:function(activeIndex){
     const classObj = this.data.classList[activeIndex];
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename,fmName,querycond:{class:classObj._id}});
     commServices.handleAfterRemote(response, null,
       (resultData) => {
         // console.log(resultData);
-        this.refreshXyList(resultData, activeIndex);
+        this.refreshSourceList(resultData, activeIndex);
         // getApp().setFyListDirty(false);
         // this.refreshFyList(resultData);
       }
     );   
   },
-  refreshXyList: function (xyList, activeIndex) {
-    if(!xyList) xyList = [];
-    xyList.map(value => {
-      value.desc = value.xyxm;
+  refreshSourceList: function (sourceList, activeIndex) {
+    if(!sourceList) sourceList = [];
+    let sourceListItems = [];
+    sourceList.map(value => {
+      sourceListItems.push({
+        title: `${value.xyxm}(家长:${value.jzxm})`,
+        desc: `剩余课次:${value.cs?value.cs:0}`
+      })
     });
     let { tabItems, classList} = this.data;
-    tabItems[activeIndex] = classList[activeIndex].bjmc+'(学员数:'+xyList.length+')';
-    this.setData({xyList,tabItems,activeIndex});
+    tabItems[activeIndex] = classList[activeIndex].bjmc+'(人数:'+sourceList.length+')';
+    this.setData({ sourceList,sourceListItems,tabItems,activeIndex});
   },
   onAdd: function () {
     const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_ADDFY }
@@ -113,7 +118,7 @@ Page({
   modifyData: function (e) {
     const { index } = e.detail;
     const pos = utils.getInteger(index);
-    const currentObject = this.data.xyList[pos];
+    const currentObject = this.data.sourceList[pos];
     const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_EDITFY, currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
@@ -123,9 +128,26 @@ Page({
 
   onTabPageChanged: function(e){
     // console.log("tabPageChanged:",e);
-    this.queryXyList(e.detail.activeIndex);
+    this.querysourceList(e.detail.activeIndex);
     // this.setData({ activeIndex: e.detail.activeIndex});
   },
+
+  onCharge:function(e){
+    // console.log('oncharge:',e);
+    const pos = utils.parseInt(e.target.id);
+    if(pos===-1){
+      utils.showToast('点击异常：' + e.target.id);
+      return;
+    }
+    const currentObject = this.data.sourceList[pos];
+    const paras = { fmName: 'charge', tablename: 'charge', parentid:currentObject._id,buttonAction:CONSTS.BUTTON_STUCHARGE}
+    const parasJson = JSON.stringify(paras);
+    wx.navigateTo({
+      url: '../edit/editdata?item=' + parasJson,
+    })
+
+  },
+
   onAddfy(){
     wx.navigateTo({
       url: 'addfy/addfy?buttonAction='+CONSTS.BUTTON_ADDFY,

@@ -30,8 +30,9 @@ Page({
     const form = this.selectComponent("#_wrapperformid");
     if(!form.validFields()) return;
     const formObject = form.data.currentObject;
-    const {buttonAction,tablename,fmName,unifield} = this.data;
-
+    let {buttonAction,tablename,fmName,unifield,parentid} = this.data;
+    if (!utils.isEmpty(parentid)) formObject.parentid = parentid;
+    if (utils.isEmpty(buttonAction)) buttonAction = CONSTS.BUTTON_SAVEDATA;
     const response = commServices.postData(buttonAction, { formObject, tablename,fmName,unifield});
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
     commServices.handleAfterRemote(response, CONSTS.getButtonActionInfo(buttonAction),

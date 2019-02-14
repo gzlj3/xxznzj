@@ -50,14 +50,14 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: 'bjmc', buttonAction: CONSTS.BUTTON_EDITFY,currentObject }
+    const paras = { fmName, tablename, unifield: 'bjmc', currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield:'bjmc',buttonAction: CONSTS.BUTTON_ADDFY}
+    const paras = { fmName, tablename, unifield:'bjmc'}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

@@ -90,23 +90,39 @@ exports.main = async (event, context) => {
         // console.log('queryfy');
           result = await services.queryDataList(data,curUser);
           return results.getSuccessResults(result);
-      case CONSTS.BUTTON_ADDFY:
-        // console.log('addfy');
-          // data.yzhid = curUser.yzhid;
-          // data.lrr=curUser.openId;
-          // data.lrsj=utils.getCurrentTimestamp();
-          // data.zhxgr=curUser.openId;
-          // data.zhxgsj=data.lrsj;
-          result = await services.saveData(data,curUser,restData);
-          return results.getSuccessResults(result);
-        break;
-      case CONSTS.BUTTON_EDITFY:
-        console.log("editfy");
-        // data.zhxgr=curUser.openId;
-        // data.zhxgsj=utils.getCurrentTimestamp();       
-        // const collid = restData && restData.length > 0 ? restData[0] : curUser.collid;
-        // console.log('editfy',collid);
-        result = await services.saveData(data,curUser);
+      // case CONSTS.BUTTON_ADDFY:
+      //   // console.log('addfy');
+      //     // data.yzhid = curUser.yzhid;
+      //     // data.lrr=curUser.openId;
+      //     // data.lrsj=utils.getCurrentTimestamp();
+      //     // data.zhxgr=curUser.openId;
+      //     // data.zhxgsj=data.lrsj;
+      //     result = await services.saveData(data,curUser);
+      //     return results.getSuccessResults(result);
+      //   break;
+      // case CONSTS.BUTTON_EDITFY:
+      //   console.log("editfy");
+      //   // data.zhxgr=curUser.openId;
+      //   // data.zhxgsj=utils.getCurrentTimestamp();       
+      //   // const collid = restData && restData.length > 0 ? restData[0] : curUser.collid;
+      //   // console.log('editfy',collid);
+      //   result = await services.saveData(data,curUser);
+      //   return results.getSuccessResults(result);
+      case CONSTS.BUTTON_SAVEDATA :
+        result = await services.saveData(data, curUser);
+        return results.getSuccessResults(result);
+      case CONSTS.BUTTON_STUCHARGE:
+        //先保存充值数据
+        let chargeid = await services.saveData(data, curUser);  
+        try{
+          //累加到学员表
+          const {cs,parentid} = data.formObject;
+          result = await services.updateStudentCs(curUser.collid,parentid,cs);
+        }catch(e){
+          //更新学员表次数失败，则删除之前保存完成的充值记录
+          await commService.removeDoc(commService.getTableName('charge',curUser.collid),chargeid);
+          throw e;
+        }
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_DELETEFY:
         console.log("deletefy");

@@ -40,14 +40,19 @@ Component({
       value: {},
       observer(newVal, oldVal, changedPath) {
         console.log('observer onloadoptions:', newVal);
-        this.setData({ ...newVal });
+        if(!newVal) return;
+        let requestUserType = newVal.requestUserType;
+        if(!utils.isEmpty(newVal.yzhid) && utils.isEmpty(requestUserType)){
+          requestUserType = CONSTS.USERTYPE_ZK;
+        }
+        this.setData({ ...newVal,requestUserType });
       }
     },
     menulist: {
       type: Array,
       value: [],
       observer(newVal, oldVal, changedPath) {
-        console.log('observer menuList:', newVal);
+        // console.log('observer menuList:', newVal);
         this.setData({ menuList:newVal });
       }
     },
@@ -83,7 +88,7 @@ Component({
     hostuserinfo:{
       type:Object,
       observer(newVal, oldVal, changedPath) {
-        console.log('observer hostuserinfo:', newVal, oldVal, changedPath);
+        // console.log('observer hostuserinfo:', newVal, oldVal, changedPath);
         app.setUserData(newVal);
         this.setData({
           user: app.getGlobalData().user
@@ -100,7 +105,7 @@ Component({
 
   lifetimes: { 
     attached() {
-      console.log('attached');
+      // console.log('attached');
       // 在组件实例进入页面节点树时执行
       // console.log('attached:',this.data.requestUserType,this.data.sjhm);
       // console.log('attached:', this.is);
@@ -167,7 +172,8 @@ Component({
         utils.showToast('请先输入正确的手机号!');
         return;
       };
-      const response = commServices.postData(CONSTS.BUTTON_SENDSJYZM, { sjhm });
+      const {yzhid} = this.data;
+      const response = commServices.postData(CONSTS.BUTTON_SENDSJYZM, { sjhm, yzhid });
       commServices.handleAfterRemote(response, '发送验证码',
         (resultData) => {
           this.setData({ sendingYzm: true });
@@ -200,7 +206,7 @@ Component({
 
     onRegister (e) {
       // console.log('register:',e);
-      const { requestUserType, user, sjhm, canIUseWxPhoneNumber} = this.data;
+      const { requestUserType, user, sjhm, canIUseWxPhoneNumber,yzhid,collid,orgname} = this.data;
       if (utils.isEmpty(requestUserType)) {
         utils.showToast('注册系统身份不能为空！');
         return;
@@ -221,14 +227,21 @@ Component({
         utils.showToast('验证码不能为空！');
         return;
       }
-      if (utils.isEmpty(e.detail.value.orgname)) {
-        utils.showToast('机构不能为空！');
+      if (requestUserType===CONSTS.USERTYPE_FD && utils.isEmpty(e.detail.value.orgname)) {
+        utils.showToast('机构名称不能为空！');
         return;
       }
 
-      e.detail.value.userType = requestUserType;
-      e.detail.value.sjhm = sjhm;
-      e.detail.value.canIUseWxPhoneNumber = canIUseWxPhoneNumber;
+      let formObject = e.detail.value;
+      formObject.userType = requestUserType;
+      formObject.sjhm = sjhm;
+      formObject.canIUseWxPhoneNumber = canIUseWxPhoneNumber;
+      if (requestUserType === CONSTS.USERTYPE_ZK) {
+        formObject.yzhid = yzhid;
+        formObject.collid = collid;
+        formObject.orgname = orgname;
+      }
+
       // console.log(e.detail.value);
       const response = commServices.postData(CONSTS.BUTTON_REGISTERUSER,
         { frontUserInfo: user,

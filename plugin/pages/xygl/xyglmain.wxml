@@ -26,7 +26,13 @@
     <button  size="default" bindtap="onAdd">新增学员</button>
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">
       <view slot='tabPage_{{activeIndex}}'>
-            <list listItems="{{xyList}}" showStyle="line" bindbodytap="onBodyTap"/>
+            <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">
+              <view class="weui-cell" wx:for="{{sourceListItems}}" wx:key="{{index}}" slot="footer_{{index}}">
+                <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">充值</view>
+                <view id="{{index}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">打卡日志</view>
+                <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>
+              </view> 
+            </list>
 <!-- 
         <view class="weui-cells weui-cells_after-title">
             <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
@@ -91,9 +97,9 @@
   </view>
 
   <!-- <modal id="modal" hidden="{{!modalVisible}}" title="{{modalTitle}}" confirm-text="{{modalOkText}}" cancel-text="{{modalCancelText}}" bindcancel="modalCancel" bindconfirm="modalConfirm">
-      <template is="FmTf" data="{{tfrq}}"/>
-    </modal> 
-   -->
+    <template is="FmTf" data="{{tfrq}}"/>
+  </modal>  -->
+  
 
   <!-- <view class="weui-footer weui-footer_fixed-bottom">
         <view class="weui-footer__text">极简出租，Copyright©2018-2019 by liujun</view>

@@ -81,19 +81,21 @@ exports.checkAuthority = async(action,method,userInfo,data) => {
 // }
 
 exports.sendSjyzm = async (data,userInfo) => {
-  const { sjhm } = data;
+  const { sjhm,yzhid } = data;
   const { openId } = userInfo;
-  console.log(sjhm);
+  // console.log(sjhm);
   if(utils.isEmpty(sjhm) || sjhm.length!==11)
     throw utils.newException('手机号码非法！');
   //取上次发送的验证码数据
   const lastYzm = await getCachedSjyzm(openId);
-  console.log(lastYzm);
+  // console.log(lastYzm);
   if(lastYzm.isValid)
     throw utils.newException('上次发送的验证码还处于有效期，请稍候再发送！');
 
   //检查手机号是否已经注册
-  const result = await commService.querySingleDoc('userb',{sjhm});
+  let otherCond = {};
+  if(!utils.isEmpty(yzhid)) otherCond = {yzhid};
+  const result = await commService.querySingleDoc('userb',{...otherCond,sjhm});
   if(result)
     throw utils.newException('此手机号已经注册，如果非你本人操作，请联系管理员！');
   
@@ -282,16 +284,21 @@ exports.registerUser = async (data,userInfo) => {
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
-  const yzhid = utils.yzhid();
-  const collid = utils.collid();
-  let orgcode = yzhid;
+  let yzhid;
+  let collid;
+  // let orgcode = yzhid;
   if (commService.isFd(formObject.userType)) {
     //注册机构
-
+    yzhid = utils.yzhid();
+    collid = utils.collid();
   }else{
     //注册其它
-
+    yzhid = formObject.yzhid;
+    collid = formObject.collid;
   }
+
+  if(utils.isEmpty(yzhid) || utils.isEmpty(collid))
+    throw utils.newException('注册参数有误！');
 
   const userb = {
     openId,
@@ -303,7 +310,6 @@ exports.registerUser = async (data,userInfo) => {
     userType:formObject.userType,
     // userData:frontUserInfo,
     orgname: formObject.orgname,
-    orgcode,
     lrsj,
     zhxgsj
   }

@@ -17,6 +17,15 @@ exports.getFloat = (value) => {
     return 0;
   }
 }
+exports.parseInt = (value) => {
+  try {
+    const result = Number.parseInt(value);
+    if (isNaN(result)) return -1;
+    return result;
+  } catch (e) {
+    return -1;
+  }
+}
 
 //对number四舍五入，保留指定位置，并返回数值型
 exports.roundNumber = (number, precision) => {

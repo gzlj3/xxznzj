@@ -38,22 +38,22 @@ exports.queryDataList = async (data,curUser) => {
  * 1、处理search字段，将代码替换为汉字
  */
 const handleDataList = async (curUser, fmName, dataList) => {
-  console.log('handleDataList fmName:', fmName);
-  if(utils.isEmpty(fmName)) return;
+  // console.log('handleDataList fmName:', fmName);
+  if(utils.isEmpty(fmName) || !dataList) return;
   const fmMetas = await commService.queryFmMetas(curUser, fmName);
   if (!fmMetas) return;
-  console.log('handleDataList fmMetas:',fmMetas);
+  // console.log('handleDataList fmMetas:',fmMetas);
   for(let i=0;i<fmMetas.length;i++){
     let value = fmMetas[i];
     if (value.type === 'search') {
       const searchDataList = await selectService.querySearchData(curUser, value.searchType);
-      console.log('handledatalist searchDataList:', searchDataList);
+      // console.log('handledatalist searchDataList:', searchDataList);
       for(let j=0;j<dataList.length;j++){
         let formObject = dataList[j];
         const code = formObject[value.name];
         if (!utils.isEmpty(code)){
           const desc = selectService.findDesc(searchDataList,code)
-          console.log('handledatalist finddesc:', desc,searchDataList,code);
+          // console.log('handledatalist finddesc:', desc,searchDataList,code);
           formObject[CONSTS.codePreffix + value.name] = code;
           formObject[value.name] = desc;
         }
@@ -432,12 +432,11 @@ const handleFormObject = async (curUser,formObject,fmName) => {
   })
 }
 
-const saveData = async (data,curUser,restData) => {
+const saveData = async (data,curUser) => {
   let isAddDoc;
   let {tablename,fmName,formObject,unifield} = data;
   const {collid,yzhid} = curUser;
   const collTable = commService.getTableName(tablename, collid);
-// console.log('savedata',curUser,restData);
   await handleFormObject(curUser,formObject,fmName);
 
   if (utils.isEmpty(formObject._id)) {
@@ -465,20 +464,38 @@ const saveData = async (data,curUser,restData) => {
     }
   }
   // 检查主键是否重复
+  let result;
   if(!utils.isEmpty(unifield)){
-    let result;
     result = await commService.querySingleDoc(collTable,{yzhid,_id:_.neq(formObject._id),[unifield]:formObject[unifield]});
     if(result)
       throw utils.newException(`[${formObject[unifield]}]已经存在！`);
   }
+
   if(isAddDoc){
-    await commService.addDoc(commService.getTableName(tablename,collid), formObject);
+    result = await commService.addDoc(commService.getTableName(tablename,collid), formObject);
   }else{
-    await commService.updateDoc(commService.getTableName(tablename,collid), formObject);
+    result = await commService.updateDoc(commService.getTableName(tablename,collid), formObject);
   }  
-  return null;
+  return result;
 }
 exports.saveData = saveData;
+
+exports.updateStudentCs = async (collid,studentid,cs) => {
+  if (utils.isEmpty(studentid))
+    throw utils.newException("学员ID为空！");
+  const csint = utils.getInteger(cs);
+  const collTable = commService.getTableName('student', collid);
+  const result = await db.collection(collTable).doc(studentid).update({
+    data: {
+      cs: _.inc(csint),
+    }
+  });
+  const updatedNum = result.stats.updated;
+  if (updatedNum === 0) {
+    throw utils.newException("更新学员表次数失败！");
+  }
+  return updatedNum;
+}
 
 exports.exitFy = async (data,curUser) => {
   const { houseid,tfrq } = data;

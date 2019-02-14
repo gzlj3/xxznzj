@@ -20,5 +20,8 @@
               <view class="weui-cell__ft weui-cell__ft_in-access"></view>
           </view>
       </view>
+      <view class="weui-panel__ft">
+        <slot name="footer_{{index}}">操作区域</slot>
+      </view>
   </view>
 </block>

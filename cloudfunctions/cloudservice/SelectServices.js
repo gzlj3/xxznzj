@@ -73,11 +73,12 @@ exports.querySearchData = async (curUser,searchType,code) => {
 exports.findDesc = (zdList, code) => {
   if(!zdList) return code;
   let desc = code;
-  zdList.map(value=>{
+  for(let i=0;i<zdList.length;i++){
+    const value = zdList[i];
     if(value.code===code){
       desc = value.desc;
-      return;
+      break;
     }
-  })
+  }
   return desc;
 }

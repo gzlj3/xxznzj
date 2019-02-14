@@ -40,11 +40,10 @@
           </view>
         </view>
 
+        <view class="weui-cells__title" wx:if="{{requestUserType===CONSTS.USERTYPE_ZK}}">当前机构:{{orgname}}</view>
         <form bindsubmit="onRegister">
-          <!-- <slot name="registerFields">注册更多信息，由宿主传入</slot> -->
-          <view class="weui-cell">
-            <view class="weui-label" style='width:80px' wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">机构名称</view>
-            <view class="weui-label" style='width:80px' wx:else>机构代码</view>
+          <view class="weui-cell" wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">
+            <view class="weui-label" style='width:80px'>机构名称</view>
             <view class="weui-cell__bd">
                 <input id="orgname" name="orgname" class="weui-input" value="{{orgcode}}" placeholder="请输入"/>
             </view>
