@@ -34,7 +34,7 @@ Component({
   },
   lifetimes: {
     attached() {
-      console.log('wrapperforms attacthed:',this.data.currentObject);
+      // console.log('wrapperforms attacthed:',this.data.currentObject);
     }
   },
   /**

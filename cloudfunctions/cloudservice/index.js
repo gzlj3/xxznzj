@@ -39,20 +39,10 @@ exports.main = async (event, context) => {
       //   result = await userServices.seeLastzd(curUser);
       //   return results.getSuccessResults(result);
       case CONSTS.BUTTON_SEARCH:
-        const { searchType } = data;
         if (method === 'GET') {
-          result = await selectService.querySearchData(curUser,searchType);
+          result = await selectService.querySearchData(data,curUser);
           return results.getSuccessResults(result);
-          // console.log('search:',coludSearchType);
-          // if (searchType==='staff'){
-          //   result = await services.querySearchStaff(data, curUser);
-          //   return results.getSuccessResults(result);
-          // } else if (searchType === 'class') {
-          //   result = await services.querySearchClass(data, curUser);
-          //   return results.getSuccessResults(result);
-          // }
         }
-        return results.getErrorResults('未确定的搜索类型！' + searchType);
       case CONSTS.BUTTON_HTQY:
         if (method === 'POST') { 
           result = await services.processHt(data,curUser);
@@ -113,15 +103,34 @@ exports.main = async (event, context) => {
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_STUCHARGE:
         //先保存充值数据
-        let chargeid = await services.saveData(data, curUser);  
+        const objid = await services.saveData(data, curUser);  
         try{
           //累加到学员表
           const {cs,parentid} = data.formObject;
-          result = await services.updateStudentCs(curUser.collid,parentid,cs);
+          result = await services.updateStudentCs(curUser.collid,parentid,cs,'charge');
         }catch(e){
           //更新学员表次数失败，则删除之前保存完成的充值记录
-          await commService.removeDoc(commService.getTableName('charge',curUser.collid),chargeid);
+          await commService.removeDoc(commService.getTableName('charge', curUser.collid), objid);
           throw e;
+        }
+        return results.getSuccessResults(result);
+      case CONSTS.BUTTON_STUSIGNIN:
+        if (method === 'POST') {
+          //先保存学员签到数据
+          const objid = await services.saveData(data, curUser);
+          try {
+            //累加到学员表
+            const { parentid } = data.formObject;
+            result = await services.updateStudentCs(curUser.collid, parentid, '-1','signin');
+            //刷新签到数据
+            result = await services.querySigninXy(data, curUser);
+          } catch (e) {
+            //更新学员表次数失败，则删除之前保存完成的充值记录
+            await commService.removeDoc(commService.getTableName('signin', curUser.collid), objid);
+            throw e;
+          }
+        }else{
+          result = await services.querySigninXy(data, curUser);
         }
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_DELETEFY:

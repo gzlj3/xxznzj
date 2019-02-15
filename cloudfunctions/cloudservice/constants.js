@@ -18,6 +18,7 @@ exports.BUTTON_HTQY = 11; // 合同签约
 exports.BUTTON_SEARCH = 12; // 搜索列表选择入口
 exports.BUTTON_SAVEDATA = 13; // 保存数据（含增加和修改）
 exports.BUTTON_STUCHARGE = 14; // 学员充值
+exports.BUTTON_STUSIGNIN = 15; // 学员签到 
 
 
 exports.getButtonActionInfo = buttonAction => {

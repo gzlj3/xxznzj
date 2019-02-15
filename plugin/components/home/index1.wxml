@@ -75,7 +75,7 @@
 </navigator>    -->
          
       <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD}}">
-          <block wx:for="{{menuList}}" wx:key="id">
+          <block wx:for="{{menuList}}" wx:key="{{index}}">
               <view class="kind-list__item">
                   <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                       <view class="weui-flex__item  weui-cell_access weui-cell_link addfontsize20">{{item.name}}</view>
@@ -97,25 +97,8 @@
           </block>
       </view>
   </view>
-  <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_ZK || user.userType===CONSTS.USERTYPE_FDZK}}">
-      <block wx:for="{{zkMenuList}}" wx:key="id">
-          <view class="kind-list__item  weui-cell_access weui-cell_link addfontsize20">
-              <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
-                  <view class="weui-flex__item">{{item.name}}</view>
-                  <image class="kind-list__img" src="../../images/icon_nav_{{item.id}}.png"></image>
-              </view>
-              <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
-                  <view class="weui-cells {{item.open ? 'weui-cells_show' : ''}}">
-                      <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="*this">
-                          <navigator url="{{page}}/{{page}}" class="weui-cell weui-cell_access">
-                              <view class="weui-cell__bd">{{page}}</view>
-                              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-                          </navigator>
-                      </block>
-                  </view>
-              </view>
-          </view>
-      </block>
+  <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_ZK}}">
+    <xysignin/>
   </view>
   <view class="page__ft weui-footer_fixed-bottom">
       <view class="weui-footer__text">极简出租，Copyright©2018-2019 by liujun</view>

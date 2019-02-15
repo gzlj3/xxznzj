@@ -71,16 +71,17 @@ exports.queryClassXx = async (data, curUser) => {
   let result;
   console.log('querydatalist:', data, curUser);
   result = await commService.queryDocs(colltable, { yzhid });
-  // try {
-  //   result = await db.collection(colltable).where({yzhid}).get();
-  //   if (result) result = result.data;
-  // } catch (e) {
-  //   if (e.errCode === -502005) {
-  //     result = [];
-  //   } else {
-  //     throw e;
-  //   }
-  // }
+  return result;
+}
+exports.querySigninXy = async (data, curUser) => {
+  //查询可签到学员
+  const { yzhid, collid,sjhm } = curUser;
+  const tablename = 'student';
+  const colltable = commService.getTableName(tablename, collid)
+  let result;
+  console.log('querysigninxy:', data, curUser);
+  const sjhmArr = [sjhm];
+  result = await commService.queryDocs(colltable, { yzhid,sjhm:_.in(sjhmArr)});
   return result;
 }
 
@@ -422,6 +423,7 @@ exports.processHt = async (data, curUser) => {
  * 1、处理search字段，替换显示字段为code值
  */
 const handleFormObject = async (curUser,formObject,fmName) => {
+  if(utils.isEmpty(fmName)) return;
   const fmMetas = await commService.queryFmMetas(curUser,fmName);
   if(!fmMetas) return;
   fmMetas.map(value=>{
@@ -444,8 +446,8 @@ const saveData = async (data,curUser) => {
     formObject.yzhid = curUser.yzhid;
     formObject.lrr = curUser.openId;
     formObject.lrsj = utils.getCurrentTimestamp();
-    formObject.zhxgr = curUser.openId;
-    formObject.zhxgsj = formObject.lrsj;
+    // formObject.zhxgr = curUser.openId;
+    // formObject.zhxgsj = formObject.lrsj;
     formObject._id = utils.id();
   } else {
     formObject.zhxgr = curUser.openId;
@@ -458,7 +460,7 @@ const saveData = async (data,curUser) => {
       const coll = await db.collection(collTable).limit(1).get();
     }catch(e){
       if (e.errCode === -502005){
-        console.log('create savefy:', e);
+        console.log('create collection:', collTable);
         await db.createCollection(collTable);
       }
     }
@@ -480,14 +482,17 @@ const saveData = async (data,curUser) => {
 }
 exports.saveData = saveData;
 
-exports.updateStudentCs = async (collid,studentid,cs) => {
+exports.updateStudentCs = async (collid,studentid,cs,type) => {
   if (utils.isEmpty(studentid))
     throw utils.newException("学员ID为空！");
   const csint = utils.getInteger(cs);
   const collTable = commService.getTableName('student', collid);
+  let otherData={};
+  otherData[type] = utils.getCurrentTimestamp();
   const result = await db.collection(collTable).doc(studentid).update({
     data: {
       cs: _.inc(csint),
+      ...otherData
     }
   });
   const updatedNum = result.stats.updated;

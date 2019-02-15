@@ -16,6 +16,8 @@
                     <view class="weui-cell__bd">{{item.title}}</view>
                   </view> 
                   <view class="weui-media-box__desc addfontsize18">{{item.desc}}</view>
+                  <view class="weui-media-box__desc addfontsize18">{{item.desc1}}</view>
+                  <view class="weui-media-box__desc addfontsize18">{{item.desc2}}</view>
               </view>
               <view class="weui-cell__ft weui-cell__ft_in-access"></view>
           </view>

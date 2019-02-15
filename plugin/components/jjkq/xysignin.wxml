@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="page__bd">
+    <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">
+      <view class="weui-cell" wx:for="{{sourceListItems}}" wx:key="{{index}}" slot="footer_{{index}}">
+        <view id="{{index}}" bindtap="onSignin" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">签到</view>
+        <view id="{{index}}" bindtap="onQueryHistroy" data-searchtype='charge' class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">充值记录</view>
+        <view id="{{index}}" bindtap="onQueryHistroy" data-searchtype='signin'  class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">签到记录</view>
+        <!-- <view id="{{index}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">充值日志</view> -->
+        <!-- <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多</view> -->
+      </view> 
+    </list>
+  </view>
+</view>
