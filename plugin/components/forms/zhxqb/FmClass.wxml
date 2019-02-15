@@ -1,5 +1,0 @@
-<view class="weui-cells weui-cells_after-title">  
-  <block wx:for="{{fmMetas}}">
-    <input1 currentObject="{{currentObject}}" options="{{item}}"/>
-  </block>
-</view>
