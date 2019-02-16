@@ -46,7 +46,7 @@ const handleDataList = async (curUser, fmName, dataList) => {
   for(let i=0;i<fmMetas.length;i++){
     let value = fmMetas[i];
     if (value.type === 'search') {
-      const searchDataList = await selectService.querySearchData(curUser, value.searchType);
+      const searchDataList = await selectService.querySearchData({searchType:value.searchType},curUser);
       // console.log('handledatalist searchDataList:', searchDataList);
       for(let j=0;j<dataList.length;j++){
         let formObject = dataList[j];

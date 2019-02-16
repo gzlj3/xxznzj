@@ -105,7 +105,7 @@ Page({
     this.setData({ sourceList,sourceListItems,tabItems,activeIndex});
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_ADDFY }
+    const paras = { fmName, tablename, unifield: 'xyxm' }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
@@ -119,7 +119,7 @@ Page({
     const { index } = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: 'xyxm', buttonAction: CONSTS.BUTTON_EDITFY, currentObject }
+    const paras = { fmName, tablename, unifield: 'xyxm', currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
@@ -128,7 +128,7 @@ Page({
 
   onTabPageChanged: function(e){
     // console.log("tabPageChanged:",e);
-    this.querysourceList(e.detail.activeIndex);
+    this.querySourceList(e.detail.activeIndex);
     // this.setData({ activeIndex: e.detail.activeIndex});
   },
 

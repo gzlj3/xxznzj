@@ -10,7 +10,7 @@ Component({
     addGlobalClass: true,
     multipleSlots: true,
   },
-  /**
+  /** 
    * 组件的初始数据
    */
   data: {
