@@ -50,14 +50,16 @@ Component({
         this.setData({ ...newVal,requestUserType });
       }
     },
-    menulist: {
-      type: Array,
-      value: [],
-      observer(newVal, oldVal, changedPath) {
-        // console.log('observer menuList:', newVal);
-        this.setData({ menuList:newVal });
-      }
-    },
+    menuList: Array,
+    user2MenuList:Array,
+    user3MenuList:Array,
+      // type: Array,
+      // value: [],
+      // observer(newVal, oldVal, changedPath) {
+      //   console.log('observer menuList:', newVal);
+      //   // this.setData({ menulist:newVal });
+      // }
+    // },
     // requestusertype: {
     //   type:String,
     //   value: CONSTS.USERTYPE_FD,
@@ -107,7 +109,8 @@ Component({
 
   lifetimes: { 
     attached() {
-      // console.log('attached');
+      // const obj = ['aaaa','bbbb'];
+      // this.test(...obj);
       // 在组件实例进入页面节点树时执行
       // console.log('attached:',this.data.requestUserType,this.data.sjhm);
       // console.log('attached:', this.is);
@@ -134,6 +137,9 @@ Component({
     // _hostuserinfoChange(newVal, oldVal){
     //   console.log('hostUserChange:',newVal,oldVal);
     // },
+    test(x,y){
+      console.log(x,y);
+    },
     waitingCloudNormal() {
       let waitingCloudNum = 0;
       this.setData({ waitingCloud: true });

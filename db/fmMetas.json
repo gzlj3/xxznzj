@@ -1,0 +1,84 @@
+{
+  "_id": "5c64eed33021cc245d532a88",
+  "yzhid": "default",
+  "fmmetas": {
+    "student": [
+      {
+        "label": "学员姓名",
+        "name": "xyxm",
+        "require": true
+      },
+      {
+        "label": "家长姓名",
+        "name": "jzxm",
+        "require": true
+      },
+      {
+        "label": "家长手机号",
+        "name": "sjhm",
+        "require": true
+      },
+      {
+        "label": "所属班级",
+        "name": "class",
+        "searchType": "class",
+        "type": "search"
+      }
+    ],
+    "charge": [
+      {
+        "label": "金额",
+        "name": "je",
+        "type": "digit",
+        "require": true
+      },
+      {
+        "label": "课次",
+        "name": "cs",
+        "type": "number",
+        "require": true
+      },
+      {
+        "label": "充值说明",
+        "name": "bz"
+      }
+    ],
+    "class": [
+      {
+        "label": "班级名称",
+        "name": "bjmc",
+        "require": true
+      },
+      {
+        "label": "上课时间",
+        "name": "sksj",
+        "require": true,
+        "type":"picker",
+        "mode":"weektime"
+      },
+      {
+        "label": "老师姓名",
+        "name": "lsxm",
+        "searchType": "staff",
+        "type": "search"
+      }
+    ],
+    "staff": [
+      {
+        "name": "name",
+        "label": "姓名",
+        "require": true
+      },
+      {
+        "name": "sfzh",
+        "label": "身份证号",
+        "type": "idcard"
+      },
+      {
+        "name": "sjhm",
+        "label": "手机号码",
+        "type": "number"
+      }
+    ]
+  }
+}

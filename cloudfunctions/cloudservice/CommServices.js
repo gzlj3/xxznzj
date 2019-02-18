@@ -77,14 +77,31 @@ exports.queryPrimaryDoc = async (tableName, _id) => {
   return null;
 }
 
-exports.queryDocs = async (tableName, whereObj) => {
+/**
+ * orderbyObj, 排序字段，格式可为：
+ * 单字段排序[字段名,'asc'],多字段:[[fieldname,'asc'],[fieldname,'asc']]
+ */
+exports.queryDocs = async (tableName, whereObj,orderbyObj) => {
   if (utils.isEmptyObj(whereObj))
     throw utils.newException('参数异常！');
   const db = cloud.database();
   try {
-    const result = await db.collection(tableName).where(whereObj).get();
+    let coll = db.collection(tableName);
+    if(orderbyObj && orderbyObj.length>0){
+      //如果有排序字段
+      if(!(orderbyObj[0] instanceof Array)){
+        //排序字段无多个时，拼成多个排序字段情况
+        orderbyObj = [orderbyObj];
+      }
+      orderbyObj.map(value=>{
+        coll = coll.orderBy(...value);
+      })
+    }
+    const result = await coll.where(whereObj).get();
+    // console.log('coll:',coll);
+    // console.log('result:',result);
     if (result && result.data.length > 0)
-      return result.data;
+     return result.data;
   } catch (e) {
     if (e.errCode !== -502005) {
       //如果是表不存在，则不抛出异常

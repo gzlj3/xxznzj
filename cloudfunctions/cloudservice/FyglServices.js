@@ -73,6 +73,25 @@ exports.queryClassXx = async (data, curUser) => {
   result = await commService.queryDocs(colltable, { yzhid });
   return result;
 }
+exports.queryXyList = async (data, curUser) => {
+  //根据不同的登录用户类型及授权，查询学员列表及班级列表
+  const { yzhid, collid, sjhm,userType } = curUser;
+  const tablename = 'student';
+  const colltable = commService.getTableName(tablename, collid)
+  let result;
+  // console.log('querysigninxy:', data, curUser);
+  if (userType === CONSTS.USERTYPE_ZK){
+    //查询家长的学员
+    const sjhmArr = [sjhm];
+    result = await commService.queryDocs(colltable, { yzhid, sjhm: _.in(sjhmArr) },['class']);
+    //根据查询出的学员得出班级列表
+    if(result){
+      // result.map
+    }
+  }
+  return result;
+}
+
 exports.querySigninXy = async (data, curUser) => {
   //查询可签到学员
   const { yzhid, collid,sjhm } = curUser;

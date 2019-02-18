@@ -32,27 +32,37 @@ const menuList = [
     page: '../sysmanager/sysconfig/sysconfig'
   },
 ];
-const zkMenuList = [
+const user2MenuList = [
   {
     id: 'widget',
-    name: '查看我的帐单',
+    name: '我的学员列表',
     open: false,
-    page: '../fygl/fyglmain'
+    page: 'plugin://XXZNZJ/xyglmain'
+  },
+] 
+const user3MenuList = [
+  {
+    id: 'widget',
+    name: '我的学员列表',
+    open: false,
+    page: 'plugin://XXZNZJ/xyglmain'
   },
 ] 
 
 Component({
   behaviors: [myBehavior],
   data:{
-    menuList
+    menuList,
+    user2MenuList, 
+    user3MenuList
   },
   methods: {
     onLoad: function (options) {
       // console.log('onload:', options);
       this.setData({ onLoadOptions:options});
-      // wx.navigateTo({
-      //   url: 'plugin://XXZNZJ/xyglmain',
-      // })
+      wx.navigateTo({
+        url: 'plugin://XXZNZJ/classmain',
+      })
       // this.method1();
       // wx.login({
       //   success:function(e){

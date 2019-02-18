@@ -3,14 +3,21 @@
     <view class="weui-label {{require?((isEmpty===undefine || isEmpty)?'redColor':''):''}}">{{label}}</view>
   </view>
   <view class="weui-cell__bd">
-    <picker mode="{{type}}" id="{{name}}" name="{{name}}" value="{{value}}" bindchange="onChange" wx:if="{{type==='date'}}">
-      <view class="weui-input">{{value}}</view>
-    </picker>
-    <block wx:if="{{type==='search'}}">
-      <!-- <view class="weui-input">{{value}}</view> -->
-      <input id="{{name}}" name="{{name}}" value="{{value}}" bindtap="onSearchTap" class="weui-input" disabled placeholder="请选择{{label}}"/>
+    <block wx:if="{{type==='picker'}}">
+      <picker wx:if="{{mode==='weektime'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{value}}" range="{{weekTimeArray}}" bindchange="bubbleEvent">
+        <view class="weui-input">{{value?value:undefined}}</view>
+      </picker>
+      <picker wx:else mode="{{mode}}" id="{{name}}" name="{{name}}" value="{{value}}" range="{{range}}" range-key="{{range-key?range-key:undefined}}" bindchange="bubbleEvent" bindcolumnchange="bubbleEvent">
+        <view class="weui-input">{{value?value:undefined}}</view> 
+      </picker>
     </block>
-    <input id="{{name}}" name="{{name}}" type="{{type}}" value="{{value}}" bindinput="onInput" bindblur="onBlur" class="weui-input" placeholder="请输入{{label}}" wx:else/>
+    <block wx:else>
+      <block wx:if="{{type==='search'}}">
+        <!-- <view class="weui-input">{{value}}</view> -->
+        <input id="{{name}}" name="{{name}}" value="{{value}}" bindtap="onSearchTap" class="weui-input" disabled placeholder="请选择{{label}}"/>
+      </block>
+      <input id="{{name}}" name="{{name}}" type="{{type}}" value="{{value}}" bindinput="bubbleEvent" bindblur="bubbleEvent" class="weui-input" placeholder="请输入{{label}}" wx:else/>
+    </block>
   </view>
   <view wx:if="{{type==='search'}}" class="weui-cell__ft weui-cell__ft_in-access"></view>
 </view> 

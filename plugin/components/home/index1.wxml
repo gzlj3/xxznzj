@@ -74,14 +74,13 @@
   Go to pages/index2 
 </navigator>    -->
          
-      <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_FD}}">
-          <block wx:for="{{menuList}}" wx:key="{{index}}">
+      <view class="kind-list" wx:if="{{user && user.userType!==CONSTS.USERTYPE_NONE}}"> 
+          <block wx:for="{{user.userType===CONSTS.USERTYPE_FD?menuList:(user.userType===CONSTS.USERTYPE_ZK?user2MenuList:user3MenuList)}}" wx:key="{{index}}">
               <view class="kind-list__item">
                   <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                       <view class="weui-flex__item  weui-cell_access weui-cell_link addfontsize20">{{item.name}}</view>
                       <!-- <image class="kind-list__img" src="../../images/icon_nav_{{item.id}}.png"></image> -->
                                           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-
                   </view>
                   <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
                       <view class="weui-cells {{item.open ? 'weui-cells_show' : ''}}">
@@ -97,9 +96,9 @@
           </block>
       </view> 
   </view>
-  <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_ZK}}">
+  <!-- <view class="kind-list" wx:if="{{user.userType===CONSTS.USERTYPE_ZK}}">
     <xysignin/>
-  </view>
+  </view> -->
   <view class="page__ft weui-footer_fixed-bottom">
       <view class="weui-footer__text">极简考勤，Copyright©2018-2019 by liujun</view>
   </view>
