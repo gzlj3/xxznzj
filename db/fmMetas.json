@@ -51,10 +51,24 @@
       },
       {
         "label": "上课时间",
+        "type": "multi",
+        "name": "sksj",
+        "fields": [
+          {
+            "label": "上课时间",
+            "name": "sksj",
+            "require": true,
+            "type": "picker",
+            "mode": "weektime"
+          }
+        ]
+      },
+      {
+        "label": "上课时间",
         "name": "sksj",
         "require": true,
-        "type":"picker",
-        "mode":"weektime"
+        "type": "picker",
+        "mode": "weektime"
       },
       {
         "label": "老师姓名",

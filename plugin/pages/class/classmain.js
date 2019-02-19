@@ -1,6 +1,7 @@
 const app = require('../../app1.js');
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
+const comm = require('../../utils/comm.js');
 const commServices = require('../../services/commServices.js');
 // const fmMetas = [
 //   { label: '班级名称', name: 'bjmc', require: true },
@@ -26,6 +27,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // console.log('test:',comm.parseWeektime("周一 11:32"));
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY,{tablename});
     commServices.handleAfterRemote(response, null,
       (resultData) => {

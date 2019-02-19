@@ -4,10 +4,10 @@
   </view>
   <view class="weui-cell__bd">
     <block wx:if="{{type==='picker'}}">
-      <picker wx:if="{{mode==='weektime'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{value}}" range="{{weekTimeArray}}" bindchange="bubbleEvent">
+      <picker wx:if="{{mode==='weektime'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{codeWeektime?codeWeektime:[]}}" range="{{weekTimeArray}}" bindchange="onChange">
         <view class="weui-input">{{value?value:undefined}}</view>
       </picker>
-      <picker wx:else mode="{{mode}}" id="{{name}}" name="{{name}}" value="{{value}}" range="{{range}}" range-key="{{range-key?range-key:undefined}}" bindchange="bubbleEvent" bindcolumnchange="bubbleEvent">
+      <picker wx:else mode="{{mode}}" id="{{name}}" name="{{name}}" value="{{value}}" start="{{start}}" end="{{end}}" range="{{range}}" range-key="{{range-key?range-key:undefined}}" bindchange="bubbleEvent" bindcolumnchange="bubbleEvent">
         <view class="weui-input">{{value?value:undefined}}</view> 
       </picker>
     </block>
