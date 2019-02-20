@@ -61,14 +61,32 @@ Component({
       const input = this.selectComponent("#_wrapperinput");
       return input;
     },
+    onAddInnerArray:function(e){
+      let id = e.target.id;
+      let { currentObject } = this.data;
+      if (!currentObject[id]) currentObject[id] = [];
+      currentObject[id].push({});
+      this.setData({ currentObject });
+    },
+    onDeleteInnerArray: function (e) {
+      let id = e.target.id;
+      let { currentObject } = this.data;
+      currentObject[id].pop();
+      this.setData({ currentObject });
+    },
     onInputChange: function (e) {
       // console.log('wrapperform oninputchange:',e);
-      const {id} = e.detail;
+      const { id, parentid,innerArrayIndex,code,value} = e.detail;
       if(utils.isEmpty(id)) return;
       let { currentObject } = this.data;
-      currentObject[id] = e.detail.value;
-      if(!utils.isEmpty(e.detail.code)){
-        currentObject['_code_'+id] = e.detail.code;
+      if(!utils.isEmpty(parentid)){
+        //有parentid,说明是嵌套输入项，则赋值到输入的子元素中
+        currentObject[parentid][innerArrayIndex][id] = value;
+      }else{
+        currentObject[id] = value;
+      }
+      if(!utils.isEmpty(code)){
+        currentObject['_code_'+id] = code;
       }
       this.setData({ currentObject });
     },

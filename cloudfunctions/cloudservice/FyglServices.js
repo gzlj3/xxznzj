@@ -62,6 +62,89 @@ const handleDataList = async (curUser, fmName, dataList) => {
   }
   console.log('handledatalist:',dataList);
 }
+/**
+ * 处理form对象：
+ * 1、处理search字段，替换显示字段为code值
+ */
+const handleFormObject = async (curUser, formObject, fmName) => {
+  if (utils.isEmpty(fmName)) return;
+  const fmMetas = await commService.queryFmMetas(curUser, fmName);
+  if (!fmMetas) return;
+  fmMetas.map(value => {
+    if (value.type === 'search') {
+      formObject[value.name] = formObject[CONSTS.codePreffix + value.name];
+      delete formObject[CONSTS.codePreffix + value.name];
+    }
+  })
+}
+
+const saveData = async (data, curUser) => {
+  let isAddDoc;
+  let { tablename, fmName, formObject, unifield } = data;
+  const { collid, yzhid } = curUser;
+  const collTable = commService.getTableName(tablename, collid);
+  await handleFormObject(curUser, formObject, fmName);
+
+  if (utils.isEmpty(formObject._id)) {
+    isAddDoc = true;
+    formObject.yzhid = curUser.yzhid;
+    formObject.lrr = curUser.openId;
+    formObject.lrsj = utils.getCurrentTimestamp();
+    // formObject.zhxgr = curUser.openId;
+    // formObject.zhxgsj = formObject.lrsj;
+    formObject._id = utils.id();
+  } else {
+    formObject.zhxgr = curUser.openId;
+    formObject.zhxgsj = utils.getCurrentTimestamp();
+    isAddDoc = false;
+  }
+  //如果是添加数据，则检查集合是否存在，不存在，则创建
+  if (isAddDoc) {
+    try {
+      const coll = await db.collection(collTable).limit(1).get();
+    } catch (e) {
+      if (e.errCode === -502005) {
+        console.log('create collection:', collTable);
+        await db.createCollection(collTable);
+      }
+    }
+  }
+  // 检查主键是否重复
+  let result;
+  if (!utils.isEmpty(unifield)) {
+    result = await commService.querySingleDoc(collTable, { yzhid, _id: _.neq(formObject._id), [unifield]: formObject[unifield] });
+    if (result)
+      throw utils.newException(`[${formObject[unifield]}]已经存在！`);
+  }
+
+  if (isAddDoc) {
+    result = await commService.addDoc(commService.getTableName(tablename, collid), formObject);
+  } else {
+    result = await commService.updateDoc(commService.getTableName(tablename, collid), formObject);
+  }
+  return result;
+}
+exports.saveData = saveData;
+
+exports.updateStudentCs = async (collid, studentid, cs, type) => {
+  if (utils.isEmpty(studentid))
+    throw utils.newException("学员ID为空！");
+  const csint = utils.getInteger(cs);
+  const collTable = commService.getTableName('student', collid);
+  let otherData = {};
+  otherData[type] = utils.getCurrentTimestamp();
+  const result = await db.collection(collTable).doc(studentid).update({
+    data: {
+      cs: _.inc(csint),
+      ...otherData
+    }
+  });
+  const updatedNum = result.stats.updated;
+  if (updatedNum === 0) {
+    throw utils.newException("更新学员表次数失败！");
+  }
+  return updatedNum;
+}
 
 exports.queryClassXx = async (data, curUser) => {
   //查询数据列表
@@ -437,89 +520,6 @@ exports.processHt = async (data, curUser) => {
   }
 }
 
-/**
- * 处理form对象：
- * 1、处理search字段，替换显示字段为code值
- */
-const handleFormObject = async (curUser,formObject,fmName) => {
-  if(utils.isEmpty(fmName)) return;
-  const fmMetas = await commService.queryFmMetas(curUser,fmName);
-  if(!fmMetas) return;
-  fmMetas.map(value=>{
-    if(value.type==='search'){
-      formObject[value.name] = formObject[CONSTS.codePreffix+value.name];
-      delete formObject[CONSTS.codePreffix + value.name];
-    }
-  })
-}
-
-const saveData = async (data,curUser) => {
-  let isAddDoc;
-  let {tablename,fmName,formObject,unifield} = data;
-  const {collid,yzhid} = curUser;
-  const collTable = commService.getTableName(tablename, collid);
-  await handleFormObject(curUser,formObject,fmName);
-
-  if (utils.isEmpty(formObject._id)) {
-    isAddDoc = true;
-    formObject.yzhid = curUser.yzhid;
-    formObject.lrr = curUser.openId;
-    formObject.lrsj = utils.getCurrentTimestamp();
-    // formObject.zhxgr = curUser.openId;
-    // formObject.zhxgsj = formObject.lrsj;
-    formObject._id = utils.id();
-  } else {
-    formObject.zhxgr = curUser.openId;
-    formObject.zhxgsj = utils.getCurrentTimestamp();       
-    isAddDoc = false;
-  }
-  //如果是添加房源，则检查集合是否存在，不存在，则创建
-  if(isAddDoc){
-    try{
-      const coll = await db.collection(collTable).limit(1).get();
-    }catch(e){
-      if (e.errCode === -502005){
-        console.log('create collection:', collTable);
-        await db.createCollection(collTable);
-      }
-    }
-  }
-  // 检查主键是否重复
-  let result;
-  if(!utils.isEmpty(unifield)){
-    result = await commService.querySingleDoc(collTable,{yzhid,_id:_.neq(formObject._id),[unifield]:formObject[unifield]});
-    if(result)
-      throw utils.newException(`[${formObject[unifield]}]已经存在！`);
-  }
-
-  if(isAddDoc){
-    result = await commService.addDoc(commService.getTableName(tablename,collid), formObject);
-  }else{
-    result = await commService.updateDoc(commService.getTableName(tablename,collid), formObject);
-  }  
-  return result;
-}
-exports.saveData = saveData;
-
-exports.updateStudentCs = async (collid,studentid,cs,type) => {
-  if (utils.isEmpty(studentid))
-    throw utils.newException("学员ID为空！");
-  const csint = utils.getInteger(cs);
-  const collTable = commService.getTableName('student', collid);
-  let otherData={};
-  otherData[type] = utils.getCurrentTimestamp();
-  const result = await db.collection(collTable).doc(studentid).update({
-    data: {
-      cs: _.inc(csint),
-      ...otherData
-    }
-  });
-  const updatedNum = result.stats.updated;
-  if (updatedNum === 0) {
-    throw utils.newException("更新学员表次数失败！");
-  }
-  return updatedNum;
-}
 
 exports.exitFy = async (data,curUser) => {
   const { houseid,tfrq } = data;

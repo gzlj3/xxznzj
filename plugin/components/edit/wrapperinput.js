@@ -1,6 +1,7 @@
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
 const comm = require('../../utils/comm.js');
+const commServices = require('../../services/commServices.js');
 Component({
   options: {
     addGlobalClass: true,
@@ -11,6 +12,8 @@ Component({
    */
   properties: {
     value:String,
+    parentid:String,  //输入项为嵌套form内输入项时，保存父fmmetas的id
+    innerArrayIndex: String, //输入项为嵌套form内输入项时，保存嵌套值数组的当前下标
     options:{
       type:Object,
       observer(newVal, oldVal, changedPath) {
@@ -24,19 +27,40 @@ Component({
    * 组件的初始数据
    */
   data: {
-    // weekTimeArray: [[], ['00','01'], ['00', '01']],
+    // pickerDataArray: [[], ['00','01'], ['00', '01']],
   },
   lifetimes: {
     attached(e) {
       // console.log('wrapperinput attacthed:',e);
-      const {type,mode,start,end,value} = this.data;
+      const {type,mode,start,end,value,searchType} = this.data;
       // const { value } = this.properties;
       if(type==='picker' && mode==='weektime'){
-        //构建weekTimeArray,选择星期和时间
-        const weekTimeArray = this.getWeekTimeArray(start,end);
-        const codeWeektime = comm.parseWeektime(value);
-        // console.log('wrapperinput attached:',value,codeWeektime);
-        this.setData({ weekTimeArray, codeWeektime});
+        //构建pickerDataArray,选择星期和时间
+        const pickerDataArray = this.getPickerDataArray(start,end);
+        const pickerDataValue = comm.parseWeektime(value);
+        // console.log('wrapperinput attached:',value,pickerDataValue);
+        this.setData({ pickerDataArray, pickerDataValue});
+      }else if (type === 'picker' && mode === 'search') {
+        //构建选择数据列表,从远程提取列表数据
+        const response = commServices.queryData(CONSTS.BUTTON_SEARCH, { searchType });
+        commServices.handleAfterRemote(response, null,
+          (resultData) => { 
+            // console.log('search:', resultData);
+            let pickerDataArray = [];
+            let pickerDataValue = null;
+            if(resultData && resultData.length>0){
+              pickerDataArray.push(resultData);
+              for(let i=0;i<resultData.length;i++){
+                if(resultData[i].code === value){
+                  pickerDataValue = i;
+                  break;
+                }
+              }
+            }
+            // console.log(pickerDataArray, pickerDataValue, pickerDataValue>=0?pickerDataArray[0][pickerDataValue].desc:'');
+            this.setData({ pickerDataArray, pickerDataValue:[pickerDataValue] });
+          }
+        );   
       }
     }
   },
@@ -60,11 +84,17 @@ Component({
     //   this.triggerEvent('blur', e.detail, {})
     // },
     onChange: function (e) {
-      const { type, mode, start, end,weekTimeArray } = this.data;
+      const { type, mode, start, end,pickerDataArray } = this.data;
       if (type === 'picker' && mode === 'weektime') {
-        //处理weektime，将代码转换为值
+        //处理weektime，将选择的数组下标转换为值
         const value = e.detail.value;
-        e.detail.value = weekTimeArray[0][value[0]] + ' ' + weekTimeArray[1][value[1]] + ':' + weekTimeArray[2][value[2]];
+        e.detail.value = pickerDataArray[0][value[0]] + ' ' + pickerDataArray[1][value[1]] + ':' + pickerDataArray[2][value[2]];
+      } if (type === 'picker' && mode === 'search') {
+        //将选择的数组下标转换为值
+        const pickerDataValue = e.detail.value;
+        e.detail.value = pickerDataArray[0][pickerDataValue[0]].code;
+        this.setData({ pickerDataValue});
+        // console.log(e.detail.value);
       }
       this.bubbleEvent(e);
     },
@@ -77,10 +107,12 @@ Component({
       let id = e.target.id;
       if (!id) id = e.currentTarget.id;
       e.detail.id = id;
+      e.detail.parentid = this.data.parentid;
+      e.detail.innerArrayIndex = this.data.innerArrayIndex;
     },
-    getWeekTimeArray(start, end) {
-      let weekTimeArray = [];
-      weekTimeArray.push(['周日', '周一', '周二', '周三', '周四', '周五', '周六']);
+    getPickerDataArray(start, end) {
+      let pickerDataArray = [];
+      pickerDataArray.push(['周日', '周一', '周二', '周三', '周四', '周五', '周六']);
       let startTime = [0, 0];
       let endTime = [23, 59];
       // if (!utils.isEmpty(start)) startTime = comm.parseTime(start);
@@ -89,13 +121,13 @@ Component({
       for (let i = startTime[0]; i <= endTime[0]; i++) {
         hourArr.push(((100 + i) + "").substring(1));
       }
-      weekTimeArray.push(hourArr);
+      pickerDataArray.push(hourArr);
       let timeArr = [];
       for (let i = 0; i <= 59; i++) {
         timeArr.push(((100 + i) + "").substring(1));
       }
-      weekTimeArray.push(timeArr);
-      return weekTimeArray;
+      pickerDataArray.push(timeArr);
+      return pickerDataArray;
     }
   }
 })

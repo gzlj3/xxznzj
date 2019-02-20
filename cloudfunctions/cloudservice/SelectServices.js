@@ -47,8 +47,8 @@ const querySearchStaff = async (curUser, searchType, searchData, appendCond) => 
   // console.log('querysearchstaff:', data, curUser);
   result = await commService.queryDocs(colltable, { yzhid,...appendCond });
   result.map(value => {
-    const desc = value.name + ' ' + value.sfzh;
-    const code = value.name;
+    const desc = value.name;
+    const code = value._id;
     retResult.push({ desc, code });
   });
   return retResult;

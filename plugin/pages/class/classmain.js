@@ -28,7 +28,7 @@ Page({
    */
   onLoad: function (options) {
     // console.log('test:',comm.parseWeektime("周一 11:32"));
-    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY,{tablename});
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename, fmName});
     commServices.handleAfterRemote(response, null,
       (resultData) => {
         console.log('onload classmain:',resultData);

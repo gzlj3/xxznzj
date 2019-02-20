@@ -1,10 +1,20 @@
 <view class="weui-cells weui-cells_after-title">  
-  <block wx:for="{{fmMetas}}" wx:key="{{item.name}}">
-    <!-- <block wx:if="{{item.type==='multi'}}">
-      <view class="weui-cells__title">{{item.label}}{{morezh_index+1}}
-        <view style='display:inline-block;width:70%;color:red;text-align:right' data-item="{{morezh_index}}" ontap="onDeleteMorezh">删除</view>
+  <block wx:for="{{fmMetas}}" wx:key="{{index_fmMetas}}"  wx:for-index="index_fmMetas" wx:for-item="fmMeta">
+    <block wx:if="{{fmMeta.type==='multi'}}">
+      <view class="weui-cells__title addflex">{{fmMeta.label}}
+        <view>
+          <view class="miniButton" id="{{fmMeta.name}}" ontap="onAddInnerArray">增加</view>
+          <view class="miniButton" style="margin-left:5px" id="{{fmMeta.name}}" ontap="onDeleteInnerArray">删除</view>
+        </view>
       </view>
-    </block> -->
-    <wrapperinput id="_wrapperinput" value="{{currentObject[item.name]}}" options="{{item}}" bindinput="onInputChange" bindchange="onInputChange"/>
+      <block wx:for="{{currentObject[fmMeta.name]}}" wx:key="{{index_parent}}" wx:for-index="index_parent" wx:for-item="item_parent">
+        <block wx:for="{{fmMeta.fields}}" wx:key="*this">
+          <wrapperinput id="_wrapperinput" value="{{currentObject[fmMeta.name][index_parent][item.name]}}" options="{{item}}" 
+           parentid="{{fmMeta.name}}" innerArrayIndex="{{index_parent}}" bindinput="onInputChange" bindchange="onInputChange"/>
+        </block>
+        <!-- {{currentObject[fmMeta.name][index].sksj}} -->
+      </block> 
+    </block> 
+    <wrapperinput wx:else id="_wrapperinput" value="{{currentObject[fmMeta.name]}}" options="{{fmMeta}}" bindinput="onInputChange" bindchange="onInputChange"/>
   </block>
 </view>

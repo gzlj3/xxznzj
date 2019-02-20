@@ -21,8 +21,9 @@
       {
         "label": "所属班级",
         "name": "class",
-        "searchType": "class",
-        "type": "search"
+        "type": "picker",
+        "mode": "search",
+        "searchType": "class"
       }
     ],
     "charge": [
@@ -62,13 +63,6 @@
             "mode": "weektime"
           }
         ]
-      },
-      {
-        "label": "上课时间",
-        "name": "sksj",
-        "require": true,
-        "type": "picker",
-        "mode": "weektime"
       },
       {
         "label": "老师姓名",

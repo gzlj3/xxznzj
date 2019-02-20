@@ -59,9 +59,9 @@ Component({
   methods: {
     onLoad: function (options) {
       // console.log('onload:', options);
-      this.setData({ onLoadOptions:options});
+      this.setData({ onLoadOptions:options}); 
       wx.navigateTo({
-        url: 'plugin://XXZNZJ/classmain',
+        url: 'plugin://XXZNZJ/xyglmain',
       })
       // this.method1();
       // wx.login({
