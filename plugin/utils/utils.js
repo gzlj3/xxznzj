@@ -1,3 +1,11 @@
+exports.valid = (value,validType) => {
+  if(isEmpty(value)) return true;
+  switch(validType){
+    case 'phone': return checkSjhm(value)
+  }
+  return true;
+}
+
 exports.getInteger = (value) => {
   try{
     const result = Number.parseInt(value);
@@ -96,10 +104,11 @@ exports.showModalInfo = (title, content, callback) => {
   });
 }
 
-exports.checkSjhm = (sjhm) => {
+const checkSjhm = (sjhm) => {
   const myreg = /^(14[0-9]|13[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$$/;
   return myreg.test(sjhm);
 }
+exports.checkSjhm = checkSjhm;
 
 //生成n位数的随机数
 exports.getRandom = (n) => {

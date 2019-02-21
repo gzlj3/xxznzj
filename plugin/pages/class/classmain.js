@@ -20,7 +20,8 @@ Page({
    */
   data: {
     // fields: { avatarUrl: 'avatarUrl', title: 'name', desc: 'sf' },
-    sourceList:[]
+    sourceList:[],
+    sourceListItems:[]
   },
 
   /**
@@ -31,7 +32,8 @@ Page({
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename, fmName});
     commServices.handleAfterRemote(response, null,
       (resultData) => {
-        console.log('onload classmain:',resultData);
+        // console.log('onload classmain:',resultData);
+        if(!resultData) resultData = [];
         this.refreshSourceList(resultData);
         app.sourceListDirty = false;
       }
@@ -39,10 +41,14 @@ Page({
 
   },
   refreshSourceList: function(sourceList){
-    sourceList.map(value=>{
-      value.title = value.bjmc;
+    let sourceListItems = [];
+    sourceList.map(value=>{ 
+      sourceListItems.push({
+        title: `${value.bjmc}`,
+        // desc: `剩余课次:${value.cs ? value.cs : 0}`
+      })
     })
-    this.setData({sourceList});
+    this.setData({sourceList,sourceListItems});
   },
   onBodyTap:function(e){
     // console.log('onbodytap:',e);
@@ -54,7 +60,7 @@ Page({
     const currentObject = this.data.sourceList[pos];
     const paras = { fmName, tablename, unifield: 'bjmc', currentObject }
     const parasJson = JSON.stringify(paras);
-    wx.navigateTo({
+    wx.navigateTo({ 
       url: '../edit/editdata?item=' + parasJson,
     })
   },

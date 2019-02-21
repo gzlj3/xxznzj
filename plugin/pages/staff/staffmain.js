@@ -48,14 +48,14 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: 'name', currentObject }
+    const paras = { fmName, tablename, unifield: ['name','sjhm'], currentObject }
     const parasJson = JSON.stringify(paras);
-    wx.navigateTo({
+    wx.navigateTo({ 
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield:'name'}
+    const paras = { fmName, tablename, unifield:['name','sjhm']}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

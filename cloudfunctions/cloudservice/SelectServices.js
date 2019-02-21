@@ -48,7 +48,7 @@ const querySearchStaff = async (curUser, searchType, searchData, appendCond) => 
   result = await commService.queryDocs(colltable, { yzhid,...appendCond });
   result.map(value => {
     const desc = value.name;
-    const code = value._id;
+    const code = value.sjhm;
     retResult.push({ desc, code });
   });
   return retResult;

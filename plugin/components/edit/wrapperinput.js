@@ -17,7 +17,7 @@ Component({
     options:{
       type:Object,
       observer(newVal, oldVal, changedPath) {
-        // console.log('observer input1 options:', newVal);
+        // console.log('wrapperinput observer options:', newVal,oldVal);
         this.setData({ ...newVal});
       } 
     },
@@ -31,7 +31,7 @@ Component({
   },
   lifetimes: {
     attached(e) {
-      // console.log('wrapperinput attacthed:',e);
+      // console.log('wrapperinput attacthed:',this.data.options);
       const {type,mode,start,end,value,searchType} = this.data;
       // const { value } = this.properties;
       if(type==='picker' && mode==='weektime'){
@@ -45,20 +45,20 @@ Component({
         const response = commServices.queryData(CONSTS.BUTTON_SEARCH, { searchType });
         commServices.handleAfterRemote(response, null,
           (resultData) => { 
-            // console.log('search:', resultData);
-            let pickerDataArray = [];
+            // console.log('wrapperinput attached:', resultData);
+            let pickerDataArray = resultData; 
             let pickerDataValue = null;
-            if(resultData && resultData.length>0){
-              pickerDataArray.push(resultData);
-              for(let i=0;i<resultData.length;i++){
-                if(resultData[i].code === value){
+            if (pickerDataArray && pickerDataArray.length>0){
+              // pickerDataArray.push(resultData);
+              for (let i = 0; i < pickerDataArray.length;i++){
+                if (pickerDataArray[i].code === value){
                   pickerDataValue = i;
                   break;
                 }
               }
             }
             // console.log(pickerDataArray, pickerDataValue, pickerDataValue>=0?pickerDataArray[0][pickerDataValue].desc:'');
-            this.setData({ pickerDataArray, pickerDataValue:[pickerDataValue] });
+            this.setData({ pickerDataArray, pickerDataValue });
           }
         );   
       }
@@ -92,9 +92,8 @@ Component({
       } if (type === 'picker' && mode === 'search') {
         //将选择的数组下标转换为值
         const pickerDataValue = e.detail.value;
-        e.detail.value = pickerDataArray[0][pickerDataValue[0]].code;
+        e.detail.value = pickerDataArray[pickerDataValue].code;
         this.setData({ pickerDataValue});
-        // console.log(e.detail.value);
       }
       this.bubbleEvent(e);
     },

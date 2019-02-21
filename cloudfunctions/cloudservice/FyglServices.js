@@ -112,9 +112,16 @@ const saveData = async (data, curUser) => {
   // 检查主键是否重复
   let result;
   if (!utils.isEmpty(unifield)) {
-    result = await commService.querySingleDoc(collTable, { yzhid, _id: _.neq(formObject._id), [unifield]: formObject[unifield] });
-    if (result)
-      throw utils.newException(`[${formObject[unifield]}]已经存在！`);
+    // console.log(unifield, unifield instanceof String);
+    if(!(unifield instanceof Array)){
+      unifield = [unifield];
+    }
+    for(let i=0;i<unifield.length;i++){
+      const fname = unifield[i];
+      result = await commService.querySingleDoc(collTable, { yzhid, _id: _.neq(formObject._id), [fname]: formObject[fname] });
+      if (result)
+        throw utils.newException(`[${formObject[fname]}]已经存在！`);
+    }
   }
 
   if (isAddDoc) {

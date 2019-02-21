@@ -4,11 +4,11 @@
   </view>
   <view class="weui-cell__bd">
     <block wx:if="{{type==='picker'}}">
-      <picker wx:if="{{mode==='weektime'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{pickerDataValue}}" range="{{pickerDataArray}}" bindchange="onChange">
+      <picker wx:if="{{mode==='weektime'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{pickerDataValue?pickerDataValue:[]}}" range="{{pickerDataArray}}" bindchange="onChange">
         <view class="weui-input">{{value}}</view>
       </picker>
-      <picker wx:if="{{mode==='search'}}" mode="multiSelector" id="{{name}}" name="{{name}}" value="{{pickerDataValue}}" range="{{pickerDataArray}}" range-key="desc" bindchange="onChange">
-        <view class="weui-input">{{pickerDataValue>=0?pickerDataArray[0][pickerDataValue[0]].desc:''}}</view>
+      <picker wx:if="{{mode==='search'}}" mode="selector" id="{{name}}" name="{{name}}" value="{{pickerDataValue}}" range="{{pickerDataArray}}" range-key="desc" bindchange="onChange">
+        <view class="weui-input">{{pickerDataValue>=0?pickerDataArray[pickerDataValue].desc:''}}</view>
       </picker>
       <picker wx:if="{{mode!=='search' && mode!=='weektime'}}" mode="{{mode}}" id="{{name}}" name="{{name}}" value="{{value}}" start="{{start}}" end="{{end}}" range="{{range}}" range-key="{{range-key?range-key:undefined}}" bindchange="bubbleEvent" bindcolumnchange="bubbleEvent">
         <view class="weui-input">{{value}}</view>

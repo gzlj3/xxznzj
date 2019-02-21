@@ -50,10 +50,9 @@ Page({
   onLoad: function (options) {
     // this.setData({ user: getApp().globalData.user });
     // fyglService.checkAuthority(1);
-    // let arr = new Array(3);
-    // arr[0] = {};
-    // arr[1] = {};
-    // console.log('compare:',arr[0]===arr[1]);
+    // let arr = 'aaaa';
+    // arr = ['aaa'];
+    // console.log('test:',arr instanceof Array);
     // this.queryList(this.data.activeIndex);
     // console.log('====:',utils['parseInt']());
     const tablename = 'class';

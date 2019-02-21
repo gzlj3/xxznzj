@@ -14,9 +14,9 @@ Component({
   properties: {
     fmMetas:{
       type:Array,
-      // observer(newVal, oldVal, changedPath) {
-      //   console.log('observer fmMetas:', newVal,oldVal);
-      // }
+      observer(newVal, oldVal, changedPath) {
+        // console.log('observer fmMetas:', newVal,oldVal);
+      }
     },
     currentObject:{
       type: Object,
@@ -33,8 +33,27 @@ Component({
 
   },
   lifetimes: {
-    attached() {
-      // console.log('wrapperforms attacthed:',this.data.currentObject);
+    attached(e) {
+      // console.log('wrapperform attacthed:', this.data.fmMetas);
+    },
+    ready(e){
+      // console.log('wrapperform ready:', this.data.fmMetas);
+      //赋初始值
+      let {fmMetas,currentObject} = this.data;
+      fmMetas.map(value=>{
+        if(value.initialValue){
+          //如果有初始值配置，则赋值
+          if(value.type==='multi'){
+            if (!currentObject[value.name]) currentObject[value.name] = [];
+            if (currentObject[value.name].length<1){
+              currentObject[value.name].push(value.initialValue);
+            }
+          }else{
+            currentObject[value.name] = value.initialValue;
+          }
+        }
+      });
+      this.setData({currentObject});
     }
   },
   /**
@@ -45,22 +64,51 @@ Component({
       let { currentObject,fmMetas } = this.data;
       // console.log('validfields:',currentObject,fmMetas);
       let errFields = '';
+      // let errValidFields = '';
       fmMetas.map(meta=>{
-        if(meta.require && utils.isEmpty(currentObject[meta.name])){
-          errFields += meta.label+',';
+        let info = '';
+        if(meta.type==='multi'){
+          // console.log('meta.fields',meta.fields);
+          meta.fields.map(innerMeta=>{
+            // console.log('currentObject[meta.name]', currentObject[meta.name]);
+            currentObject[meta.name].map(innerValue=>{
+              info = this.validField(innerMeta, innerValue[innerMeta.name]);
+              if (!utils.isEmpty(info)) errFields += info;
+            })
+          })
+        }else{
+          info = this.validField(meta, currentObject[meta.name]);
+          if (!utils.isEmpty(info)) errFields += info;
         }
       })
-      if(!utils.isEmpty(errFields)){
-        errFields = errFields.substring(0,errFields.length - 1);
-        utils.showToast('请先输入如下字段：'+errFields);
+      if (!utils.isEmpty(errFields)){
+        errFields = errFields.substring(0, errFields.length - 1);
+        utils.showToast('校验错误：'+errFields);
         return false;
       }
+      // if (!utils.isEmpty(errValidFields)) {
+      //   errValidFields = errValidFields.substring(0, errValidFields.length - 1);
+      //   utils.showToast('有如下字段输入有误：' + errValidFields);
+      //   return false;
+      // }
       return true;
     },
-    getWrapperInput:function(){
-      const input = this.selectComponent("#_wrapperinput");
-      return input;
+
+    validField:function(meta,value){
+      if (meta.require && utils.isEmpty(value)) {
+        return meta.label + '未输入,';
+      } 
+      if (!utils.isEmpty(meta.valid)) {
+        if (!utils.valid(value, meta.valid)) {
+          return meta.label + '输入有误,';
+        }
+      }
+      return '';
     },
+    // getWrapperInput:function(){
+    //   const input = this.selectComponent("#_wrapperinput");
+    //   return input;
+    // },
     onAddInnerArray:function(e){
       let id = e.target.id;
       let { currentObject } = this.data;
