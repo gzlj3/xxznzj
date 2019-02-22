@@ -1,5 +1,6 @@
 const moment = require('moment.min.js');
 const utils = require('utils.js');
+const comm = require('comm.js');
 const phone = require('phone.js');
 const cloud = require('wx-server-sdk')
 const CONSTS = require('constants.js');
@@ -30,7 +31,7 @@ exports.queryDataList = async (data,curUser) => {
   let result;
   // console.log('querydatalist:',data,curUser);
   result = await commService.queryDocs(colltable, { yzhid,...querycond });
-  await handleDataList(curUser,fmName,result);
+  // await handleDataList(curUser,fmName,result);
   return result;
 }
 /**
@@ -83,7 +84,7 @@ const saveData = async (data, curUser) => {
   let { tablename, fmName, formObject, unifield } = data;
   const { collid, yzhid } = curUser;
   const collTable = commService.getTableName(tablename, collid);
-  await handleFormObject(curUser, formObject, fmName);
+  // await handleFormObject(curUser, formObject, fmName);
 
   if (utils.isEmpty(formObject._id)) {
     isAddDoc = true;
@@ -163,23 +164,58 @@ exports.queryClassXx = async (data, curUser) => {
   result = await commService.queryDocs(colltable, { yzhid });
   return result;
 }
+/**
+ * 根据不同的登录用户类型及授权，查询学员列表及班级列表
+ * 
+ */
 exports.queryXyList = async (data, curUser) => {
-  //根据不同的登录用户类型及授权，查询学员列表及班级列表
   const { yzhid, collid, sjhm,userType } = curUser;
   const tablename = 'student';
   const colltable = commService.getTableName(tablename, collid)
-  let result;
+  let result,classList;
   // console.log('querysigninxy:', data, curUser);
-  if (userType === CONSTS.USERTYPE_ZK){
+  if (userType === CONSTS.USERTYPE_FD) {
+    // 管理员进入,查询所有班级
+    const colltable = commService.getTableName('class', collid)
+    classList = await commService.queryDocs(colltable, { yzhid});
+  }else if (userType === CONSTS.USERTYPE_ZK){
     //查询家长的学员
     const sjhmArr = [sjhm];
     result = await commService.queryDocs(colltable, { yzhid, sjhm: _.in(sjhmArr) },['class']);
     //根据查询出的学员得出班级列表
     if(result){
-      // result.map
+      result.map(value=>{
+
+      })
     }
   }
-  return result;
+
+  console.log('current time:', utils.getChinaMoment());
+  //根据班级列表，定位与当前时间匹配的班级，如果没有，则默认选中第1个班级
+  let i;
+  for(i=0;i<classList.length;i++){
+    const sksjArr = classList[i].sksj;
+    if (sksjArr && sksjArr.length>0) {
+      let j;
+      for(j=0;j<sksjArr.length;j++){
+        const sksj = sksjArr[j].sksj;
+        console.log('sksj:',i,j,sksj);
+        if(comm.inWeektime(sksj)){
+          //找到匹配的上课时间班级
+          console.log('found class:',i);
+          break;
+        }
+      }
+      // console.log('sksj:', i, j, sksj);
+      if(j<sksjArr.length) break;
+    }
+  }
+  if(i>=classList.length){
+  //未找到找到匹配的班级，默认为第1个
+    i = 0;
+  }
+
+  return { activeIndex:i,classList};
 }
 
 exports.querySigninXy = async (data, curUser) => {

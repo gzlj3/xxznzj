@@ -130,7 +130,7 @@ exports.main = async (event, context) => {
             throw e;
           }
         }else{
-          result = await services.querySigninXy(data, curUser);
+          result = await services.queryXyList(data, curUser);
         }
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_DELETEFY:

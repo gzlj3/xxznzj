@@ -49,6 +49,10 @@ const isEmptyObj = (obj) => {
 }
 exports.isEmptyObj = isEmptyObj;
 
+exports.getChinaMoment = () => {
+  return moment().utcOffset(+8);
+}
+
 exports.getCurrentTimestamp = ()=>{
   // return moment().format('YYYY-MM-DD HH:mm:ss');
   return moment().utcOffset(+8).format('YYYY-MM-DD HH:mm:ss')

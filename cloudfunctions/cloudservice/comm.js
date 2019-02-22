@@ -70,8 +70,15 @@ const inWeektime = (weektime) => {
   if(!time) return false;
   const timeStart = time.clone().subtract(1,'hours');
   const timeEnd = time.clone().add(1, 'hours');
-  const current = moment().utcOffset(+8);
+  let current = utils.getChinaMoment();
+  console.log('inweektime:', timeStart, timeEnd,current);
   if(current>=timeStart && current<=timeEnd) return true;
+  console.log('not in....');
+  current = moment();
+  console.log('other current:', timeStart, timeEnd, current);
+  if (current >= timeStart && current <= timeEnd) return true;
+  console.log('not in');
+
   return false;
 }
 exports.inWeektime = inWeektime;

@@ -17,7 +17,8 @@ Page({
    */
   data: {
     // fields: { avatarUrl: 'avatarUrl', title: 'name', desc: 'sf' },
-    sourceList:[]
+    sourceList:[],
+    sourceListItems: []
   },
 
   /**
@@ -35,10 +36,15 @@ Page({
 
   },
   refreshSourceList: function(sourceList){
-    sourceList.map(value=>{
-      value.title = value.name;
+    if (!sourceList) sourceList = [];
+    let sourceListItems = [];
+    sourceList.map(value => {
+      sourceListItems.push({
+        title: `${value.name}`,
+        desc: `手机号码:${value.sjhm}`
+      })
     })
-    this.setData({sourceList});
+    this.setData({ sourceList, sourceListItems });
   },
   onBodyTap:function(e){
     // console.log('onbodytap:',e);

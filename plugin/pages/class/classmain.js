@@ -33,7 +33,6 @@ Page({
     commServices.handleAfterRemote(response, null,
       (resultData) => {
         // console.log('onload classmain:',resultData);
-        if(!resultData) resultData = [];
         this.refreshSourceList(resultData);
         app.sourceListDirty = false;
       }
@@ -41,11 +40,27 @@ Page({
 
   },
   refreshSourceList: function(sourceList){
+    if (!sourceList) sourceList = [];
     let sourceListItems = [];
     sourceList.map(value=>{ 
+      let sksj='',sksj1='',sksj2='';
+      if(value.sksj){
+        let i = 0;
+        value.sksj.map(obj=>{
+          if(!utils.isEmpty(obj.sksj)){
+            if(i===0) sksj = '上课时间:'+obj.sksj;
+            else if (i === 1) sksj1 = '上课时间:' + obj.sksj;
+            else if (i === 2) sksj2 = '上课时间:' + obj.sksj;
+            i++;
+          } 
+        })
+      }
+      // if(!utils.isEmpty(sksj)) sksj = '上课时间：'+sksj.substring(0,sksj.length - 1);
       sourceListItems.push({
         title: `${value.bjmc}`,
-        // desc: `剩余课次:${value.cs ? value.cs : 0}`
+        desc:sksj,
+        desc1: sksj1,
+        desc2: sksj2
       })
     })
     this.setData({sourceList,sourceListItems});

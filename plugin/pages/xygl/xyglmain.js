@@ -1,12 +1,13 @@
 // import * as CONSTS from '../../utils/constants.js';
 // // import moment from '../../utils/moment-with-locales.min.js';
-// import moment from '../../utils/moment.min.js';
+import moment from '../../utils/moment.min.js';
 // import * as fyglService from '../../services/fyglServices.js'; 
 // const utils = require('../../utils/utils.js');
 const app = require('../../app1.js');
 const config = require('../../config.js');
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
+const comm = require('../../utils/comm.js');
 const commServices = require('../../services/commServices.js');
 
 const initialState = {
@@ -52,16 +53,17 @@ Page({
     // fyglService.checkAuthority(1);
     // let arr = 'aaaa';
     // arr = ['aaa'];
-    // console.log('test:',arr instanceof Array);
+    
+    // console.log('test:', comm.inWeektime('周五 17:00'));
     // this.queryList(this.data.activeIndex);
     // console.log('====:',utils['parseInt']());
-    const tablename = 'class';
-    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename });
+    const tablename = 'class'; 
+    const response = commServices.queryData(CONSTS.BUTTON_STUSIGNIN);
     commServices.handleAfterRemote(response, null,
       (resultData) => {
-        // console.log('onload xxylmain:', resultData);
-        this.refreshTabItems(resultData);
-        this.querySourceList(this.data.activeIndex);
+        console.log('onload xxylmain:', resultData);
+        // this.refreshTabItems(resultData);
+        // this.querySourceList(this.data.activeIndex);
 
         // this.refreshSourceList(resultData);
         app.sourceListDirty = false;

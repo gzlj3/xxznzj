@@ -1,6 +1,6 @@
 <view class="page">
   <view class="page__bd">
     <button  size="default" bindtap="onAdd">新增教职工</button>
-    <list listItems="{{sourceList}}" bindbodytap="onBodyTap"/>
+    <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap"/>
   </view>
 </view>
