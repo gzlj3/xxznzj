@@ -56,7 +56,7 @@ const parseWeektimeToMoment = (weektime) => {
   const wtArr = weektime.split(' ');
   if (wtArr.length < 2) return null;
   const w = parseWeek(wtArr[0]);
-  return moment(`${w} ${wtArr[1]}`,'e HH:mm');
+  return moment(`${w} ${wtArr[1]}`, 'e HH:mm');
 }
 exports.parseWeektimeToMoment = parseWeektimeToMoment;
 
@@ -68,16 +68,12 @@ exports.parseWeektimeToMoment = parseWeektimeToMoment;
 const inWeektime = (weektime) => {
   const time = parseWeektimeToMoment(weektime);
   if(!time) return false;
-  const timeStart = time.clone().subtract(1,'hours');
-  const timeEnd = time.clone().add(1, 'hours');
-  let current = utils.getChinaMoment();
+  const timeStart = time.clone().subtract(1, 'hours').format('YYYY-MM-DD HH:mm:ss');
+  const timeEnd = time.clone().add(1, 'hours').format('YYYY-MM-DD HH:mm:ss');
+  let current = utils.getCurrentTimestamp();
   console.log('inweektime:', timeStart, timeEnd,current);
   if(current>=timeStart && current<=timeEnd) return true;
   console.log('not in....');
-  current = moment();
-  console.log('other current:', timeStart, timeEnd, current);
-  if (current >= timeStart && current <= timeEnd) return true;
-  console.log('not in');
 
   return false;
 }

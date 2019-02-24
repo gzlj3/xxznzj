@@ -79,6 +79,18 @@ const handleFormObject = async (curUser, formObject, fmName) => {
   })
 }
 
+const deleteData = async (data, curUser) => {
+  let isAddDoc;
+  let { tablename, id } = data;
+  const { collid, yzhid } = curUser;
+  const collTable = commService.getTableName(tablename, collid);
+  const num = await commService.removeDoc(collTable, id);
+  if (num < 1)
+    throw utils.newException('ID:' + id);
+  return num;
+}
+exports.deleteData = deleteData;
+
 const saveData = async (data, curUser) => {
   let isAddDoc;
   let { tablename, fmName, formObject, unifield } = data;
@@ -105,7 +117,7 @@ const saveData = async (data, curUser) => {
       const coll = await db.collection(collTable).limit(1).get();
     } catch (e) {
       if (e.errCode === -502005) {
-        console.log('create collection:', collTable);
+        // console.log('create collection:', collTable);
         await db.createCollection(collTable);
       }
     }
@@ -178,6 +190,9 @@ exports.queryXyList = async (data, curUser) => {
     // 管理员进入,查询所有班级
     const colltable = commService.getTableName('class', collid)
     classList = await commService.queryDocs(colltable, { yzhid});
+    if(!classList) classList = [];
+    //添加一行未分班级
+    classList.push({bjmc:'未分班学员'});
   }else if (userType === CONSTS.USERTYPE_ZK){
     //查询家长的学员
     const sjhmArr = [sjhm];
@@ -188,9 +203,10 @@ exports.queryXyList = async (data, curUser) => {
 
       })
     }
+  } else if (userType === CONSTS.USERTYPE3) {
+
   }
 
-  console.log('current time:', utils.getChinaMoment());
   //根据班级列表，定位与当前时间匹配的班级，如果没有，则默认选中第1个班级
   let i;
   for(i=0;i<classList.length;i++){
@@ -199,10 +215,10 @@ exports.queryXyList = async (data, curUser) => {
       let j;
       for(j=0;j<sksjArr.length;j++){
         const sksj = sksjArr[j].sksj;
-        console.log('sksj:',i,j,sksj);
+        // console.log('sksj:',i,j,sksj);
         if(comm.inWeektime(sksj)){
           //找到匹配的上课时间班级
-          console.log('found class:',i);
+          // console.log('found class:',i);
           break;
         }
       }

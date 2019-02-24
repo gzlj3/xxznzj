@@ -123,7 +123,7 @@ exports.main = async (event, context) => {
             const { parentid } = data.formObject;
             result = await services.updateStudentCs(curUser.collid, parentid, '-1','signin');
             //刷新签到数据
-            result = await services.querySigninXy(data, curUser);
+            // result = await services.queryXyList(data, curUser);
           } catch (e) {
             //更新学员表次数失败，则删除之前保存完成的充值记录
             await commService.removeDoc(commService.getTableName('signin', curUser.collid), objid);
@@ -134,9 +134,9 @@ exports.main = async (event, context) => {
         }
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_DELETEFY:
-        console.log("deletefy");
-        result = await services.deleteFy(data, curUser);
-        result = await services.queryFyList(curUser);
+        // console.log("deletefy");
+        result = await services.deleteData(data, curUser);
+        // result = await services.queryFyList(curUser);
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_EXITFY:
         if (method === 'POST') {

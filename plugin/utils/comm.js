@@ -56,7 +56,7 @@ const parseWeektimeToMoment = (weektime) => {
   const wtArr = weektime.split(' ');
   if (wtArr.length < 2) return null;
   const w = parseWeek(wtArr[0]);
-  return moment(`${w} ${wtArr[1]}`,'e HH:mm');
+  return moment(`${w} ${wtArr[1]}`, 'e HH:mm');
 }
 exports.parseWeektimeToMoment = parseWeektimeToMoment;
 
@@ -70,7 +70,7 @@ const inWeektime = (weektime) => {
   if(!time) return false;
   const timeStart = time.clone().subtract(1,'hours');
   const timeEnd = time.clone().add(1, 'hours');
-  const current = moment().utcOffset(+8);
+  const current = moment();
   if(current>=timeStart && current<=timeEnd) return true;
   return false;
 }

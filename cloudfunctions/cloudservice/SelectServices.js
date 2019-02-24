@@ -46,6 +46,7 @@ const querySearchStaff = async (curUser, searchType, searchData, appendCond) => 
   let retResult = [];
   // console.log('querysearchstaff:', data, curUser);
   result = await commService.queryDocs(colltable, { yzhid,...appendCond });
+  if (!result) return retResult;
   result.map(value => {
     const desc = value.name;
     const code = value.sjhm;
@@ -60,6 +61,7 @@ const querySearchClass = async (curUser, searchType, searchData, appendCond) => 
   let result;
   let retResult = [];
   result = await commService.queryDocs(colltable, { yzhid,...appendCond });
+  if (!result) return retResult;
   result.map(value => {
     const desc = value.bjmc;
     const code = value._id;
@@ -74,6 +76,7 @@ const querySearchSignin = async (curUser, searchType, searchData, appendCond) =>
   let result;
   let retResult = [];
   result = await commService.queryDocs(colltable, { yzhid, ...appendCond });
+  if (!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {
     const desc = `${value.lrsj}(${value.name?value.name:value.nickName})签到.`;
@@ -89,6 +92,7 @@ const querySearchCharge = async (curUser, searchType, searchData, appendCond) =>
   let result;
   let retResult = [];
   result = await commService.queryDocs(colltable, { yzhid, ...appendCond });
+  if(!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {
     const desc = `${value.lrsj}(${value.name ? value.name : value.nickName})充值:${value.cs}次.`;
