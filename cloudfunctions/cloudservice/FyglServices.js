@@ -196,14 +196,30 @@ exports.queryXyList = async (data, curUser) => {
   }else if (userType === CONSTS.USERTYPE_ZK){
     //查询家长的学员
     const sjhmArr = [sjhm];
-    result = await commService.queryDocs(colltable, { yzhid, sjhm: _.in(sjhmArr) },['class']);
+    result = await commService.queryDocs(colltable, { yzhid, sjhm: _.in(sjhmArr) });
     //根据查询出的学员得出班级列表
+    let classIdList  =[];
+    classList = [];
     if(result){
       result.map(value=>{
-
+        if(value.class){
+          value.class.map(classObj => {
+            classIdList.push(classObj.class);
+          })
+        }
       })
+      // console.log('-------:', classIdList);
+      //根据班级ID,查询班级列表
+      const colltable = commService.getTableName('class', collid)
+      classList = await commService.queryDocs(colltable, { yzhid,_id:_.in(classIdList) });
+      // console.log('=====',classIdList,classList);
+      if (!classList) classList = [];
     }
   } else if (userType === CONSTS.USERTYPE3) {
+    //老师进入,通过老师手机号码查询班级
+    const colltable = commService.getTableName('class', collid)
+    classList = await commService.queryDocs(colltable, { yzhid,lsxm:{lsxm:sjhm} });
+    if (!classList) classList = [];
 
   }
 

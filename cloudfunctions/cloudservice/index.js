@@ -17,15 +17,15 @@ const phone = require('phone.js');
 exports.main = async (event, context) => {
   const { action, method, data,restData,userInfo} = event;
   if(!action) return results.getErrorResults('未指定操作！');
-  console.log("action:"+action+"   method:"+method);
-  console.log('event:',event);
-  console.log('context:',context);
+  // console.log("action:"+action+"   method:"+method);
+  // console.log('event:',event);
+  // console.log('context:',context);
   
   try {
     //检查权限，成功则返回用户的基本数据
     const curUser = await userServices.checkAuthority(action, method,userInfo,data);
     
-    // console.log('操作用户：', curUser);
+    console.log('操作用户：', curUser);
     services.setUser(curUser);
     if (action === 300) {
       //测试发送模板消息
@@ -70,7 +70,7 @@ exports.main = async (event, context) => {
         //   result = await services.queryLastzdWithGrantcode(data, curUser);
           return results.getSuccessResults(result);
         }
-      case CONSTS.BUTTON_SYSCONFIG  :
+      case CONSTS.BUTTON_SYSCONFIG  : 
         result = await userServices.sysconfig(data, curUser);
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_SENDSJYZM:
@@ -125,7 +125,7 @@ exports.main = async (event, context) => {
             //刷新签到数据
             // result = await services.queryXyList(data, curUser);
           } catch (e) {
-            //更新学员表次数失败，则删除之前保存完成的充值记录
+            //更新学员表次数失败，则删除之前保存完成的签到记录
             await commService.removeDoc(commService.getTableName('signin', curUser.collid), objid);
             throw e;
           }

@@ -131,7 +131,7 @@ exports.redirectToSuccessPage = (pageDesc, buttonText,returnUrl,returnAction,ret
 }
 
 exports.afterSave = (pageDesc) => {
-  wx.navigateTo({
+  wx.redirectTo({
     // url: '/pages/msg/msg_success?pageDesc=' + pageDesc
     url: '../msg/msg_success'
   });

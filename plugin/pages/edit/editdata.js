@@ -23,15 +23,21 @@ Page({
     // const fmMetas = options.fmMetas ? JSON.parse(options.fmMetas) : null;
     // const tablename = options.tablename;
     const fmMetas = app.getFmMetas()[paras.fmName];
-    this.setData({...paras,fmMetas});
+    let {currentObject,initialValue} = paras;
+    if (!currentObject) currentObject = {};
+    if(initialValue){
+    //处理初始值
+      Object.assign(currentObject,initialValue);
+    }
+    this.setData({ ...paras,currentObject,fmMetas});
   },  
 
   formSubmit:function(e){
     const form = this.selectComponent("#_wrapperformid");
     if(!form.validFields()) return;
     const formObject = form.data.currentObject;
-    let {buttonAction,tablename,fmName,unifield,parentid} = this.data;
-    if (!utils.isEmpty(parentid)) formObject.parentid = parentid;
+    let {buttonAction,tablename,fmName,unifield} = this.data;
+    // if (!utils.isEmpty(parentid)) formObject.parentid = parentid;
     if (utils.isEmpty(buttonAction)) buttonAction = CONSTS.BUTTON_SAVEDATA;
     const response = commServices.postData(buttonAction, { formObject, tablename,fmName,unifield});
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));

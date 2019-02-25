@@ -40,6 +40,7 @@ exports.BUTTON_GRANTCODE = 110; // 插入授权码(POST)(或根据授权码查�
 exports.USERTYPE_NONE = '0'; // 用户类型：未注册
 exports.USERTYPE_FD = '1'; // 用户类型：机构管理员
 exports.USERTYPE_ZK = '2'; // 用户类型：其它
+exports.USERTYPE3 = '3'; // 用户类型3
 
 //系统管理
 exports.BUTTON_SYSCONFIG = 200; // 系统配置

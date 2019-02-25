@@ -8,17 +8,17 @@
     else if (sfsz == '1') return '(已结清)';
     else if (sfsz == '2') return '(已结转)';
     return '异常' + sfsz;
-  }
+  }  
   module.exports.getZdfy = function(item) {
-    var rq1 = item.rq1;
+    var rq1 = item.rq1; 
     if (!rq1 || rq1.length < 10) return '';
     var ym = item.zdmonth ? item.zdmonth : rq1.substring(0, 4) + '年' + rq1.substring(5, 7) + '月';
     if (item.zdlx == '0') tsinfo = '签约帐单';
-    else if (item.zdlx == '2') tsinfo = '退房帐单';
+    else if (item.zdlx == '2') tsinfo = '退房帐单'; 
     else tsinfo = ym + '帐单';
     var zdfy = tsinfo + ':' + item.fyhj + '元';
     return zdfy;
-  }
+  } 
 </wxs>
  
 <view class="page">

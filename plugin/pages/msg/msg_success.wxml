@@ -9,9 +9,9 @@
         </view>
         <view class="weui-msg__opr-area">
             <view class="weui-btn-area">
-                <button class="weui-btn" type="primary" bindtap="onButton1">返回编辑</button>
+                <button class="weui-btn" type="primary" bindtap="onButton1">返回</button>
                 <button class="weui-btn" type="default" bindtap="onButton2" wx:if="{{button2Obj}}">{{button2Obj.buttonText}}</button>
-                <button class="weui-btn" type="default" bindtap="onButton3" wx:else>返回列表</button>
+                <!-- <button class="weui-btn" type="default" bindtap="onButton3" wx:else>返回列表</button> -->
             </view>
         </view>
         <!-- <view class="weui-msg__extra-area">

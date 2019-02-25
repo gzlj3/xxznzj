@@ -73,12 +73,16 @@ Page({
 
   },
   refreshTabItems: function (resultData) {
-    const {classList,activeIndex} = resultData;
+    let {classList,activeIndex} = resultData;
     // if(!classList) classList = [];
     let tabItems = [];
     classList.map(value=>{
       tabItems.push(value.bjmc);
     });
+    //如果activeIndex>0，则不修改
+    if(this.data.activeIndex>0) {
+      activeIndex = this.data.activeIndex;
+    }
     this.setData({ classList, tabItems, activeIndex});
   },
 
@@ -146,7 +150,10 @@ Page({
       return;
     }
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName: 'charge', tablename: 'charge', parentid:currentObject._id,buttonAction:CONSTS.BUTTON_STUCHARGE} 
+    const { name, nickName, sjhm } = app.getGlobalData().user;
+    // currentObject
+    const initialValue = { name, nickName, parentid: currentObject._id};
+    const paras = { fmName: 'charge', tablename: 'charge', initialValue,buttonAction:CONSTS.BUTTON_STUCHARGE} 
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

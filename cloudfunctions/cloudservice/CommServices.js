@@ -94,6 +94,7 @@ exports.queryDocs = async (tableName, whereObj,orderbyObj) => {
         orderbyObj = [orderbyObj];
       }
       orderbyObj.map(value=>{
+        // console.log('order by:',value);
         coll = coll.orderBy(...value);
       })
     }
