@@ -60,9 +60,9 @@ Component({
     onLoad: function (options) {
       // console.log('onload:', options);
       this.setData({ onLoadOptions:options}); 
-      wx.navigateTo({
-        url: 'plugin://XXZNZJ/xyglmain',
-      })
+      // wx.navigateTo({
+      //   url: 'plugin://XXZNZJ/xyglmain',
+      // })
       // this.method1();
       // wx.login({
       //   success:function(e){

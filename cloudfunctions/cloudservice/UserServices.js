@@ -284,7 +284,7 @@ exports.registerUser = async (data,userInfo) => {
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
-  let {yzhid,collid,orgname} = formObject;
+  let {yzhid,collid,orgname,name} = formObject;
   // let orgcode = yzhid;
   let result
   if (commService.isFd(formObject.userType)) {
@@ -310,6 +310,7 @@ exports.registerUser = async (data,userInfo) => {
     userType:formObject.userType,
     // userData:frontUserInfo,
     orgname,
+    name,
     lrsj,
     zhxgsj
   }

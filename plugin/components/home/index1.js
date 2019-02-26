@@ -223,6 +223,10 @@ Component({
         utils.showToast('微信公开信息未授权！');
         return;
       }
+      if (utils.isEmpty(e.detail.value.name)) {
+        utils.showToast('姓名不能为空！');
+        return;
+      }
       if (utils.isEmpty(sjhm)) {
         utils.showToast('未获取手机号！');
         return;
@@ -244,10 +248,10 @@ Component({
       formObject.userType = requestUserType;
       formObject.sjhm = sjhm;
       formObject.canIUseWxPhoneNumber = canIUseWxPhoneNumber;
-      if (requestUserType === CONSTS.USERTYPE_ZK) {
+      if (requestUserType !== CONSTS.USERTYPE_FD) {
         formObject.yzhid = yzhid;
         formObject.collid = collid;
-        formObject.orgname = orgname;
+        formObject.orgname = orgname; 
       }
 
       // console.log(e.detail.value);

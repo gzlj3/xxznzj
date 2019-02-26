@@ -49,6 +49,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    const user = app.getGlobalData().user;
     this.setData({ user: app.getGlobalData().user });
     // fyglService.checkAuthority(1);
     // let arr = 'aaaa';
@@ -65,7 +66,11 @@ Page({
       (resultData) => {
         console.log('onload xxylmain:', resultData);
         this.refreshTabItems(resultData);
-        this.querySourceList(this.data.activeIndex);
+        if(user.userType===CONSTS.USERTYPE_ZK){
+          this.refreshSourceList(resultData,this.data.activeIndex);
+        }else{
+          this.querySourceList(this.data.activeIndex);
+        }
         // this.refreshSourceList(resultData);
         app.sourceListDirty = false;
       }
@@ -73,17 +78,22 @@ Page({
 
   },
   refreshTabItems: function (resultData) {
-    let {classList,activeIndex} = resultData;
+    let {classList=[],activeIndex=0,sourceList=[]} = resultData;
     // if(!classList) classList = [];
     let tabItems = [];
-    classList.map(value=>{
-      tabItems.push(value.bjmc);
-    });
+    if (this.data.user.userType === CONSTS.USERTYPE_ZK) {
+      tabItems.push('我的签到学员');
+      activeIndex = this.data.activeIndex;
+    }else{
+      classList.map(value=>{
+        tabItems.push(value.bjmc);
+      });
+    }
     //如果activeIndex>0，则不修改
     if(this.data.activeIndex>0) {
       activeIndex = this.data.activeIndex;
     }
-    this.setData({ classList, tabItems, activeIndex});
+    this.setData({ classList, tabItems, activeIndex, sourceList});
   },
 
   querySourceList:function(activeIndex){
@@ -101,6 +111,7 @@ Page({
     );   
   },
   refreshSourceList: function (sourceList, activeIndex) {
+    // console.log(sourceList);
     if(!sourceList) sourceList = [];
     let sourceListItems = [];
     sourceList.map(value => {
@@ -111,7 +122,9 @@ Page({
       })
     });
     let { tabItems, classList} = this.data;
-    tabItems[activeIndex] = classList[activeIndex].bjmc+'(人数:'+sourceList.length+')';
+    if(this.data.classList.length>0){
+      tabItems[activeIndex] = classList[activeIndex].bjmc+'(人数:'+sourceList.length+')';
+    }
     this.setData({ sourceList,sourceListItems,tabItems,activeIndex});
   },
   onAdd: function () {
@@ -177,7 +190,8 @@ Page({
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
     commServices.handleAfterRemote(response, '签到',
       (resultData) => {
-        this.querySourceList(this.data.activeIndex);
+        this.onLoad();
+        // this.querySourceList(this.data.activeIndex);
         // this.refreshSourceList(resultData);
       }
     )
@@ -190,7 +204,7 @@ Page({
 
     let itemList;
     if(userType===CONSTS.USERTYPE_ZK){
-      this.actionSheet2(e);
+      this.actionSheet1(e);
     }else{
       this.actionSheet1(e);
     }
@@ -216,29 +230,37 @@ Page({
   },
 
   actionSheet1: function(e){
-    const { id } = e.currentTarget;
-    const itemList = ['充值记录', '签到记录', '删除学员','取消']; 
     const pos = utils.parseInt(e.target.id);
     if (pos === -1) {
       utils.showToast('点击异常：' + e.target.id);
       return;
+    }
+    let itemList,itemIndex;
+
+    if (this.data.userType === CONSTS.USERTYPE_FD) {
+      itemList = ['充值记录', '签到记录', '删除学员', '取消'];
+      itemIndex = [0, 1, 2,3];
+    } else {
+      itemList = ['充值记录', '签到记录', '取消'];
+      itemIndex = [0,1,3];
     }
     const item = this.data.sourceList[pos];
     const self = this;
     wx.showActionSheet({
       itemList,
       success: function (res) {
+        console.log(res);
         if (res.cancel) return;
         const index = res.tapIndex;
         // console.log(index);
-        switch (index) {
-          case 0:
+        switch (index) { 
+          case itemIndex[0]:
             self.queryHistroy(e,'charge');
             break;
-          case 1:
+          case itemIndex[1]:
             self.queryHistroy(e, 'signin');
             break;
-          case 2:
+          case itemIndex[2]:
             utils.showModal('删除学员', '删除后将不能恢复，你真的确定删除当前学员吗？', () => { self.deleteData(item._id); });
             break;
         }
@@ -248,7 +270,7 @@ Page({
   deleteData(id) {
     // console.log("deletefy:" + houseid);
     const response = commServices.postData(CONSTS.BUTTON_DELETEFY, { tablename:'student',id });
-    commServices.handleAfterRemote(response, '删除房源',
+    commServices.handleAfterRemote(response, '删除学员',
       (resultData) => {
         this.querySourceList(this.data.activeIndex);
       });

@@ -46,7 +46,13 @@
           <view class="weui-cell" wx:if="{{requestUserType===CONSTS.USERTYPE_FD}}">
             <view class="weui-label" style='width:80px'>机构名称</view>
             <view class="weui-cell__bd">
-                <input id="orgname" name="orgname" class="weui-input" value="{{orgcode}}" placeholder="请输入"/>
+                <input id="orgname" name="orgname" class="weui-input" value="{{orgcode}}" placeholder="请输入机构名称"/>
+            </view>
+          </view>
+          <view class="weui-cell">
+            <view class="weui-label" style='width:80px'>姓名</view>
+            <view class="weui-cell__bd">
+                <input id="name" name="name" class="weui-input" value="{{orgcode}}" placeholder="请输入姓名"/>
             </view>
           </view>
           <block wx:if="{{!canIUseWxPhoneNumber}}">
