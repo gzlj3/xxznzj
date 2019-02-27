@@ -64,7 +64,7 @@ Page({
     const response = commServices.queryData(CONSTS.BUTTON_STUSIGNIN);
     commServices.handleAfterRemote(response, null,
       (resultData) => {
-        console.log('onload xxylmain:', resultData);
+        // console.log('onload xxylmain:', resultData);
         this.refreshTabItems(resultData);
         if(user.userType===CONSTS.USERTYPE_ZK){
           this.refreshSourceList(resultData,this.data.activeIndex);
@@ -105,9 +105,9 @@ Page({
       (resultData) => {
         // console.log(resultData);
         this.refreshSourceList(resultData, activeIndex);
-        // getApp().setFyListDirty(false);
+        // getApp().setFyListDirty(false); 
         // this.refreshFyList(resultData);
-      }
+      } 
     );   
   },
   refreshSourceList: function (sourceList, activeIndex) {
@@ -116,6 +116,7 @@ Page({
     let sourceListItems = [];
     sourceList.map(value => {
       sourceListItems.push({
+        avatarUrl: value.avatarUrl,
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
         desc1: `最近签到:${value.signin ? value.signin : ''}`
@@ -128,7 +129,8 @@ Page({
     this.setData({ sourceList,sourceListItems,tabItems,activeIndex});
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield: 'xyxm' }
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield: 'xyxm' }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
@@ -142,7 +144,8 @@ Page({
     const { index } = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: 'xyxm', currentObject }
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield: 'xyxm', currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,
@@ -203,11 +206,11 @@ Page({
     // console.log("moreAction:",item);
 
     let itemList;
-    if(userType===CONSTS.USERTYPE_ZK){
+    // if(userType===CONSTS.USERTYPE_ZK){
+    //   this.actionSheet1(e);
+    // }else{
       this.actionSheet1(e);
-    }else{
-      this.actionSheet1(e);
-    }
+    // }
   },
 
   actionSheet2: function (e) {
@@ -236,8 +239,8 @@ Page({
       return;
     }
     let itemList,itemIndex;
-
-    if (this.data.userType === CONSTS.USERTYPE_FD) {
+// console.log('usertype:',this.data.userType);
+    if (this.data.user.userType === CONSTS.USERTYPE_FD) { 
       itemList = ['充值记录', '签到记录', '删除学员', '取消'];
       itemIndex = [0, 1, 2,3];
     } else {

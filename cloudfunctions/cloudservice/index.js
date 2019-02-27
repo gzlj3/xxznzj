@@ -18,7 +18,7 @@ exports.main = async (event, context) => {
   const { action, method, data,restData,userInfo} = event;
   if(!action) return results.getErrorResults('未指定操作！');
   // console.log("action:"+action+"   method:"+method);
-  // console.log('event:',event);
+  console.log('event:',event);
   // console.log('context:',context);
   
   try {
@@ -100,6 +100,10 @@ exports.main = async (event, context) => {
       //   return results.getSuccessResults(result);
       case CONSTS.BUTTON_SAVEDATA :
         result = await services.saveData(data, curUser);
+        return results.getSuccessResults(result);
+      case CONSTS.BUTTON_SAVEOTHERDATA:
+        result = await services.saveData(data, curUser);
+        result = await services.saveOtherData(data, curUser, result);
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_STUCHARGE:
         //先保存充值数据

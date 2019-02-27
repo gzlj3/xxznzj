@@ -57,6 +57,7 @@ Page({
       }
       // if(!utils.isEmpty(sksj)) sksj = '上课时间：'+sksj.substring(0,sksj.length - 1);
       sourceListItems.push({
+        avatarUrl: value.avatarUrl,
         title: `${value.bjmc}`,
         desc:sksj,
         desc1: sksj1,
@@ -73,14 +74,16 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: 'bjmc', currentObject }
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield: 'bjmc', currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({ 
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield:'bjmc'}
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield:'bjmc'}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

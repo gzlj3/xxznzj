@@ -284,7 +284,7 @@ exports.registerUser = async (data,userInfo) => {
   const db = cloud.database();
   const lrsj = utils.getCurrentTimestamp();
   const zhxgsj = lrsj;
-  let {yzhid,collid,orgname,name} = formObject;
+  let {yzhid,collid,orgname,name,sjhm} = formObject;
   // let orgcode = yzhid;
   let result
   if (commService.isFd(formObject.userType)) {
@@ -306,30 +306,45 @@ exports.registerUser = async (data,userInfo) => {
     collid,
     nickName:frontUserInfo.nickName,
     avatarUrl: frontUserInfo.avatarUrl,
-    sjhm:formObject.sjhm,
     userType:formObject.userType,
     // userData:frontUserInfo,
+    sjhm,
     orgname,
     name,
     lrsj,
     zhxgsj
   }
   console.log('新用户注册：',userb);
-  result = await commService.addDoc('userb',userb);
+  const userbid = await commService.addDoc('userb',userb);
   // if (commService.isFd(formObject.userType)){
     //房东注册，则创建新用户的集合表(新注册的时候不建表，新插入数据的时候建)
     // await db.createCollection('house_' + collid);
     // await db.createCollection('housefy_' + collid);
   // }
 
-  //租客注册完成，关联房屋头像数据
-  // const avatarUrl = userb.avatarUrl;
-  // if (commService.isZk(formObject.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
-  //   result = await commService.updateAllDoc('house',{ dhhm: userb.sjhm },{ avatarUrl });
-  //   console.log('关联房屋数：', result);
-  // }
+  //教职工注册完成，关联教职工头像数据
+  const avatarUrl = userb.avatarUrl;
+  if (commService.isZk(formObject.userType) && !utils.isEmpty(avatarUrl) && !utils.isEmpty(userb.sjhm)) {
+    //检查教职工表是否存在
+    let staff = await commService.querySingleDoc(commService.getTableName('staff',collid), { yzhid,sjhm });
+    if (staff){
+      //如果注册用户在机构职工表中存在，则修改注册用户类型为教职工
+      await commService.updateDoc('userb',{_id:userbid,userType:CONSTS.USERTYPE3})
+      //更新机构表职工头像
+      staff.avatarUrl = avatarUrl;
+      result = await commService.updateDoc(commService.getTableName( 'staff',collid), staff);
+    }else{ 
+      // 检查学员表
+      let student = await commService.querySingleDoc(commService.getTableName('student', collid), { yzhid, sjhm });
+      if (student) {
+        //更新学员表头像
+        student.avatarUrl = avatarUrl;
+        result = await commService.updateDoc(commService.getTableName('student', collid), student);
+      }
+    }
+  }
   
-  return await queryUser({ openId});
+  // return await queryUser({ openId});
 }
 
 exports.sysconfig = async (data, curUser) => {

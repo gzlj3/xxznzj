@@ -40,6 +40,7 @@ Page({
     let sourceListItems = [];
     sourceList.map(value => {
       sourceListItems.push({
+        avatarUrl:value.avatarUrl,
         title: `${value.name}`,
         desc: `手机号码:${value.sjhm}`
       })
@@ -54,14 +55,16 @@ Page({
     const {index} = e.detail;
     const pos = utils.getInteger(index);
     const currentObject = this.data.sourceList[pos];
-    const paras = { fmName, tablename, unifield: ['name','sjhm'], currentObject }
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield: ['name','sjhm'], currentObject }
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({ 
       url: '../edit/editdata?item=' + parasJson,
     })
   },
   onAdd: function () {
-    const paras = { fmName, tablename, unifield:['name','sjhm']}
+    const buttonAction = CONSTS.BUTTON_SAVEOTHERDATA;
+    const paras = { buttonAction,fmName, tablename, unifield:['name','sjhm']}
     const parasJson = JSON.stringify(paras);
     wx.navigateTo({
       url: '../edit/editdata?item=' + parasJson,

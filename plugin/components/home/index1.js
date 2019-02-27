@@ -37,23 +37,23 @@ Component({
    * type:请求类型（1：签到）
    */
   properties: { 
-    onloadoptions: {
+    onloadoptions: { 
       type: Object,
-      value: {},
-      observer(newVal, oldVal, changedPath) {
+      value: {}, 
+      observer(newVal, oldVal, changedPath) { 
         console.log('observer onloadoptions:', newVal);
         if(!newVal) return;
         let requestUserType = this.data.requestUserType;
         if(!utils.isEmpty(newVal.yzhid)){
           requestUserType = CONSTS.USERTYPE_ZK;
-        }
+        }  
         this.setData({ ...newVal,requestUserType });
-      }
+      } 
     },
     menuList: Array,
-    user2MenuList:Array,
-    user3MenuList:Array,
-      // type: Array,
+    user2MenuList:Array, 
+    user3MenuList:Array, 
+      // type: Array, 
       // value: [],
       // observer(newVal, oldVal, changedPath) {
       //   console.log('observer menuList:', newVal);
@@ -164,7 +164,7 @@ Component({
       promise.then((setTimer) => {
         clearInterval(setTimer)
         this.setData({ waitingCloud: false });
-      });
+      }); 
     },
     refreshUser() {
       app.queryUser();
@@ -260,10 +260,11 @@ Component({
           formObject: e.detail.value});
       commServices.handleAfterRemote(response, '用户注册',
         (resultData) => {
-          app.setUserData(resultData);
-          this.setData({ 
-            user: app.getGlobalData().user
-          });
+          this.refreshUser();
+          // app.setUserData(resultData);
+          // this.setData({ 
+          //   user: app.getGlobalData().user
+          // });
         } 
       );
     }, 

@@ -91,6 +91,10 @@ const deleteData = async (data, curUser) => {
 }
 exports.deleteData = deleteData;
 
+/**
+ * 通用保存方法
+ * 返回保存成功对象的ID
+ */
 const saveData = async (data, curUser) => {
   let isAddDoc;
   let { tablename, fmName, formObject, unifield } = data;
@@ -111,6 +115,7 @@ const saveData = async (data, curUser) => {
     formObject.zhxgsj = utils.getCurrentTimestamp();
     isAddDoc = false;
   }
+  const saveid = formObject._id;
   //如果是添加数据，则检查集合是否存在，不存在，则创建
   if (isAddDoc) {
     try {
@@ -142,9 +147,64 @@ const saveData = async (data, curUser) => {
   } else {
     result = await commService.updateDoc(commService.getTableName(tablename, collid), formObject);
   }
-  return result;
+  return saveid;
 }
 exports.saveData = saveData;
+
+const saveOtherData = async (data, curUser,lastId) => {
+  let isAddDoc;
+  let { tablename, fmName, formObject, unifield } = data;
+  const { collid, yzhid } = curUser;
+  const collTable = commService.getTableName(tablename, collid);
+  if(fmName==='staff'){
+    const { sjhm } = formObject;
+    //保存职工表后，检查此员工是否有注册，如果有，则更新用户类型为教职工
+    if(!utils.isEmpty(sjhm)){
+      // console.log('========= staff:',sjhm);
+      let userb = await commService.querySingleDoc('userb', { sjhm });
+      let avatarUrl = '';
+      if(userb){
+        if(userb.userType===CONSTS.USERTYPE_ZK){
+          await commService.updateDoc('userb', { _id: userb._id, userType: CONSTS.USERTYPE3 })
+        }
+        avatarUrl = userb.avatarUrl;
+      }
+      //更新机构表职工头像
+      await commService.updateDoc(commService.getTableName('staff', collid), { _id: lastId, avatarUrl });
+    }
+  }else if(fmName==='class'){
+    const { lsxm } = formObject;
+    // console.log('========= class:', lsxm);
+    if(lsxm && lsxm.length>0){
+      const sjhm = lsxm[0].lsxm;
+      // console.log('========= class:', sjhm);
+      //保存班级表后，检查任课老师是否有注册，如果有，则关联老师头像
+      if (!utils.isEmpty(sjhm)) {
+        let userb = await commService.querySingleDoc('userb', { sjhm });
+        let avatarUrl = '';
+        if (userb) {
+          avatarUrl = userb.avatarUrl;
+        }
+        //更新班级表老师头像
+        await commService.updateDoc(commService.getTableName('class', collid), { _id: lastId, avatarUrl });
+      }
+    }
+  }else if (fmName === 'student') {
+    const { sjhm } = formObject;
+    //保存学员表后，检查家长是否有注册，如果有，则更新家长头像
+    if (!utils.isEmpty(sjhm)) {
+      // console.log('========= staff:',sjhm);
+      let userb = await commService.querySingleDoc('userb', { sjhm });
+      let avatarUrl = '';
+      if (userb) {
+        avatarUrl = userb.avatarUrl;
+      }
+      //更新机构表职工头像
+      await commService.updateDoc(commService.getTableName('student', collid), { _id: lastId, avatarUrl });
+    }
+  }
+}
+exports.saveOtherData = saveOtherData;
 
 exports.updateStudentCs = async (collid, studentid, cs, type) => {
   if (utils.isEmpty(studentid))
