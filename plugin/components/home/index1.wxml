@@ -81,14 +81,15 @@
 </navigator>    -->
          
       <view class="kind-list" wx:if="{{user && user.userType!==CONSTS.USERTYPE_NONE}}"> 
-          <block wx:for="{{user.userType===CONSTS.USERTYPE_FD?menuList:(user.userType===CONSTS.USERTYPE_ZK?user2MenuList:user3MenuList)}}" wx:key="{{index}}">
-              <view class="kind-list__item">
+          <!-- <block wx:for="{{user.userType===CONSTS.USERTYPE_FD?menuList:(user.userType===CONSTS.USERTYPE_ZK?user2MenuList:user3MenuList)}}" wx:key="{{index}}"> -->
+          <block wx:for="{{menuList}}" wx:key="{{index}}">
+              <view class="kind-list__item" wx:if="{{!item.rights || (item.rights && item.rights.length>0 && haveMenuRight[index])}}">
                   <view id="{{item.page}}" class="weui-flex kind-list__item-hd {{item.open ? 'kind-list__item-hd_show' : ''}}" bindtap="kindToggle">
                       <view class="weui-flex__item  weui-cell_access weui-cell_link addfontsize20">{{item.name}}</view>
                       <!-- <image class="kind-list__img" src="../../images/icon_nav_{{item.id}}.png"></image> -->
                                           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
                   </view>
-                  <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
+                  <!-- <view class="kind-list__item-bd {{item.open ? 'kind-list__item-bd_show' : ''}}">
                       <view class="weui-cells {{item.open ? 'weui-cells_show' : ''}}">
                           <block wx:for="{{item.pages}}" wx:for-item="page" wx:key="*this">
                               <navigator url="{{page}}/{{page}}" class="weui-cell weui-cell_access">
@@ -97,7 +98,7 @@
                               </navigator>
                           </block>
                       </view>
-                  </view>
+                  </view> -->
               </view>
           </block>
       </view> 

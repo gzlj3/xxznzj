@@ -11,25 +11,21 @@ const menuList = [
     id: 'form',
     name: '教职工管理',
     open: false,
+    rights: ['102'],
     page: 'plugin://XXZNZJ/staffmain'
   },
   {
     id: 'nav',
     name: '班级管理',
     open: false,
+    rights: ['103'],
     page: 'plugin://XXZNZJ/classmain'
   },
   {
     id: 'z-index',
-    name: '用户中心',
+    name: '用户授权',
     open: false,
-    page: '../user/userGrant'
-  },
-  {
-    id: 'feedback',
-    name: '系统配置',
-    open: false,
-    page: '../sysmanager/sysconfig/sysconfig'
+    page: 'plugin://XXZNZJ/userGrant'
   },
 ];
 const user2MenuList = [

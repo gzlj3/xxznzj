@@ -1,4 +1,4 @@
-<import src="../../components/Forms/FmUserGrant.wxml"/>
+<import src="FmUserGrant.wxml"/>
 <!-- <form bindsubmit="formSubmit" report-submit="true"> -->
 <form bindsubmit="formSubmit">
   <!-- <view class="weui-toptips weui-toptips_warn" wx:if="{{status!=0}}">{{msg}}</view> -->

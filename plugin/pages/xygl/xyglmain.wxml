@@ -24,6 +24,7 @@
 <view class="page">
   <view class="page__bd">
     <button  size="default" bindtap="onAdd">新增学员</button>
+    <!-- <view class="weui-cells__title" wx:if="{{isZk && allFyList.length===0}}"></view> -->
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">
       <view slot='tabPage_{{activeIndex}}'>
             <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">

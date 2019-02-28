@@ -1,8 +1,8 @@
 const utils = require('../../utils/utils.js');
-const fyglService = require('../../services/fyglServices.js');
-// const commService = require('../../services/commServices.js');
+// const fyglService = require('../../services/commServices.js');
+const commService = require('../../services/commServices.js');
 const CONSTS = require('../../utils/constants.js');
-const app = getApp()
+const app = require('../../app1.js');
 const refreshRightsChecked = (rights) => {
   if (!rights) return {};
   let rightsChecked = {};
@@ -29,8 +29,8 @@ Page({
    */
   onLoad: function (options) {
     // console.log('usergrant onload');
-    fyglService.checkAuthority(CONSTS.BUTTON_USERGRANT);
-    const { grantedSjhm } = app.globalData.user;
+    // fyglService.checkAuthority(CONSTS.BUTTON_USERGRANT);
+    const { grantedSjhm } = app.getGlobalData().user;
     let { sjhm } = this.data;
     let grantedSjhms = [], rights = [];
     if (grantedSjhm) {
@@ -102,16 +102,16 @@ Page({
     if (e.cancelGrant) {
       tsinfo = `确定取消${sjhm}的权限吗?`;
     } else {
-      tsinfo = `你确定将我的房源授权给${sjhm}操作吗？`;
+      tsinfo = `你确定授权给${sjhm}操作吗？`;
     }
     utils.showModal('权限管理', tsinfo, () => { self.handleSubmit(e); });
   },
 
   handleSubmit: function (e) {
     const formObject = e.detail.value;
-    const response = fyglService.postData(CONSTS.BUTTON_USERGRANT, formObject);
-    fyglService.handleAfterRemote(response, '用户授权',
-      (resultData) => {
+    const response = commService.postData(CONSTS.BUTTON_USERGRANT, formObject);
+    commService.handleAfterRemote(response, '用户授权',
+      (resultData) => { 
         app.setUserData(resultData);
         this.onLoad();
         // this.setData({ user: app.globalData.user });

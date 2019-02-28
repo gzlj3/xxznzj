@@ -186,8 +186,11 @@ exports.grantUser = async (data, curUser) => {
   const userb = await commService.querySingleDoc('userb', { sjhm });
   if (!userb)
     throw utils.newException(`手机号(${sjhm})还未注册！`);
-  if(sourceYzhid === userb.yzhid)
-    throw utils.newException(`不能授权给本人！`);
+  if(userb.userType!==CONSTS.USERTYPE3){
+    throw utils.newException(`只能授权给教职工！`);
+  }
+  // if(sourceYzhid === userb.yzhid)
+  //   throw utils.newException(`不能授权给本人！`);
   
   const oldGranted = userb.granted
   let newGranted = [];
@@ -234,10 +237,10 @@ exports.grantUser = async (data, curUser) => {
     let newGrantedSjhm = [];
     let addFound  =false;
     for(let i=0;i<grantedSjhm.length;i++){
-      if (typeof (grantedSjhm[i]) === 'string'){
-        //兼容处理,将之前授权的字串改为对象
-        grantedSjhm[i] = { sjhm: grantedSjhm[i]};
-      };
+      // if (typeof (grantedSjhm[i]) === 'string'){
+      //   //兼容处理,将之前授权的字串改为对象
+      //   grantedSjhm[i] = { sjhm: grantedSjhm[i]};
+      // };
       if (grantedState === 'delete' && sjhm === grantedSjhm[i].sjhm) continue;
       if ((grantedState === 'modify' || grantedState === 'add') && sjhm === grantedSjhm[i].sjhm) {
         addFound = true;

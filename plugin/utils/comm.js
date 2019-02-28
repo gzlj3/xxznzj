@@ -1,5 +1,7 @@
 const utils = require('utils.js');
+const CONSTS = require('constants.js');
 const moment = require('moment.min.js');
+const app = require('../app1.js');
 
 /**
  * 解析时间字符串（格式hh:mm)
@@ -75,3 +77,62 @@ const inWeektime = (weektime) => {
   return false;
 }
 exports.inWeektime = inWeektime;
+
+
+const isUserType1 = () => {
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE_FD;
+}
+exports.isUserType1 = isUserType1;
+
+const isUserType2 = () => {
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE_ZK;
+}
+exports.isUserType2 = isUserType2;
+const isUserType3 = () => {
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE3;
+}
+exports.isUserType3 = isUserType3;
+
+/**
+ * 检查权限
+ * right：指定的权限字串，如'101'
+ */
+const checkRights = (right) => {
+  if (!isUserType1() && !isUserType2() && !isUserType3()) {
+    //用户未注册或用户数据异常，回到主页面
+    return false;
+  }
+  console.log('check right:',right);
+  return false;
+  // if (isZk()) {
+  //   if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.EDITFY, CONSTS.DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG].indexOf(action) >= 0) {
+  //     return false;
+  //   }
+  // }
+  // if (isFd() && !utils.isEmpty(right) && !utils.isEmpty(yzhid)) {
+  //   const user = getApp().globalData.user;
+  //   const {granted} = user;
+  //   if(user.yzhid === yzhid){
+  //      //自己的房源
+  //      return true;
+  //   }
+  //   let haveRight = false;
+  //   // console.log('checkright:',granted,right,yzhid);
+  //   if(granted && granted.length>0){
+  //     for(let i=0;i<granted.length;i++){
+  //       const value = granted[i];
+  //       const {yzhid:grantYzhid,rights} = value;
+  //       if (grantYzhid===yzhid && rights.includes(right)){
+  //         haveRight = true;
+  //         break;
+  //       }
+  //     };
+  //   }
+  //   if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
+  //   return haveRight;
+  // } 
+  return true;
+}
+exports.checkRights = checkRights;
+
+

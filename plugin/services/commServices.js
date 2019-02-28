@@ -1,6 +1,7 @@
 const CONSTS = require('../utils/constants.js');
 const utils = require('../utils/utils.js');
 const config = require('../config.js');
+// const app = require('../app1.js');
 
 export function queryData(action, params) {
   utils.showLoading();
@@ -137,14 +138,17 @@ const uploadCloudFile = (filePath, cloudPath, successCallback, failCallback) =>{
 }
 export { uploadCloudFile};
 
-// const isZk = ()=>{
-//   return getApp().globalData.user.userType === CONSTS.USERTYPE_ZK;
-// }
+const isUserType1 = ()=>{
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE_FD;
+}
+const isUserType2 = () => {
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE_ZK;
+}
+const isUserType3 = () => {
+  return app.getGlobalData().user.userType === CONSTS.USERTYPE3;
+}
 
-// const isFd = ()=> {
-//   return getApp().globalData.user.userType === CONSTS.USERTYPE_FD;
-// }
-// export { isZk, isFd };
+export { isUserType1, isUserType2, isUserType3 };
 
 export function checkAuthority(action){
   if (!checkRights(action)){
@@ -154,11 +158,11 @@ export function checkAuthority(action){
   }
 }
 
-const checkRights = (action,right,yzhid,showts)=>{
-  // if (!isZk() && !isFd()) {
-  //   //用户未注册或用户数据异常，回到主页面
-  //   return false;
-  // }
+const checkRights = (right)=>{
+  if (!isUserType1() && !isUserType2() && !isUserType3()) {
+    //用户未注册或用户数据异常，回到主页面
+    return false;
+  }
   // if (isZk()) {
   //   if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.EDITFY, CONSTS.DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG].indexOf(action) >= 0) {
   //     return false;
@@ -190,4 +194,4 @@ const checkRights = (action,right,yzhid,showts)=>{
 }
 export {checkRights}
 
-export function test(){return 'test'}
+// export function test(){return 'test'}

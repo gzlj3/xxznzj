@@ -3,6 +3,7 @@ const app = require('../../app1.js');
 const config = require('../../config.js');
 const CONSTS = require('../../utils/constants.js');
 const utils = require('../../utils/utils.js');
+const comm = require('../../utils/comm.js');
 const commServices = require('../../services/commServices.js');
 
 Component({
@@ -137,8 +138,22 @@ Component({
     // _hostuserinfoChange(newVal, oldVal){
     //   console.log('hostUserChange:',newVal,oldVal);
     // },
-    test(x,y){
-      console.log(x,y);
+    userReady(){
+      // console.log('user ready..');
+      //根据权限，生成菜单列表
+      const {menuList} = this.data;
+      let haveMenuRight=new Array(menuList.length).fill(true);
+      for(let i=0;i<menuList.length;i++){
+        const rights = menuList[i].rights;
+        if(rights && rights.length>0){
+          let j;
+          for(j=0;j<rights.length;j++){
+            if(comm.checkRights(rights[j])) break;
+          }
+          if(j>=rights.length) haveMenuRight[i] = false;
+        }
+      };
+      this.setData({haveMenuRight});
     },
     waitingCloudNormal() {
       let waitingCloudNum = 0;
@@ -152,6 +167,8 @@ Component({
               // console.log('======appuser:', app.getGlobalData().user);
               this.setData({
                 user: app.getGlobalData().user
+              },()=>{
+                this.userReady();
               });
               resolve(setTimer);
             }

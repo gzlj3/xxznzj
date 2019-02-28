@@ -97,7 +97,9 @@ Page({
   },
 
   querySourceList:function(activeIndex){
-    const classObj = this.data.classList[activeIndex];
+    const {classList} = this.data;
+    if(!classList || classList.length<1) return;
+    const classObj = classList[activeIndex];
     const querycond = classObj._id ? { class: { class: classObj._id } } : { class: [{}] };
     const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename,fmName,querycond});
     // const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename, fmName, querycond: { class:[{}]   }});
