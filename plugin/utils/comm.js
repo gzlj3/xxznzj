@@ -102,36 +102,28 @@ const checkRights = (right) => {
     //用户未注册或用户数据异常，回到主页面
     return false;
   }
-  console.log('check right:',right);
-  return false;
-  // if (isZk()) {
-  //   if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.EDITFY, CONSTS.DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG].indexOf(action) >= 0) {
-  //     return false;
-  //   }
-  // }
-  // if (isFd() && !utils.isEmpty(right) && !utils.isEmpty(yzhid)) {
-  //   const user = getApp().globalData.user;
-  //   const {granted} = user;
-  //   if(user.yzhid === yzhid){
-  //      //自己的房源
-  //      return true;
-  //   }
-  //   let haveRight = false;
-  //   // console.log('checkright:',granted,right,yzhid);
-  //   if(granted && granted.length>0){
-  //     for(let i=0;i<granted.length;i++){
-  //       const value = granted[i];
-  //       const {yzhid:grantYzhid,rights} = value;
-  //       if (grantYzhid===yzhid && rights.includes(right)){
-  //         haveRight = true;
-  //         break;
-  //       }
-  //     };
-  //   }
-  //   if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
-  //   return haveRight;
-  // } 
-  return true;
+  if(utils.isEmpty(right)) return true;
+  //userType1为机构管理员，全权
+  if(isUserType1()) return true;
+
+  //104为授权管理，家长有自己的授权管理，教职工暂无自己的授权
+  if (isUserType2() && right==='104') return true;
+
+  const user = app.getGlobalData().user;
+  const {granted} = user;
+  let haveRight = false;
+  // console.log('checkright:',granted,right,yzhid);
+  if(granted && granted.length>0){
+    for(let i=0;i<granted.length;i++){
+      const { rights } = granted[i];
+      if (rights.includes(right)){
+        haveRight = true;
+        break;
+      }
+    };
+  }
+  // if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
+  return haveRight;
 }
 exports.checkRights = checkRights;
 

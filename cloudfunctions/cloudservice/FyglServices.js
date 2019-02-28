@@ -280,7 +280,8 @@ exports.queryXyList = async (data, curUser) => {
   } else if (userType === CONSTS.USERTYPE3) {
     //老师进入,通过老师手机号码查询班级
     const colltable = commService.getTableName('class', collid)
-    classList = await commService.queryDocs(colltable, { yzhid,lsxm:{lsxm:sjhm} });
+    const sjhmArr = [sjhm];
+    classList = await commService.queryDocs(colltable, { yzhid,lsxm:{lsxm:_.in(sjhmArr)} });
     if (!classList) classList = [];
 
   }

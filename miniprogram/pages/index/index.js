@@ -23,8 +23,9 @@ const menuList = [
   },
   {
     id: 'z-index',
-    name: '用户授权',
+    name: '授权管理',
     open: false,
+    rights: ['104'],
     page: 'plugin://XXZNZJ/userGrant'
   },
 ];
