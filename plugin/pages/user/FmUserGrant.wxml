@@ -21,27 +21,27 @@
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">授权手机号</view>
-          </view>
+          </view> 
           <view class="weui-cell__bd">
             <input class="weui-input" name="sjhm" id="sjhm" type="number" maxlength='11' value="{{sjhm}}" placeholder="请输入被授权人手机号" />
           </view>
         </view>
         <view class="weui-cell weui-cell_input"> 
           <checkbox-group name="rights" bindchange="grantCheckboxChange">
-            <label class="weui-cell weui-check__label">
-              <checkbox class="weui-check" value="101" checked="{{rightsChecked['101']}}"/>
+            <label class="weui-cell weui-check__label" wx:for="{{grantRights}}" wx:key="{{index}}"> 
+              <checkbox class="weui-check" value="{{item.code}}" checked="{{rightsChecked[item.code]}}"/>
               <view class="weui-cell__hd weui-check__hd_in-checkbox">
               <!-- {{...rights}} -->
-                  <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!rightsChecked['101']}}"></icon>
-                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{rightsChecked['101']}}"></icon>
+                  <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!rightsChecked[item.code]}}"></icon>
+                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
               </view>
-              <view class="weui-cell__bd">学员管理</view>
+              <view class="weui-cell__bd">{{item.desc}}</view>
             </label>
-            <label class="weui-cell weui-check__label">
+            <!-- <label class="weui-cell weui-check__label">
               <checkbox class="weui-check" value="102" checked="{{rightsChecked['102']}}"/>
               <view class="weui-cell__hd weui-check__hd_in-checkbox">
                   <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!rightsChecked['102']}}"></icon>
-                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{rightsChecked['102']}}"></icon>
+                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
               </view>
               <view class="weui-cell__bd">教职工管理</view>
             </label>
@@ -49,10 +49,10 @@
               <checkbox class="weui-check" value="103" checked="{{rightsChecked['103']}}"/>
               <view class="weui-cell__hd weui-check__hd_in-checkbox">
                   <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!rightsChecked['103']}}"></icon>
-                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{rightsChecked['103']}}"></icon>
+                  <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
               </view>
               <view class="weui-cell__bd">班级管理</view>
-            </label>
+            </label> -->
           </checkbox-group>
         </view>
       </view>

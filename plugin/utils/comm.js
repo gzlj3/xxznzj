@@ -31,7 +31,7 @@ const parseWeek = (week) => {
   for(let i=0;i<weekArray.length;i++){
     if(week === weekArray[i]) return i;
   }
-  return 0;
+  return 0; 
 }
 exports.parseWeek = parseWeek;
 
@@ -88,7 +88,7 @@ const isUserType2 = () => {
   return app.getGlobalData().user.userType === CONSTS.USERTYPE_ZK;
 }
 exports.isUserType2 = isUserType2;
-const isUserType3 = () => {
+const isUserType3 = () => { 
   return app.getGlobalData().user.userType === CONSTS.USERTYPE3;
 }
 exports.isUserType3 = isUserType3;
@@ -106,8 +106,7 @@ const checkRights = (right) => {
   //userType1为机构管理员，全权
   if(isUserType1()) return true;
 
-  //104为授权管理，家长有自己的授权管理，教职工暂无自己的授权
-  if (isUserType2() && right==='104') return true;
+  if (right==='104') return true;   // 授权管理，暂不检查权限
 
   const user = app.getGlobalData().user;
   const {granted} = user;
@@ -126,5 +125,4 @@ const checkRights = (right) => {
   return haveRight;
 }
 exports.checkRights = checkRights;
-
 

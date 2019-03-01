@@ -2,6 +2,7 @@ const cloud = require('wx-server-sdk')
 const commService = require('CommServices.js')
 // const rp = require('request-promise')
 const utils = require('utils.js');
+const comm = require('comm.js');
 const phone = require('phone.js');
 const CONSTS = require('constants.js');
 const config = require('config.js')
@@ -50,23 +51,23 @@ exports.checkAuthority = async(action,method,userInfo,data) => {
   //     throw utils.newException('你无权操作此功能！');
   // }
 
-  if(commService.isZk(userType)){
-    if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.BUTTON_EDITFY, CONSTS.BUTTON_DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG, CONSTS.BUTTON_GRANTCODE].indexOf(action) >= 0) {
-      throw utils.codeException(101);
-    }
-    if ([CONSTS.BUTTON_LASTZD].indexOf(action) >= 0){
-      if(method === 'POST') 
-        throw utils.codeException(101);
-      if (method === 'GET' && data && data.refreshzd==='1')  //先刷新帐单再提取数据
-        throw utils.codeException(101);
-    }
-    if ([CONSTS.BUTTON_HTQY].indexOf(action) >= 0) {
-      if (method === 'POST')
-        throw utils.codeException(101);
-      if (method === 'GET' && data && data.seeHouseHt !== '1')  //租客合同签约查询入口只能是查看合同
-        throw utils.codeException(101);
-    }
-  }  
+  // if(commService.isZk(userType)){
+  //   if ([CONSTS.BUTTON_CB, CONSTS.BUTTON_MAKEZD, CONSTS.BUTTON_ADDFY, CONSTS.BUTTON_EDITFY, CONSTS.BUTTON_DELETEFY, CONSTS.BUTTON_EXITFY, CONSTS.BUTTON_USERGRANT, CONSTS.BUTTON_SYSCONFIG, CONSTS.BUTTON_GRANTCODE].indexOf(action) >= 0) {
+  //     throw utils.codeException(101);
+  //   }
+  //   if ([CONSTS.BUTTON_LASTZD].indexOf(action) >= 0){
+  //     if(method === 'POST') 
+  //       throw utils.codeException(101);
+  //     if (method === 'GET' && data && data.refreshzd==='1')  //先刷新帐单再提取数据
+  //       throw utils.codeException(101);
+  //   }
+  //   if ([CONSTS.BUTTON_HTQY].indexOf(action) >= 0) {
+  //     if (method === 'POST')
+  //       throw utils.codeException(101);
+  //     if (method === 'GET' && data && data.seeHouseHt !== '1')  //租客合同签约查询入口只能是查看合同
+  //       throw utils.codeException(101);
+  //   }
+  // }  
   return curUser;
 }
 
@@ -182,15 +183,20 @@ exports.queryUser = queryUser;
 
 exports.grantUser = async (data, curUser) => {
   const { sjhm,rights } = data;
-  const { yzhid:sourceYzhid } = curUser;
+  const { yzhid:sourceYzhid,sjhm:sourceSjhm } = curUser;
   const userb = await commService.querySingleDoc('userb', { sjhm });
   if (!userb)
     throw utils.newException(`手机号(${sjhm})还未注册！`);
-  if(userb.userType!==CONSTS.USERTYPE3){
+  if ((comm.isUserType1(curUser) || comm.isUserType3(curUser)) && !comm.isUserType3(userb)){
+    //管理者和教职工只能授给教职工
     throw utils.newException(`只能授权给教职工！`);
   }
-  // if(sourceYzhid === userb.yzhid)
-  //   throw utils.newException(`不能授权给本人！`);
+  if (comm.isUserType2(curUser) && !comm.isUserType2(userb)) {
+    //家长只能授权给家长
+    throw utils.newException(`只能授权给家长！`);
+  }
+  if (sourceSjhm === sjhm)
+    throw utils.newException(`不能授权给本人！`);
   
   const oldGranted = userb.granted
   let newGranted = [];
@@ -199,9 +205,9 @@ exports.grantUser = async (data, curUser) => {
   if (oldGranted){
     oldGranted.map(value=>{
       if(!value) return;
-      const {yzhid} = value;
-      console.log('1:',yzhid,sourceYzhid);
-      if (sourceYzhid === yzhid){
+      const {yzhid,sjhm} = value;
+      // console.log('1:',yzhid,sourceYzhid);
+      if (sourceSjhm===sjhm && sourceYzhid === yzhid){
         if (rights && rights.length > 0){
           //之前已经有授权，且本次有授权，则修改授权
           found = true;
@@ -257,7 +263,7 @@ exports.grantUser = async (data, curUser) => {
     // } else if (grantedState === 'add') {
     //   if(!grantedSjhm.includes(sjhm)) grantedSjhm.push(sjhm);
     // }
-    curUser.grantedSjhm = newGrantedSjhm;
+    curUser.grantedSjhm = newGrantedSjhm; 
     curUser.zhxgsj = utils.getCurrentTimestamp();
     updatedNum = await commService.updateDoc('userb', curUser);
   }
@@ -266,8 +272,8 @@ exports.grantUser = async (data, curUser) => {
 
 const getNewGrant = (curUser,rights)=>{
 //{"collid":null,"nickName":"馨馨","rights":['101','102','103']],"yzhid":"0598194113654221"}
-  const { collid, nickName, yzhid } = curUser;
-  return {collid,nickName,yzhid,rights};
+  const { collid, nickName, yzhid,sjhm } = curUser;
+  return {collid,nickName,yzhid,sjhm,rights};
 }
 
 exports.registerUser = async (data,userInfo) => {
@@ -347,7 +353,7 @@ exports.registerUser = async (data,userInfo) => {
     }
   }
   
-  // return await queryUser({ openId});
+  return await queryUser({ openId});
 }
 
 exports.sysconfig = async (data, curUser) => {

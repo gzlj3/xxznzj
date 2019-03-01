@@ -166,7 +166,7 @@ Component({
             if (app.getGlobalData().cloudNormal) {
               // console.log('======appuser:', app.getGlobalData().user);
               this.setData({
-                user: app.getGlobalData().user
+                user: app.getGlobalData().user  
               },()=>{
                 this.userReady();
               });
@@ -277,11 +277,11 @@ Component({
           formObject: e.detail.value});
       commServices.handleAfterRemote(response, '用户注册',
         (resultData) => {
+          app.setUserData(resultData);
+          this.setData({ 
+            user: app.getGlobalData().user
+          }); 
           this.refreshUser();
-          // app.setUserData(resultData);
-          // this.setData({ 
-          //   user: app.getGlobalData().user
-          // });
         } 
       );
     }, 

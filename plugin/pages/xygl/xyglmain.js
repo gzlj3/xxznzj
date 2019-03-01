@@ -30,6 +30,7 @@ const initialState = {
   sourceList:[],  //当前显示班级的学员列表
   tabItems:[], 
   activeIndex:0,
+  haveRight101:false,  //是否具有学员维护权限（101）
 }; 
 // const fmMetas = [
 //   { label: '学员姓名', name: 'xyxm', require: true },
@@ -50,12 +51,12 @@ Page({
    */
   onLoad: function (options) {
     const user = app.getGlobalData().user;
-    this.setData({ user: app.getGlobalData().user });
+    this.setData({ user: app.getGlobalData().user, haveRight101:comm.checkRights('101') });
+    // console.log(this.data.haveRight101);
     // fyglService.checkAuthority(1);
     // let arr = 'aaaa';
     // arr = ['aaa'];
     // console.log(moment().utcOffset(+8));
-
     
     // console.log('test:', comm.inWeektime('周六 11:00'));
     // this.queryList(this.data.activeIndex);
@@ -76,8 +77,9 @@ Page({
       }
     );   
 
-  },
+  }, 
   refreshTabItems: function (resultData) {
+    if(!resultData) resultData = {}; 
     let {classList=[],activeIndex=0,sourceList=[]} = resultData;
     // if(!classList) classList = [];
     let tabItems = [];
@@ -140,6 +142,7 @@ Page({
   },
   onBodyTap: function (e) {
     // console.log('onbodytap:',e);
+    if(!this.data.haveRight101) return;
     this.modifyData(e);
   },
   modifyData: function (e) {
@@ -242,19 +245,19 @@ Page({
     }
     let itemList,itemIndex;
 // console.log('usertype:',this.data.userType);
-    if (this.data.user.userType === CONSTS.USERTYPE_FD) { 
+    if (this.data.user.userType === CONSTS.USERTYPE_FD || this.data.haveRight101) { 
       itemList = ['充值记录', '签到记录', '删除学员', '取消'];
       itemIndex = [0, 1, 2,3];
     } else {
       itemList = ['充值记录', '签到记录', '取消'];
       itemIndex = [0,1,3];
-    }
+    } 
     const item = this.data.sourceList[pos];
     const self = this;
     wx.showActionSheet({
       itemList,
       success: function (res) {
-        console.log(res);
+        // console.log(res);
         if (res.cancel) return;
         const index = res.tapIndex;
         // console.log(index);

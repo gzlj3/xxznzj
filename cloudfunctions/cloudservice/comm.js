@@ -1,4 +1,5 @@
 const utils = require('utils.js');
+const CONSTS = require('constants.js');
 const moment = require('moment.min.js');
 
 /**
@@ -78,3 +79,73 @@ const inWeektime = (weektime) => {
   return false;
 }
 exports.inWeektime = inWeektime;
+
+const isUserType1 = (curUser) => {
+  if (utils.isEmpty(curUser.userType))
+    throw utils.newException('用户身份判断异常！');
+  return curUser.userType === CONSTS.USERTYPE_FD;
+}
+exports.isUserType1 = isUserType1;
+
+const isUserType2 = (curUser) => {
+  if (utils.isEmpty(curUser.userType))
+    throw utils.newException('用户身份判断异常！');
+  return curUser.userType === CONSTS.USERTYPE_ZK;
+}
+exports.isUserType2 = isUserType2;
+
+const isUserType3 = (curUser) => {
+  if (utils.isEmpty(curUser.userType))
+    throw utils.newException('用户身份判断异常！');
+  return curUser.userType === CONSTS.USERTYPE3;
+}
+exports.isUserType3 = isUserType3;
+
+/**
+ * 检查权限
+ * right：指定的权限字串，如'101'
+ */
+const checkRights = (curUser,right) => {
+  if (!isUserType1(curUser) && !isUserType2(curUser) && !isUserType3(curUser)) {
+    //用户未注册或用户数据异常，回到主页面
+    return false;
+  }
+  if (utils.isEmpty(right)) return true;
+  //userType1为机构管理员，全权
+  if (isUserType1(curUser)) return true;
+
+  if (right === '104') return true;   // 授权管理，暂不检查权限
+
+  // const user = app.getGlobalData().user;
+  const { granted } = curUser;
+  let haveRight = false;
+  // console.log('checkright:',granted,right,yzhid);
+  if (granted && granted.length > 0) {
+    for (let i = 0; i < granted.length; i++) {
+      const { rights } = granted[i];
+      if (rights.includes(right)) {
+        haveRight = true;
+        break;
+      }
+    };
+  }
+  // if (showts && !haveRight ) utils.showToast('你无权操作此功能！');
+  return haveRight;
+}
+exports.checkRights = checkRights;
+
+/**
+ * 获取授权的手机号，返回手机号数组
+ */
+const getGrantSjhm = (curUser) => {
+  let grantSjhm = [];
+  const { granted } = curUser;
+  if (granted && granted.length > 0) {
+    granted.map(value => {
+      grantSjhm.push(value.sjhm);
+    })
+  }
+  return grantSjhm;
+}
+exports.getGrantSjhm = getGrantSjhm;
+

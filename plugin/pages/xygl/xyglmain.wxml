@@ -23,13 +23,13 @@
  
 <view class="page">
   <view class="page__bd">
-    <button  size="default" bindtap="onAdd">新增学员</button>
-    <!-- <view class="weui-cells__title" wx:if="{{isZk && allFyList.length===0}}"></view> -->
+    <button  size="default" bindtap="onAdd" wx:if="{{haveRight101}}">新增学员</button>
+    <!-- <view class="weui-cells__title" wx:if="{{isZk && allFyList.length===0}}"></view> --> 
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">
-      <view slot='tabPage_{{activeIndex}}'>
+      <view slot='tabPage_{{activeIndex}}'> 
             <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">
               <view class="weui-cell" wx:for="{{sourceListItems}}" wx:key="{{index}}" slot="footer_{{index}}">
-                <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">充值</view>
+                <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{haveRight101}}">充值</view>
         <view id="{{index}}" bindtap="onSignin" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">签到</view>
                 <!-- <view id="{{index}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">打卡日志</view> -->
                 <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>

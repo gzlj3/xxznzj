@@ -246,16 +246,17 @@ exports.queryXyList = async (data, curUser) => {
   const colltable = commService.getTableName(tablename, collid)
   let result,classList;
   // console.log('querysigninxy:', data, curUser);
-  if (userType === CONSTS.USERTYPE_FD) {
-    // 管理员进入,查询所有班级
+  if (comm.isUserType1(curUser) || (comm.isUserType3(curUser) && comm.checkRights(curUser,'101'))) {
+    // 管理员或者具有学员管理权限的教职工进入,查询所有班级
     const colltable = commService.getTableName('class', collid)
     classList = await commService.queryDocs(colltable, { yzhid});
     if(!classList) classList = [];
     //添加一行未分班级
     classList.push({bjmc:'未分班学员'});
-  }else if (userType === CONSTS.USERTYPE_ZK){
+  } else if (comm.isUserType2(curUser)){
     //查询家长的学员
-    const sjhmArr = [sjhm];
+    const grantSjhm = comm.getGrantSjhm(curUser);
+    const sjhmArr = [sjhm,...grantSjhm];
     result = await commService.queryDocs(colltable, { yzhid, sjhm: _.in(sjhmArr) });
     //直接返回学员列表
     return result;
@@ -277,13 +278,13 @@ exports.queryXyList = async (data, curUser) => {
     //   // console.log('=====',classIdList,classList);
     //   if (!classList) classList = [];
     // }
-  } else if (userType === CONSTS.USERTYPE3) {
+  } else if (comm.isUserType3(curUser)) {
     //老师进入,通过老师手机号码查询班级
     const colltable = commService.getTableName('class', collid)
-    const sjhmArr = [sjhm];
+    const grantSjhm = comm.getGrantSjhm(curUser);
+    const sjhmArr = [sjhm,...grantSjhm];
     classList = await commService.queryDocs(colltable, { yzhid,lsxm:{lsxm:_.in(sjhmArr)} });
     if (!classList) classList = [];
-
   }
 
   //根据班级列表，定位与当前时间匹配的班级，如果没有，则默认选中第1个班级

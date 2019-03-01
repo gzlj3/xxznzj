@@ -1,4 +1,5 @@
 const utils = require('../../utils/utils.js');
+const comm = require('../../utils/comm.js');
 // const fyglService = require('../../services/commServices.js');
 const commService = require('../../services/commServices.js');
 const CONSTS = require('../../utils/constants.js');
@@ -21,6 +22,7 @@ Page({
     sjhm: '',
     rightsChecked: {},
     grantedSjhms: [],
+    grantRights:[],
     // user: app.globalData.user
   },
 
@@ -50,19 +52,36 @@ Page({
         rights = grantedSjhm[0].rights ? grantedSjhm[0].rights : [];
       }
     }
-    this.setData({ sjhm, rightsChecked: refreshRightsChecked(rights), grantedSjhms });
+    let grantRights=[];
+    if(comm.isUserType1()){
+      grantRights = [
+        { desc: '学员管理(维护及充值)', code: '101' },
+        { desc: '教职工管理', code: '102' },
+        { desc: '班级管理', code: '103' },
+      ];
+    } else if (comm.isUserType2()) {
+      grantRights = [
+        { desc: '托管我的学员', code: '301' },
+      ];
+    } else if(comm.isUserType3()){
+      grantRights = [
+        { desc: '托管我的班级', code: '201' },
+      ];
+    }
+    // console.log('grantRights:', grantRights);
+    this.setData({ sjhm, rightsChecked: refreshRightsChecked(rights), grantedSjhms, grantRights });
   },
 
 
   getGrant: function (e) {
     const { item: sjhm } = e.currentTarget.dataset;
-    const { grantedSjhm } = app.globalData.user;
+    const { grantedSjhm } = app.getGlobalData().user;
     let rights = {};
     if (grantedSjhm) {
       for (let i = 0; i < grantedSjhm.length; i++) {
         const tmpSjhm = grantedSjhm[i].sjhm;
         if (tmpSjhm === sjhm) {
-          rights = grantedSjhm[i].rights;
+          rights = grantedSjhm[i].rights; 
         }
       }
     }
