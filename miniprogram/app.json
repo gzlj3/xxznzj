@@ -9,8 +9,7 @@
     }
   },
   "usingComponents": {
-    "index": "plugin://XXZNZJ/index1",
-    "vtabbar": "plugin://XXZNZJ/vtabbar"
+    "index": "plugin://XXZNZJ/index1"
   },
   "window": {
     "navigationBarTextStyle": "black",

@@ -57,6 +57,7 @@ Component({
     onLoad: function (options) {
       // console.log('onload:', options);
       this.setData({ onLoadOptions:options}); 
+      // this.setData({ hostUserInfo: {} })
       // wx.navigateTo({
       //   url: 'plugin://XXZNZJ/xyglmain',
       // })

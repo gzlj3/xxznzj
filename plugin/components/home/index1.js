@@ -90,10 +90,10 @@ Component({
     //     this.setData({ sjhm, requestUserType,disabledSjhm });
     //   }
     // },
-    hostuserinfo:{
+    hostuserinfo:{ 
       type:Object,
-      observer(newVal, oldVal, changedPath) {
-        // console.log('observer hostuserinfo:', newVal, oldVal, changedPath);
+      observer(newVal, oldVal, changedPath) { 
+        console.log('observer hostuserinfo:', newVal, oldVal, changedPath);
         app.setUserData(newVal);
         this.setData({
           user: app.getGlobalData().user
@@ -116,9 +116,9 @@ Component({
       // console.log('attached:',this.data.requestUserType,this.data.sjhm);
       // console.log('attached:', this.is);
       // console.log(app.hostWx);
-      // 是否有权限获取微信手机号
+      // 是否有权限获取微信手机号 
       let canIUseWxPhoneNumber = app.getHostWx().canIUse('button.open-type.getPhoneNumber');
-      canIUseWxPhoneNumber = false;  //调试用暂时设置为false
+      // canIUseWxPhoneNumber = false;  //调试用暂时设置为false
       this.setData({ canIUseWxPhoneNumber});
       this.waitingCloudNormal();
     },

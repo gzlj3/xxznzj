@@ -1,8 +1,7 @@
-      <!-- <vtabbar tabitems="{{['aaa','bbb']}}">fffffffffffdasf</vtabbar> -->
 
-<index onloadoptions="{{onLoadOptions}}"  menuList="{{menuList}}" user2MenuList="{{user2MenuList}}" user3MenuList="{{user3MenuList}}">
+<index onloadoptions="{{onLoadOptions}}"  menuList="{{menuList}}" user2MenuList="{{user2MenuList}}" user3MenuList="{{user3MenuList}}" hostuserinfo="{{hostUserInfo}}">
   <view slot='pageDesc'>测试系统</view>
-  <view slot='getUserInfo'>
+  <view slot='getUserInfo'> 
     <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
   </view>
   <view slot='getPhoneNumber'>
