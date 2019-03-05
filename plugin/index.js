@@ -1,4 +1,4 @@
-const config = require('config.js');
+let config = require('config.js');
 const app = require('app1.js');
 const initPlugin = (paras1,paras2,paras3) =>{
   config.init(paras3);

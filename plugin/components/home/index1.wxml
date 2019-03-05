@@ -107,6 +107,6 @@
     <xysignin/>
   </view> -->
   <view class="page__ft weui-footer_fixed-bottom">
-      <view class="weui-footer__text">极简考勤，Copyright©2018-2019 by liujun</view>
+      <view class="weui-footer__text"><slot name="pageFooter">页脚说明，由宿主传入</slot></view>
   </view>
 </view>

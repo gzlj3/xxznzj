@@ -13,7 +13,7 @@
   },
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "智慧考勤",
+    "navigationBarTitleText": "极简考勤",
     "navigationBarBackgroundColor": "#f8f8f8",
     "backgroundColor": "#f8f8f8",
     "enablePullDownRefresh": false

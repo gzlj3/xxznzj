@@ -1,14 +1,12 @@
 {
   "publicComponents": {
-    "vtabbar": "components/tabbar/vtabbar",
     "index1": "components/home/index1"
   },
   "main": "index.js",
   "pages": {
     "xyglmain": "pages/xygl/xyglmain",
-    "index2": "pages/home/index2",
     "classmain": "pages/class/classmain",
-    "editdata": "pages/edit/editdata",
+    "editdata": "pages/edit/editdata", 
     "staffmain": "pages/staff/staffmain",
     "msg_success": "pages/msg/msg_success",
     "searchlist": "pages/search/searchlist",
@@ -17,7 +15,6 @@
   "usingComponents": {
     "vtabbar": "components/tabbar/vtabbar",
     "list": "components/list/list",
-    "listline": "components/list/listline",
     "wrapperinput": "components/edit/wrapperinput",
     "wrapperform": "components/forms/wrapperform"
   }

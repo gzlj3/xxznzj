@@ -52,8 +52,6 @@ Component({
       } 
     },
     menuList: Array,
-    user2MenuList:Array, 
-    user3MenuList:Array, 
       // type: Array, 
       // value: [],
       // observer(newVal, oldVal, changedPath) {
@@ -90,16 +88,29 @@ Component({
     //     this.setData({ sjhm, requestUserType,disabledSjhm });
     //   }
     // },
-    hostuserinfo:{ 
+    hostUserInfo:{ 
       type:Object,
       observer(newVal, oldVal, changedPath) { 
-        console.log('observer hostuserinfo:', newVal, oldVal, changedPath);
-        app.setUserData(newVal);
-        this.setData({
-          user: app.getGlobalData().user
-        });
+        console.log('observer hostUserInfo:', newVal, oldVal, changedPath);
+        if (newVal && newVal.userInfo){
+          app.setUserData(newVal.userInfo);
+          this.setData({
+            user: app.getGlobalData().user
+          });
+        }
       }
     },
+    phoneNumber: {
+      type: Object,
+      observer(newVal, oldVal, changedPath) {
+        console.log('observer phoneNumber:', newVal, oldVal, changedPath);
+        // app.setUserData(newVal);
+        // this.setData({
+        //   user: app.getGlobalData().user
+        // });
+      }
+    },
+        
   },
 
   pageLifetimes: {
@@ -119,6 +130,8 @@ Component({
       // 是否有权限获取微信手机号 
       let canIUseWxPhoneNumber = app.getHostWx().canIUse('button.open-type.getPhoneNumber');
       // canIUseWxPhoneNumber = false;  //调试用暂时设置为false
+      canIUseWxPhoneNumber = canIUseWxPhoneNumber && config.canIUseWxPhoneNumber;
+      console.log('canIUseWxPhoneNumber:', canIUseWxPhoneNumber);
       this.setData({ canIUseWxPhoneNumber});
       this.waitingCloudNormal();
     },
