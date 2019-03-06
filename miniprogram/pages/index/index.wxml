@@ -1,6 +1,6 @@
 
 <index onloadOptions="{{onLoadOptions}}"  menuList="{{menuList}}" hostUserInfo="{{hostUserInfo}}" phoneNumber="{{phoneNumber}}">
-  <view slot='pageDesc'>极简考勤，即二维码考勤，为中小型兴趣班提供简单易用的考勤管理。</view>
+  <view slot='pageDesc'>极简考勤为中小型兴趣班提供简单易用的考勤管理。</view>
   <view slot='getUserInfo'> 
     <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
   </view>
