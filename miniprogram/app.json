@@ -8,7 +8,7 @@
       "provider": "wx70358fb44d63c53c"
     }
   },
-  "usingComponents": {
+  "usingComponents": { 
     "index": "plugin://XXZNZJ/index1"
   },
   "window": {
