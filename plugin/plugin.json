@@ -10,6 +10,7 @@
     "staffmain": "pages/staff/staffmain",
     "msg_success": "pages/msg/msg_success",
     "searchlist": "pages/search/searchlist",
+    "searchdata": "pages/edit/searchdata",
     "userGrant": "pages/user/userGrant"
   },
   "usingComponents": {

@@ -1,4 +1,4 @@
-const {CONSTS} = requirePlugin("XXZNZJ")
+const { CONSTS, services} = requirePlugin("XXZNZJ")
 const myBehavior = require('../../xxznzjBehaviors.js')
 const menuList = [
   {
@@ -34,7 +34,24 @@ Component({
   methods: {
     onLoad: function (options) {
       this.setData({ onLoadOptions:options}); 
-    },
+
+      wx.login({
+        success(res) {
+          if (res.code) {
+            console.log(res.code);
+            // 发起网络请求
+            // wx.request({
+            //   url: 'https://test.com/onLogin',
+            //   data: {
+            //     code: res.code
+            //   }
+            // })
+          } else {
+            console.log('登录失败！' + res.errMsg)
+          }
+        }
+      })      
+    },    
     onGetUserInfo: function(e){
       console.log('host get user....:',e);
       this.setData({ hostUserInfo: e.detail})
@@ -42,6 +59,16 @@ Component({
     onGetPhoneNumber:function(e){
       console.log('host getPhoneNumber:', e);
       this.setData({ phoneNumber: e.detail })
-    }
+    },
+
+    testSubmit: function (e) {
+      console.log('testsubmit:', e);
+      const response = services.postData(300, { form_id: e.detail.formId });
+      services.handleAfterRemote(response, '测试服务',
+        (resultData) => {
+          console.log(resultData)
+        }
+      );
+    },
   }
 })

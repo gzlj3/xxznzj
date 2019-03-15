@@ -19,7 +19,7 @@ exports.main = async (event, context) => {
   if(!action) return results.getErrorResults('未指定操作！');
   // console.log("action:"+action+"   method:"+method);
   console.log('event:',event);
-  // console.log('context:',context);
+  console.log('context:',context);
   
   try {
     //检查权限，成功则返回用户的基本数据
@@ -32,6 +32,7 @@ exports.main = async (event, context) => {
       // const result = await commService.getAccessToken(data);
       // return results.getSuccessResults(result);
       // return results.getSuccessResults(await utils.testRequest());
+      // https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
     }
     let result;
     switch(action){
