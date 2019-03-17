@@ -7,7 +7,7 @@ const menuList = [
     page: 'plugin://XXZNZJ/xyglmain'
   },
   {
-    name: '教职工管理',
+    name: '教职工管理', 
     open: false,
     rights: ['102'],
     page: 'plugin://XXZNZJ/staffmain'
@@ -34,30 +34,13 @@ Component({
   methods: {
     onLoad: function (options) {
       this.setData({ onLoadOptions:options}); 
-
-      wx.login({
-        success(res) {
-          if (res.code) {
-            console.log(res.code);
-            // 发起网络请求
-            // wx.request({
-            //   url: 'https://test.com/onLogin',
-            //   data: {
-            //     code: res.code
-            //   }
-            // })
-          } else {
-            console.log('登录失败！' + res.errMsg)
-          }
-        }
-      })      
     },    
     onGetUserInfo: function(e){
       console.log('host get user....:',e);
       this.setData({ hostUserInfo: e.detail})
     },
     onGetPhoneNumber:function(e){
-      console.log('host getPhoneNumber:', e);
+      console.log('host getPhoneNumber:', e); 
       this.setData({ phoneNumber: e.detail })
     },
 

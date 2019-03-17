@@ -1,9 +1,8 @@
- <form bind:submit="testSubmit" report-submit="true" >
+ <!-- <form bind:submit="testSubmit" report-submit="true" >
     <button formType="submit">测试服务</button> 
- </form>
-
+ </form> -->
 <index onloadOptions="{{onLoadOptions}}"  menuList="{{menuList}}" hostUserInfo="{{hostUserInfo}}" phoneNumber="{{phoneNumber}}">
-  <view slot='pageDesc'>极简考勤为中小型兴趣班提供简单易用的考勤管理。</view>
+  <view slot='pageDesc'>极简考勤为中小型培训机构提供简单易用的考勤管理。</view>
   <view slot='getUserInfo'> 
     <button size='mini' type='primary' open-type="getUserInfo"  bindgetuserinfo="onGetUserInfo">微信授权</button>
   </view>

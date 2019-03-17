@@ -32,13 +32,33 @@ exports.main = async (event, context) => {
       // const result = await commService.getAccessToken(data);
       // return results.getSuccessResults(result);
       // return results.getSuccessResults(await utils.testRequest());
-      // https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
+      // const {code} = data;
+      // // const url = `https://api.weixin.qq.com/sns/jscode2session?appid=wx70358fb44d63c53c&secret=8cdb633aefd514da159ce840b067d98e&js_code=${code}&grant_type=authorization_code`;
+      // const url = `https://api.weixin.qq.com/sns/jscode2session?appid=wx8d8b96b7875e16f6&secret=f557eafa83ebef3c8c8f9423e1dfa9d3&js_code=${code}&grant_type=authorization_code`;
+      
+      
+
+      // const tempresult = await utils.requestUrl(url);
+      // console.log('codetosession:',url,tempresult);
+
+      // return results.getSuccessResults(tempresult);
+      
     }
     let result;
     switch(action){
       // case CONSTS.BUTTON_ZK_SEELASTZD:
       //   result = await userServices.seeLastzd(curUser);
       //   return results.getSuccessResults(result);
+      case CONSTS.BUTTON_USERPHONE:
+        if (method === 'POST') {
+          result = await userServices.decryptPhoneNumber(data, userInfo);
+          return results.getSuccessResults(result);
+        }
+      case CONSTS.BUTTON_USERLOGIN:
+        if (method === 'POST') {
+          result = await userServices.login(data);
+          return results.getSuccessResults(result);
+        }
       case CONSTS.BUTTON_SEARCH:
         if (method === 'GET') {
           result = await selectService.querySearchData(data,curUser);

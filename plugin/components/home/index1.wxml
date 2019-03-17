@@ -36,7 +36,12 @@
         <view class="weui-cell" wx:if="{{canIUseWxPhoneNumber}}">
           <view class='weui-cell__bd'>使用微信手机号注册</view>
           <view class='weui-cell__ft'>
-            <slot name="getPhoneNumber">微信手机号注册，由宿主传入</slot>
+            <block wx:if="{{!sjhm}}">
+              <slot name="getPhoneNumber">微信手机号注册，由宿主传入</slot>
+            </block>
+            <block wx:else>
+              {{sjhm}}
+            </block>
           </view>
         </view>
 

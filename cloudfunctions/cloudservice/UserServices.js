@@ -16,7 +16,7 @@ const _ = db.command;
 exports.checkAuthority = async(action,method,userInfo,data) => {
 
   const { openId } = userInfo;
-  if ([CONSTS.BUTTON_QUERYUSER, CONSTS.BUTTON_REGISTERUSER,CONSTS.BUTTON_SENDSJYZM].indexOf(action)>=0){
+  if ([CONSTS.BUTTON_QUERYUSER, CONSTS.BUTTON_REGISTERUSER, CONSTS.BUTTON_SENDSJYZM, CONSTS.BUTTON_USERLOGIN, CONSTS.BUTTON_USERPHONE].indexOf(action)>=0){
     //用户注册等基本操作不检查权限
     return { openId};
   }
@@ -81,6 +81,38 @@ exports.checkAuthority = async(action,method,userInfo,data) => {
 //   return {houseid:result._id}
 // }
 
+exports.decryptPhoneNumber = async (data,userInfo) => {
+  var WXBizDataCrypt = require('./WXBizDataCrypt')
+  const { openId } = userInfo;
+  const { appId,phoneData } = data; 
+  const result = await getSessionData(openId);
+  if(!result)
+    throw utils.newException('用户未登录！');
+  var sessionKey = result.sessionKey;
+  var encryptedData = phoneData.encryptedData;
+  var iv = phoneData.iv;
+  var pc = new WXBizDataCrypt(appId, sessionKey);
+  var tempresult = pc.decryptData(encryptedData, iv);
+  return tempresult;
+}
+
+exports.login = async (data) => {
+  const { code,appId } = data;
+  let result = await commService.querySingleDoc('global', { appId });
+  if(!result)
+    throw utils.newException('appId未配置！');
+  const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${result.appSecret}&js_code=${code}&grant_type=authorization_code`;
+
+  result = await utils.requestUrl(url);
+  if(result.openid){
+    const loginTime = utils.currentTimeMillis();
+    await getSessionData(result.openid);
+    await setSessionData(result.openid, { sessionKey:result.session_key, loginTime });
+    return { loginTime};
+  }
+  return result;
+}
+
 exports.sendSjyzm = async (data,userInfo) => {
   const { sjhm,yzhid } = data;
   const { openId } = userInfo;
@@ -110,7 +142,7 @@ exports.sendSjyzm = async (data,userInfo) => {
   // }
   //短信发送成功，则将验证码写入缓存
   const yzmCreateTime = utils.currentTimeMillis();
-  console.log(yzmCreateTime);
+  // console.log(yzmCreateTime);
   await setSessionData(openId, { yzm, yzmCreateTime});
 }
 

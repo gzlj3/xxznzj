@@ -104,6 +104,22 @@ Component({
       type: Object,
       observer(newVal, oldVal, changedPath) {
         console.log('observer phoneNumber:', newVal, oldVal, changedPath);
+        if(utils.isEmpty(newVal)) return;
+        const { loginTime } = this.data;
+        if(!loginTime){
+          utils.showToast('用户未登录，无法获取手机号！');
+          return;
+        }
+        const response = commServices.postData(CONSTS.BUTTON_USERPHONE, { appId:config.appId,phoneData:newVal });
+        commServices.handleAfterRemote(response, '',
+          (resultData) => {
+            console.log(resultData);
+            if(resultData.purePhoneNumber){
+              this.setData({ sjhm: resultData.purePhoneNumber});
+            }
+          }
+        );
+
         // app.setUserData(newVal);
         // this.setData({
         //   user: app.getGlobalData().user
@@ -154,7 +170,7 @@ Component({
     userReady(){
       // console.log('user ready..');
       //根据权限，生成菜单列表
-      const {menuList} = this.data;
+      const {menuList,user} = this.data;
       let haveMenuRight=new Array(menuList.length).fill(true);
       for(let i=0;i<menuList.length;i++){
         const rights = menuList[i].rights;
@@ -167,6 +183,11 @@ Component({
         }
       };
       this.setData({haveMenuRight});
+
+      //如果用户未注册，则调用登录接口，为了获取用户的微信手机号时用
+      if(!user || user.userType === CONSTS.USERTYPE_NONE){ 
+        this.login(); 
+      }
     },
     waitingCloudNormal() {
       let waitingCloudNum = 0;
@@ -307,6 +328,26 @@ Component({
       // wx.navigateTo({
       //   url: 'plugin-private://xyglmain',
       // });
+    },
+    login() {
+      const self = this;
+      app.getHostWx().login({
+        success(res) {  
+          if (res.code) {
+            // console.log(res.code,config.appId);
+            const response = commServices.postData(CONSTS.BUTTON_USERLOGIN, { code: res.code,appId:config.appId });
+            commServices.handleAfterRemote(response, null,
+              (resultData) => {
+                // console.log(resultData); 
+                //如果登录成功返回，{loginTime:}
+                self.setData({ ...resultData });
+              }
+            );
+          } else {
+            console.log('登录失败！' + res.errMsg)
+          }
+        }
+      })
     },
 
   }  

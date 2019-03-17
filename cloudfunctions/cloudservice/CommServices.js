@@ -279,6 +279,7 @@ const getAccessToken = async () => {
 }
 exports.getAccessToken = getAccessToken;
 
+
 exports.testService = async (data) => {
   // const fileID = 'cloud://jjczwgl-test-2e296e.6a6a-jjczwgl-test-2e296e/1/fdqm/BIrpF.png'
   // const res = await cloud.downloadFile({
