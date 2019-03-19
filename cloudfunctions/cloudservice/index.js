@@ -46,9 +46,11 @@ exports.main = async (event, context) => {
     }
     let result;
     switch(action){
-      // case CONSTS.BUTTON_ZK_SEELASTZD:
-      //   result = await userServices.seeLastzd(curUser);
-      //   return results.getSuccessResults(result);
+      case CONSTS.BUTTON_QRCODE:
+        if (method === 'POST') {
+          result = await commService.qrCode(data,curUser);
+          return results.getSuccessResults(result);
+        }
       case CONSTS.BUTTON_USERPHONE:
         if (method === 'POST') {
           result = await userServices.decryptPhoneNumber(data, userInfo);

@@ -6,12 +6,13 @@
   "pages": {
     "xyglmain": "pages/xygl/xyglmain",
     "classmain": "pages/class/classmain",
-    "editdata": "pages/edit/editdata", 
+    "editdata": "pages/edit/editdata",
     "staffmain": "pages/staff/staffmain",
     "msg_success": "pages/msg/msg_success",
     "searchlist": "pages/search/searchlist",
     "searchdata": "pages/edit/searchdata",
-    "userGrant": "pages/user/userGrant"
+    "userGrant": "pages/user/userGrant",
+    "qrcode": "pages/qrcode/qrcode"
   },
   "usingComponents": {
     "vtabbar": "components/tabbar/vtabbar",

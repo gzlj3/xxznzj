@@ -257,10 +257,10 @@ exports.ocrSfz = async (sfzhCloudFileId) => {
 }
 
 
-const getAccessToken = async () => {
-  let result = await querySingleDoc('global',{code:'AccessToken'});
+const getAccessToken = async (appId) => {
+  let result = await querySingleDoc('global', { appId});
   if(!result)
-    throw utils.newException('获取AccessToken错误！');
+    throw utils.newException('未配置appId！');
   if (result.createtime && result.expires_in){
     if(utils.currentTimeMillis() - result.createtime <= result.expires_in*1000 - 120*1000){
       // console.log('return valid accesstoken!');
@@ -278,6 +278,43 @@ const getAccessToken = async () => {
   return result.access_token;
 }
 exports.getAccessToken = getAccessToken;
+
+exports.qrCode = async (data,curUser) => {
+  if(!utils.isEmpty(curUser.qrCode))
+    return curUser.qrCode;
+  const {appId} = data;
+  const token = await getAccessToken(appId);
+  // console.log('accesstoken:',token);
+  const url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=" + token;
+
+  const {collid,yzhid,orgname} = curUser;
+  const path = `collid=${collid}&yzhid=${yzhid}&orgname=${orgname}&type=1`;
+  const options = {
+    method: 'POST',
+    uri: url,
+    body: {
+      path
+    },
+    json: true,
+    encoding: null
+  };
+  // console.log('options:', options);
+
+  let buffer = await rp(options);
+  // console.log('buffer:', buffer);
+  const cloudPath = yzhid+'/qrcode/'+utils.uuid(5)+'.jpg';
+  // console.log('uploadfile path:', cloudPath);
+  const result = await cloud.uploadFile({
+    cloudPath,
+    fileContent: buffer,
+  });
+  // 保存生成的二维码文件名到userb
+  if(!utils.isEmpty(result.fileID)){
+    const docObj = { _id: curUser._id, qrCode:result.fileID};
+    await updateDoc('userb',docObj);
+  }
+  return result.fileID;
+}
 
 
 exports.testService = async (data) => {

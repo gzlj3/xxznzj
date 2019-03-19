@@ -8,7 +8,7 @@ const menuList = [
   },
   {
     name: '教职工管理', 
-    open: false,
+    open: false, 
     rights: ['102'],
     page: 'plugin://XXZNZJ/staffmain'
   },
@@ -23,6 +23,12 @@ const menuList = [
     open: false,
     rights: ['104'],
     page: 'plugin://XXZNZJ/userGrant'
+  },
+  {
+    name: '签到二维码',
+    open: false,
+    rights: ['105'],
+    page: 'plugin://XXZNZJ/qrcode'
   },
 ];
 
