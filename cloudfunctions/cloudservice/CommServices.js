@@ -280,8 +280,12 @@ const getAccessToken = async (appId) => {
 exports.getAccessToken = getAccessToken;
 
 exports.qrCode = async (data,curUser) => {
-  if(!utils.isEmpty(curUser.qrCode))
-    return curUser.qrCode;
+  // if(!utils.isEmpty(curUser.qrCode)){
+  //   const res = await cloud.downloadFile({
+  //     fileID:curUser.qrCode,
+  //   })
+  //   return res.fileContent;
+  // }
   const {appId} = data;
   const token = await getAccessToken(appId);
   // console.log('accesstoken:',token);
@@ -301,19 +305,20 @@ exports.qrCode = async (data,curUser) => {
   // console.log('options:', options);
 
   let buffer = await rp(options);
+  return buffer;
   // console.log('buffer:', buffer);
-  const cloudPath = yzhid+'/qrcode/'+utils.uuid(5)+'.jpg';
-  // console.log('uploadfile path:', cloudPath);
-  const result = await cloud.uploadFile({
-    cloudPath,
-    fileContent: buffer,
-  });
-  // 保存生成的二维码文件名到userb
-  if(!utils.isEmpty(result.fileID)){
-    const docObj = { _id: curUser._id, qrCode:result.fileID};
-    await updateDoc('userb',docObj);
-  }
-  return result.fileID;
+  // const cloudPath = yzhid+'/qrcode/'+utils.uuid(5)+'.jpg';
+  // // console.log('uploadfile path:', cloudPath);
+  // const result = await cloud.uploadFile({
+  //   cloudPath,
+  //   fileContent: buffer,
+  // });
+  // // 保存生成的二维码文件名到userb
+  // if(!utils.isEmpty(result.fileID)){
+  //   const docObj = { _id: curUser._id, qrCode:result.fileID};
+  //   await updateDoc('userb',docObj);
+  // }
+  // return result.fileID;
 }
 
 

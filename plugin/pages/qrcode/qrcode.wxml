@@ -1,1 +1,2 @@
 <image style="width:100%" src="{{qrCode}}" mode="aspectFit" lazy-load="true"></image> 
+<button ontap='saveToPhotosAlbum'>保存到我的相册</button>
