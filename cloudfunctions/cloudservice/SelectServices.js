@@ -75,7 +75,7 @@ const querySearchSignin = async (curUser, searchType, searchData, appendCond) =>
   const colltable = commService.getTableName(tablename, collid)
   let result;
   let retResult = [];
-  result = await commService.queryDocs(colltable, { yzhid, ...appendCond });
+  result = await commService.queryDocs(colltable, { yzhid, ...appendCond },['lrsj','desc']);
   if (!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {
@@ -91,7 +91,7 @@ const querySearchCharge = async (curUser, searchType, searchData, appendCond) =>
   const colltable = commService.getTableName(tablename, collid)
   let result;
   let retResult = [];
-  result = await commService.queryDocs(colltable, { yzhid, ...appendCond });
+  result = await commService.queryDocs(colltable, { yzhid, ...appendCond }, ['lrsj', 'desc']);
   if(!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {

@@ -26,11 +26,11 @@ exports.setUser = (curUser)=>{
 exports.queryDataList = async (data,curUser) => {
   //查询数据列表
   const {yzhid,collid} = curUser;
-  const { tablename, fmName,querycond} = data;
+  const { tablename, fmName, querycond, orderby} = data;
   const colltable = commService.getTableName(tablename, collid)
   let result;
   // console.log('querydatalist:',data,curUser);
-  result = await commService.queryDocs(colltable, { yzhid,...querycond });
+  result = await commService.queryDocs(colltable, { yzhid, ...querycond }, orderby);
   // await handleDataList(curUser,fmName,result);
   return result;
 }
@@ -322,7 +322,7 @@ exports.querySigninXy = async (data, curUser) => {
   let result;
   console.log('querysigninxy:', data, curUser);
   const sjhmArr = [sjhm];
-  result = await commService.queryDocs(colltable, { yzhid,sjhm:_.in(sjhmArr)});
+  result = await commService.queryDocs(colltable, { yzhid,sjhm:_.in(sjhmArr)},'signin');
   return result;
 }
 

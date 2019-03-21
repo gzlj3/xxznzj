@@ -28,7 +28,7 @@ Page({
       fail(res) {
         //本地二维码文件不存在，从服务器生成
         self.createQrcode(filePath);
-      }
+      } 
     })
   },
 

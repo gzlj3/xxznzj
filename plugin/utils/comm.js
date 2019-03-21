@@ -3,6 +3,11 @@ const CONSTS = require('constants.js');
 const moment = require('moment.min.js');
 const app = require('../app1.js');
 
+
+const diffDate = (rq1) => {
+  
+}
+
 /**
  * 解析时间字符串（格式hh:mm)
  * 返回数字型数组[hh,mm]，解析异常返回[0,0]

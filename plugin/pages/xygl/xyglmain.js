@@ -56,7 +56,7 @@ Page({
     // fyglService.checkAuthority(1);
     // let arr = 'aaaa';
     // arr = ['aaa'];
-    // console.log(moment().utcOffset(+8));
+    // console.log(moment().subtract(30,'minutes'));
     
     // console.log('test:', comm.inWeektime('周六 11:00'));
     // this.queryList(this.data.activeIndex);
@@ -103,7 +103,8 @@ Page({
     if(!classList || classList.length<1) return;
     const classObj = classList[activeIndex];
     const querycond = classObj._id ? { class: { class: classObj._id } } : { class: [{}] };
-    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename,fmName,querycond});
+    const orderby = ['signin','asc'];
+    const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename, fmName, querycond, orderby});
     // const response = commServices.queryData(CONSTS.BUTTON_QUERYFY, { tablename, fmName, querycond: { class:[{}]   }});
     commServices.handleAfterRemote(response, null,
       (resultData) => {
@@ -118,12 +119,20 @@ Page({
     // console.log(sourceList);
     if(!sourceList) sourceList = [];
     let sourceListItems = [];
+
+    const now = moment().subtract(config.signinInterval, 'minutes').format('YYYY-MM-DD HH:mm:ss');
     sourceList.map(value => {
+      let signined = false;
+      if(value.signin){
+        console.log(value.signin,now,value.signin>now);
+        signined = value.signin > now;
+      }
       sourceListItems.push({
         avatarUrl: value.avatarUrl,
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
-        desc1: `最近签到:${value.signin ? value.signin : ''}`
+        desc1: `最近签到:${signined?'(已签到)':(value.signin ? value.signin : '')}`,
+        signined
       })
     });
     let { tabItems, classList} = this.data;
@@ -296,7 +305,7 @@ Page({
     const appendCond = JSON.stringify({ parentid: currentObject._id });
     const url = `../search/searchlist?searchType=${searchType}&appendCond=${appendCond}`;
     // console.log(url);
-    wx.navigateTo({
+    wx.navigateTo({ 
       url
     });
   },
