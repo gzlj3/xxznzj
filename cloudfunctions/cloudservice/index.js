@@ -133,8 +133,8 @@ exports.main = async (event, context) => {
         const objid = await services.saveData(data, curUser);  
         try{
           //累加到学员表
-          const {cs,parentid} = data.formObject;
-          result = await services.updateStudentCs(curUser.collid,parentid,cs,'charge');
+          const {cs,yxq,parentid} = data.formObject;
+          result = await services.updateStudentCs(curUser.collid,parentid,cs,'charge',yxq);
         }catch(e){
           //更新学员表次数失败，则删除之前保存完成的充值记录
           await commService.removeDoc(commService.getTableName('charge', curUser.collid), objid);

@@ -39,11 +39,17 @@
         "label": "金额",
         "name": "je",
         "type": "digit",
-        "require": true
+        "require": false
       },
       {
         "label": "课次",
         "name": "cs",
+        "type": "number",
+        "require": true
+      },
+      {
+        "label": "有效期(月)",
+        "name": "yxq",
         "type": "number",
         "require": true
       },

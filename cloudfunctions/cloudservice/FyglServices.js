@@ -206,13 +206,17 @@ const saveOtherData = async (data, curUser,lastId) => {
 }
 exports.saveOtherData = saveOtherData;
 
-exports.updateStudentCs = async (collid, studentid, cs, type) => {
+exports.updateStudentCs = async (collid, studentid, cs, type,yxq) => {
   if (utils.isEmpty(studentid))
     throw utils.newException("学员ID为空！");
   const csint = utils.getInteger(cs);
   const collTable = commService.getTableName('student', collid);
   let otherData = {};
   otherData[type] = utils.getCurrentTimestamp();
+  if(type==='charge'){
+    otherData.cs = cs;
+    otherData.yxq = yxq;
+  }
   const result = await db.collection(collTable).doc(studentid).update({
     data: {
       cs: _.inc(csint),

@@ -29,7 +29,7 @@ const initialState = {
   classList:[],  //班级列表
   sourceList:[],  //当前显示班级的学员列表
   tabItems:[], 
-  activeIndex:0,
+  activeIndex:0, 
   haveRight101:false,  //是否具有学员维护权限（101）
 }; 
 // const fmMetas = [
@@ -56,7 +56,7 @@ Page({
     // fyglService.checkAuthority(1);
     // let arr = 'aaaa';
     // arr = ['aaa'];
-    // console.log(moment().subtract(30,'minutes'));
+    // console.log(moment().add(12,'months'));
     
     // console.log('test:', comm.inWeektime('周六 11:00'));
     // this.queryList(this.data.activeIndex);
@@ -121,18 +121,26 @@ Page({
     let sourceListItems = [];
 
     const now = moment().subtract(config.signinInterval, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+
     sourceList.map(value => {
       let signined = false;
       if(value.signin){
-        console.log(value.signin,now,value.signin>now);
+        // console.log(value.signin,now,value.signin>now);
         signined = value.signin > now;
+      }
+      let chargeValid = true;
+      if(value.charge && value.yxq){
+      //计算充值有效期
+        chargeValid = moment(value.charge, 'YYYY-MM-DD HH:mm:ss').add(utils.getInteger(value.yxq),'months')>=moment();
       }
       sourceListItems.push({
         avatarUrl: value.avatarUrl,
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
-        desc1: `最近签到:${signined?'(已签到)':(value.signin ? value.signin : '')}`,
-        signined
+        desc1: `最近充值:${value.charge?value.charge.substring(0,10)+(chargeValid?'有效':'已失效'):''}`,
+        desc2: `最近签到:${signined ? '(已签到)' : (value.signin ? value.signin : '')}`,
+        signined,
+        chargeValid
       })
     });
     let { tabItems, classList} = this.data;
@@ -308,13 +316,6 @@ Page({
     wx.navigateTo({ 
       url
     });
-  },
-
-  modalConfirm: function(){
-    this.setData({modalVisible:false});
-    const self = this;
-    const {tfItem:item,tfrq} = this.data;
-    utils.showModal('退房', '退房步骤（1.生成退房帐单,2.结清退房帐单)。你真的确定退房(' + item.fwmc + ')吗？', () => { self.exitfy(item._id,tfrq); });
   },
 
   modalCancel: function(){

@@ -38,7 +38,7 @@ Component({
    * type:请求类型（1：签到）
    */
   properties: { 
-    onloadoptions: { 
+    onloadOptions: { 
       type: Object,
       value: {}, 
       observer(newVal, oldVal, changedPath) { 
@@ -187,6 +187,14 @@ Component({
       //如果用户未注册，则调用登录接口，为了获取用户的微信手机号时用
       if(!user || user.userType === CONSTS.USERTYPE_NONE){ 
         this.login(); 
+      }
+
+      //如果用户已经注册，且请求类型为签到，则直接进入到学员管理
+      // console.log(user,this.data.type);
+      if (user && user.userType !== CONSTS.USERTYPE_NONE && this.data.type==='1') {
+        app.getHostWx().navigateTo({
+          url: 'plugin://XXZNZJ/xyglmain',
+        });
       }
     },
     waitingCloudNormal() {
