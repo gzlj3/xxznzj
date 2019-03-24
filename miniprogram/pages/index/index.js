@@ -12,7 +12,7 @@ const menuList = [
     rights: ['102'],
     page: 'plugin://XXZNZJ/staffmain'
   },
-  {
+  { 
     name: '班级管理',
     open: false,
     rights: ['103'],

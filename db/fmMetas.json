@@ -11,7 +11,7 @@
       {
         "label": "家长姓名",
         "name": "jzxm",
-        "require": false
+        "require": true
       },
       {
         "label": "家长手机号",

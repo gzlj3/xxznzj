@@ -147,8 +147,9 @@ exports.main = async (event, context) => {
           const objid = await services.saveData(data, curUser);
           try {
             //累加到学员表
-            const { parentid } = data.formObject;
-            result = await services.updateStudentCs(curUser.collid, parentid, '-1','signin');
+            const { parentid,cs } = data.formObject;
+            console.log('signin cs:',cs);
+            result = await services.updateStudentCs(curUser.collid, parentid, (-cs)+'','signin');
             //刷新签到数据
             // result = await services.queryXyList(data, curUser);
           } catch (e) {

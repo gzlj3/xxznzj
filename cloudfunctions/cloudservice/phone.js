@@ -11,8 +11,8 @@ const request = require('request');
 
 
 exports.sendPhoneMessage = async (sjhm, message,messageId) => {
-  console.log('sendmessagelength:',message.length);
-  return;
+  // console.log('sendmessagelength:',message.length);
+  // return;
   // if(!config.production) {
   //   //测试环境不真正发短信
   //   return;

@@ -214,7 +214,7 @@ exports.updateStudentCs = async (collid, studentid, cs, type,yxq) => {
   let otherData = {};
   otherData[type] = utils.getCurrentTimestamp();
   if(type==='charge'){
-    otherData.cs = cs;
+    otherData.lastcs = cs;
     otherData.yxq = yxq;
   }
   const result = await db.collection(collTable).doc(studentid).update({

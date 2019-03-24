@@ -79,7 +79,7 @@ const querySearchSignin = async (curUser, searchType, searchData, appendCond) =>
   if (!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {
-    const desc = `${value.lrsj}(${value.name?value.name:value.nickName})签到.`;
+    const desc = `${value.lrsj}(${value.name?value.name:value.nickName})签到:${value.cs}次.`;
     const code = value._id;
     retResult.push({ desc, code });
   });
@@ -95,7 +95,7 @@ const querySearchCharge = async (curUser, searchType, searchData, appendCond) =>
   if(!result) return retResult;
   // console.log('query search result:',result);
   result.map(value => {
-    const desc = `${value.lrsj}(${value.name ? value.name : value.nickName})充值:${value.cs}次,金额:${value.je}元${value.bz?','+value.bz:''}.`;
+    const desc = `${value.lrsj}(${value.name ? value.name : value.nickName})充值:${value.cs}次,金额:${value.je?value.je:''}元${value.bz?','+value.bz:''}.`;
     const code = value._id;
     retResult.push({ desc, code });
   });

@@ -8,6 +8,7 @@
               <view class="weui-cell" wx:for="{{sourceListItems}}" wx:key="{{index}}" slot="footer_{{index}}">
                 <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{haveRight101}}">充值</view>
         <view id="{{index}}" bindtap="onSignin" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签到</view>
+        <view id="{{index}}" bindtap="onSigninMore" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签多次</view>
                 <!-- <view id="{{index}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">打卡日志</view> -->
                 <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>
               </view> 

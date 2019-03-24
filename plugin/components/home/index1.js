@@ -103,12 +103,14 @@ Component({
     phoneNumber: {
       type: Object,
       observer(newVal, oldVal, changedPath) {
-        console.log('observer phoneNumber:', newVal, oldVal, changedPath);
+        console.log('observer phoneNumber:', newVal);
         if(utils.isEmpty(newVal)) return;
         const { loginTime } = this.data;
         if(!loginTime){
-          utils.showToast('用户未登录，无法获取手机号！');
-          return;
+          // utils.showToast('用户未登录，无法获取手机号！');
+          utils.showModal('获取失败','切换到手机验证码登录!');
+          this.setData({ canIUseWxPhoneNumber:false});
+          return; 
         }
         const response = commServices.postData(CONSTS.BUTTON_USERPHONE, { appId:config.appId,phoneData:newVal });
         commServices.handleAfterRemote(response, '',
@@ -339,16 +341,22 @@ Component({
     },
     login() {
       const self = this;
-      app.getHostWx().login({
+      app.getHostWx().login({ 
         success(res) {  
           if (res.code) {
-            // console.log(res.code,config.appId);
+            console.log(res.code,config.appId);
             const response = commServices.postData(CONSTS.BUTTON_USERLOGIN, { code: res.code,appId:config.appId });
             commServices.handleAfterRemote(response, null,
               (resultData) => {
-                // console.log(resultData); 
+                console.log('login:',resultData); 
                 //如果登录成功返回，{loginTime:}
-                self.setData({ ...resultData });
+                const {loginTime} = resultData;
+                if(!loginTime){
+                  //登录失败，则切换到手机验证码登录
+                  self.setData({ canIUseWxPhoneNumber: false });
+                }else{
+                  self.setData({ ...resultData });
+                }
               }
             );
           } else {

@@ -45,7 +45,7 @@ Page({
   /**
    * 页面的初始数据
    */
-  data: initialState,
+  data: initialState, 
   /**
    * 生命周期函数--监听页面加载
    */
@@ -137,7 +137,7 @@ Page({
         avatarUrl: value.avatarUrl,
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
-        desc1: `最近充值:${value.charge?value.charge.substring(0,10)+(chargeValid?'有效':'已失效'):''}`,
+        desc1: `最近充值:${value.charge?value.charge.substring(0,10)+(chargeValid?'(有效)':'(已失效)'):''}`,
         desc2: `最近签到:${signined ? '(已签到)' : (value.signin ? value.signin : '')}`,
         signined,
         chargeValid
@@ -206,11 +206,13 @@ Page({
     }
     const currentObject = this.data.sourceList[pos];
     const self = this;
-    utils.showModal('签到', `签到将会扣减学员(${currentObject.xyxm})的1次课次，确定签到吗？`, () => { self.startSignin(currentObject); });
+    utils.showModal('签到', `将会扣减学员(${currentObject.xyxm})的1次课次，确定签到吗？`, () => { self.startSignin(currentObject); });
   },
-  startSignin: function (currentObject) {
+
+  startSignin: function (currentObject,cs) {
+    if(!cs) cs = 1;
     const { name, nickName, sjhm } = app.getGlobalData().user;
-    const formObject = { parentid: currentObject._id, name, nickName, sjhm }
+    const formObject = { parentid: currentObject._id, name, nickName, sjhm,cs }
     const response = commServices.postData(CONSTS.BUTTON_STUSIGNIN, { formObject, tablename: 'signin' });
     // console.log(buttonAction+"===:"+CONSTS.getButtonActionInfo(buttonAction));
     commServices.handleAfterRemote(response, '签到',
@@ -221,6 +223,31 @@ Page({
       }
     )
   },
+  onSigninMore: function (e) {
+    const pos = utils.parseInt(e.target.id);
+    if (pos === -1) {
+      utils.showToast('点击异常：' + e.target.id);
+      return;
+    }
+    let itemList, itemIndex;
+    itemList = ['签2次', '签3次', '签4次', '签5次', '取消'];
+    const currentObject = this.data.sourceList[pos];
+    const self = this;
+    wx.showActionSheet({
+      itemList,
+      success: function (res) {
+        // console.log(res);
+        if (res.cancel) return;
+        const index = res.tapIndex;
+        // console.log(index);
+        if(index>=0 && index<=3){
+          utils.showModal('签到', `将会扣减学员(${currentObject.xyxm})的${index+2}次课次，确定签到吗？`, () => { self.startSignin(currentObject,index+2); });
+        }
+      }
+    });
+  },
+
+
 
   onMoreAction(e){
     const { userType } = app.getGlobalData().user;
@@ -233,25 +260,6 @@ Page({
     // }else{
       this.actionSheet1(e);
     // }
-  },
-
-  actionSheet2: function (e) {
-    // const { item, fyitem } = e.currentTarget.dataset;
-    const itemList = ['删除房源', '取消']; 
-    const self = this;
-    wx.showActionSheet({
-      itemList,
-      success: function (res) {
-        if (res.cancel) return;
-        const index = res.tapIndex;
-        console.log(index);
-        switch (index) {
-          case 0:
-            utils.showModal('删除房源', '删除后将不能恢复，你真的确定删除房源(' + item.fwmc + ')吗？', () => { self.deletefy(item._id); });
-            break;
-        }
-      }
-    });
   },
 
   actionSheet1: function(e){
