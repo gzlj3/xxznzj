@@ -31,6 +31,7 @@ const initialState = {
   tabItems:[], 
   activeIndex:0, 
   haveRight101:false,  //是否具有学员维护权限（101）
+  emptyAvatarUrl: '../../images/avatar-empty.png',
 }; 
 // const fmMetas = [
 //   { label: '学员姓名', name: 'xyxm', require: true },
@@ -129,18 +130,33 @@ Page({
         signined = value.signin > now;
       }
       let chargeValid = true;
+      let progressState = {
+        backgroundColor: 'default',
+        activeColor: 'default',
+        percent: 0,
+      };
       if(value.charge && value.yxq){
-      //计算充值有效期
-        chargeValid = moment(value.charge, 'YYYY-MM-DD HH:mm:ss').add(utils.getInteger(value.yxq),'months')>=moment();
+      //计算充值有效期进度条
+        const yxq = moment(value.yxq, 'YYYY-MM-DD');
+        const czrq = moment(value.charge, 'YYYY-MM-DD')
+        chargeValid = moment(value.yxq, 'YYYY-MM-DD')>=moment();
+        if(chargeValid){
+
+        }else{
+          progressState.activeColor = 'red';
+          progressState.percent = 100;
+        }
+
       }
       sourceListItems.push({
         avatarUrl: value.avatarUrl,
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
-        desc1: `最近充值:${value.charge?value.charge.substring(0,10)+(chargeValid?'(有效)':'(已失效)'):''}`,
-        desc2: `最近签到:${signined ? '(已签到)' : (value.signin ? value.signin : '')}`,
+        desc1: `最近签到:${signined ? '(已签到)' : (value.signin ? value.signin : '')}`,
+        desc2: `有效期至:${value.yxq ? value.yxq:''}`,
         signined,
-        chargeValid
+        chargeValid,
+        progressState
       })
     });
     let { tabItems, classList} = this.data;

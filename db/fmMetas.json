@@ -48,9 +48,10 @@
         "require": true
       },
       {
-        "label": "有效期(月)",
+        "label": "有效期至",
         "name": "yxq",
-        "type": "number",
+        "type": "picker",
+        "mode": "date",
         "require": true
       },
       {

@@ -4,15 +4,47 @@
     <!-- <view class="weui-cells__title" wx:if="{{isZk && allFyList.length===0}}"></view> --> 
     <vtabbar tabItems="{{tabItems}}" activeIndex="{{activeIndex}}" bind:tabpagechanged="onTabPageChanged">
       <view slot='tabPage_{{activeIndex}}'> 
-            <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">
+            <!-- <list listItems="{{sourceListItems}}" bindbodytap="onBodyTap">
               <view class="weui-cell" wx:for="{{sourceListItems}}" wx:key="{{index}}" slot="footer_{{index}}">
+                <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{haveRight101}}">充值</view>
+        <view id="{{index}}" bindtap="onSignin" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签到</view>
+        <view id="{{index}}" bindtap="onSigninMore" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签多次</view>
+                <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>
+              </view> 
+            </list> -->
+
+        <view class="weui-panel weui-panel_access" wx:for="{{sourceListItems}}" wx:key="{{index}}">
+            <view class="weui-panel__bd">
+                <view class="weui-media-box weui-media-box_appmsg" >
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" id="{{index}}" >
+                        <image class="weui-media-box__thumb" src="{{item.avatarUrl?item.avatarUrl:emptyAvatarUrl}}" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg" hover-class="weui-cell_active" id="{{index}}" bindtap="onBodyTap">
+                        <view class="weui-media-box__title addfontsize20"> 
+                          <view class="weui-cell__bd">{{item.title}}</view>
+                        </view>  
+                        <view class="weui-media-box__desc addfontsize18">{{item.desc}}</view>
+                        <view class="weui-media-box__desc addfontsize18">{{item.desc1}}</view>
+                        <view class="weui-media-box__desc addfontsize18">{{item.desc2}}</view>
+                        <view class="weui-media-box__desc">
+                          <progress percent="{{item.progressState.percent}}" activeColor="{{item.progressState.activeColor}}" backgroundColor="{{item.progressState.backgroundColor}}" active='{{false}}' active-mode="forwards"></progress> 
+                        </view>
+                    </view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </view>
+            </view>
+            <view class="weui-panel__ft">
+              <view class="weui-cell">
                 <view id="{{index}}" bindtap="onCharge" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{haveRight101}}">充值</view>
         <view id="{{index}}" bindtap="onSignin" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签到</view>
         <view id="{{index}}" bindtap="onSigninMore" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18" wx:if="{{!item.signined}}">签多次</view>
                 <!-- <view id="{{index}}" bindtap="onLastzd" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">打卡日志</view> -->
                 <view id="{{index}}" bindtap="onMoreAction" class="weui-cell__bd weui-cell_access weui-cell_link addfontsize18">更多操作</view>
-              </view> 
-            </list>
+              </view>
+            </view>
+        </view>
+
+
 <!-- 
         <view class="weui-cells weui-cells_after-title">
             <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
