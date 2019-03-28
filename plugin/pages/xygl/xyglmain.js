@@ -59,7 +59,7 @@ Page({
     // arr = ['aaa'];
     // console.log(moment().add(12,'months'));
     
-    // console.log('test:', comm.inWeektime('周六 11:00'));
+    // console.log('test:', moment("20190328 09:00:00", "YYYYMMDD HH:mm:ss").fromNow());
     // this.queryList(this.data.activeIndex);
     // console.log('====:',utils['parseInt']());
     const tablename = 'class'; 
@@ -121,13 +121,13 @@ Page({
     if(!sourceList) sourceList = [];
     let sourceListItems = [];
 
-    const now = moment().subtract(config.signinInterval, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const beforeNow = moment().subtract(config.signinInterval, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const now = moment().startOf('day');
 
     sourceList.map(value => {
       let signined = false;
       if(value.signin){
-        // console.log(value.signin,now,value.signin>now);
-        signined = value.signin > now;
+        signined = value.signin > beforeNow;
       }
       let chargeValid = true;
       let progressState = {
@@ -137,12 +137,18 @@ Page({
       };
       if(value.charge && value.yxq){
       //计算充值有效期进度条
-        const yxq = moment(value.yxq, 'YYYY-MM-DD');
-        const czrq = moment(value.charge, 'YYYY-MM-DD')
-        chargeValid = moment(value.yxq, 'YYYY-MM-DD')>=moment();
-        if(chargeValid){
-
-        }else{
+        const yxq = moment(value.yxq, 'YYYY-MM-DD');  //有效期至
+        const czrq = moment(value.charge, 'YYYY-MM-DD');  //充值日期
+        // console.log('yxq:',yxq,now,yxq>=now);
+        chargeValid = yxq>=now;
+        if(chargeValid){ 
+          const totalYxqdays = yxq.clone().diff(czrq,'days');  //总的有效天数
+          const usedDays = now.clone().diff(czrq,'days');  //已过天数
+          const percent = Math.round(usedDays / totalYxqdays * 100);
+          progressState.percent = percent;
+          if (percent >= 95) progressState.activeColor = 'yellow';
+          console.log(totalYxqdays,usedDays,progressState);
+        }else{ 
           progressState.activeColor = 'red';
           progressState.percent = 100;
         }
@@ -153,7 +159,7 @@ Page({
         title: `${value.xyxm}(家长:${value.jzxm})`,
         desc: `剩余课次:${value.cs?value.cs:0}`,
         desc1: `最近签到:${signined ? '(已签到)' : (value.signin ? value.signin : '')}`,
-        desc2: `有效期至:${value.yxq ? value.yxq:''}`,
+        desc2: `有效期至:${value.yxq ? (value.yxq +(chargeValid?'(有效)':'(已失效)')):''}`,
         signined,
         chargeValid,
         progressState
