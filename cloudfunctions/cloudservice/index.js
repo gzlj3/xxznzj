@@ -143,6 +143,11 @@ exports.main = async (event, context) => {
         return results.getSuccessResults(result);
       case CONSTS.BUTTON_STUSIGNIN:
         if (method === 'POST') {
+          const { stuid, qjrq } = data;
+          result = await services.updateStudentCs(curUser.collid, stuid, '', 'leave');
+        }
+      case CONSTS.BUTTON_STUSIGNIN:
+        if (method === 'POST') {
           //先保存学员签到数据
           const objid = await services.saveData(data, curUser);
           try {

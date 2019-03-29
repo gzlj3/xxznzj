@@ -293,11 +293,11 @@ Page({
     let itemList,itemIndex;
 // console.log('usertype:',this.data.userType);
     if (this.data.user.userType === CONSTS.USERTYPE_FD || this.data.haveRight101) { 
-      itemList = ['充值记录', '签到记录', '删除学员', '取消'];
-      itemIndex = [0, 1, 2,3];
+      itemList = ['充值记录', '签到记录', '请假','删除学员', '取消'];
+      itemIndex = [0, 1, 2,3,4,-1];
     } else {
-      itemList = ['充值记录', '签到记录', '取消'];
-      itemIndex = [0,1,3];
+      itemList = ['充值记录', '签到记录', '请假','取消'];
+      itemIndex = [0,1,2,-1];
     } 
     const item = this.data.sourceList[pos];
     const self = this;
@@ -315,7 +315,16 @@ Page({
           case itemIndex[1]:
             self.queryHistroy(e, 'signin');
             break;
-          case itemIndex[2]:
+          case itemIndex[2]:   //请假
+            const qjrq = moment().format('YYYY-MM-DD');
+            self.setData({
+              qjrq,
+              qjItem: item,
+              modalVisible: true,
+              modalTitle: '请输入请假日期',
+            });
+            break;
+          case itemIndex[3]:
             utils.showModal('删除学员', '删除后将不能恢复，你真的确定删除当前学员吗？', () => { self.deleteData(item._id); });
             break;
         }
@@ -346,6 +355,28 @@ Page({
     wx.navigateTo({ 
       url
     });
+  },
+
+  onQjInputBlur: function (e) {
+    const name = e.target.id;
+    this.setData({ qjrq: e.detail.value });
+  },
+
+  modalConfirm: function () {
+    this.setData({ modalVisible: false });
+    const self = this;
+    const { qjItem: item, qjrq } = this.data;
+    utils.showModal('请假', `请假后将不能取消，你确定在${qjrq}请假吗？`, () => { self.qj(item._id, qjrq); });
+  },
+
+  qj(stuid, qjrq) {
+    console.log("qj:", stuid, qjrq);
+    const response = fyglService.postData(CONSTS.BUTTON_STULEAVE, { stuid, qjrq });
+    fyglService.handleAfterRemote(response, '请假',
+      (resultData) => {
+        console.log('qj:',resultData);
+        // this.refreshFyList(resultData)
+      });
   },
 
   modalCancel: function(){
